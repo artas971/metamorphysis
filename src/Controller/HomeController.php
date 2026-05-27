@@ -2,17 +2,22 @@
 
 namespace App\Controller;
 
+use App\Repository\PrestationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-final class HomeController extends AbstractController
+class HomeController extends AbstractController
 {
     #[Route('/home', name: 'app_home')]
-    public function index(): Response
+    public function index(PrestationRepository $prestationRepository): Response
     {
+        // On va chercher toutes les prestations dans la base de données
+        $prestations = $prestationRepository->findAll();
+
+        // On les envoie à notre fichier Twig sous le nom 'prestations'
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+            'prestations' => $prestations,
         ]);
     }
 }

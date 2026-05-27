@@ -1,59 +1,102 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Metamorphysis | Thérapie et Accompagnement{% endblock %}</title>
-        
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>{% block title %}Metamorphysis{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --or-premium: #D4AF37;
+            --fond-sombre: #1a1a1a;
+            --texte-clair: #f8f9fa;
+        }
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body class="d-flex flex-column min-vh-100">
+        body {
+            background-color: var(--fond-sombre);
+            color: var(--texte-clair);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Personnalisation des éléments Bootstrap */
+        .text-or {
+            color: var(--or-premium) !important;
+        }
         
-        <nav class="navbar navbar-expand-lg navbar-dark py-3" style="background-color: transparent;">
-            <div class="container">
-                <a class="navbar-brand brand-logo text-gold fs-3" href="/">
-                    METAMORPHYSIS
-                </a>
-                
-                <button class="navbar-toggler border-gold text-gold" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav align-items-center">
-                        <li class="nav-item me-4">
-                            <a class="nav-link text-light" href="/">Accueil</a>
-                        </li>
-                        <li class="nav-item me-4">
-                            <a class="nav-link text-light" href="#">L'expérience</a>
-                        </li>
-                        <li class="nav-item me-4">
-                            <a class="nav-link text-light" href="#">À propos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-premium px-4 py-2" href="#">Réserver</a>
-                        </li>
-                    </ul>
-                </div>
+        .bg-or {
+            background-color: var(--or-premium) !important;
+            color: var(--fond-sombre) !important;
+        }
+
+        .btn-premium {
+            background-color: var(--or-premium);
+            color: var(--fond-sombre);
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium:hover {
+            background-color: #b5952f;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Le contenu principal prendra tout l'espace disponible entre le header et le footer */
+        main {
+            flex: 1;
+        }
+    </style>
+
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark border-bottom border-secondary mb-4">
+        <div class="container">
+            <a class="navbar-brand text-or fw-bold" href="/">METAMORPHYSIS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Prestations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <a class="btn btn-premium btn-sm px-4 py-2" href="#">Réserver</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <main class="flex-grow-1">
-            {% block body %}{% endblock %}
-        </main>
+    <main class="container">
+        {% block body %}{% endblock %}
+    </main>
 
-        <footer class="text-center py-4 mt-auto border-top border-secondary">
-            <div class="container text-muted small">
-                <p class="mb-1">&copy; {{ 'now'|date('Y') }} Metamorphysis. Tous droits réservés.</p>
-            </div>
-        </footer>
-        
-    </body>
+    <footer class="mt-5 py-4 border-top border-secondary text-center text-muted">
+        <div class="container">
+            <small>&copy; {{ 'now'|date('Y') }} Metamorphysis. Tous droits réservés.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block javascripts %}
+    {% endblock %}
+</body>
 </html>

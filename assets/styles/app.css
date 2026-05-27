@@ -51,3 +51,23 @@ h1, h2, h3, h4, h5, h6, .brand-logo {
     background-color: var(--gold-accent);
     color: var(--bg-dark);
 }
+/* Colorisation temporaire pour identifier les ailes */
+.libellule-logo g path:nth-child(1) { fill: red !important; }
+.libellule-logo g path:nth-child(2) { fill: blue !important; }
+.libellule-logo g path:nth-child(3) { fill: lime !important; }
+.libellule-logo g path:nth-child(4) { fill: orange !important; }
+.libellule-logo g path:nth-child(5) { fill: purple !important; }
+.libellule-logo g path:nth-child(6) { fill: cyan !important; }
+.libellule-logo g path:nth-child(7) { fill: pink !important; }
+.libellule-logo g path:nth-child(8) { fill: brown !important; }
+.libellule-logo g path:nth-child(9) { fill: yellow !important; }
+.libellule-logo g path:nth-child(10) { fill: teal !important; }
+.libellule-logo g path:nth-child(11) { fill: magenta !important; }
+.libellule-logo g path:nth-child(12) { fill: white !important; }
+.libellule-logo g path:nth-child(13) { fill: coral !important; }
+.libellule-logo g path:nth-child(14) { fill: navy !important; }
+.libellule-logo g path:nth-child(15) { fill: olive !important; }
+.libellule-logo g path:nth-child(16) { fill: maroon !important; }
+.libellule-logo g path:nth-child(17) { fill: violet !important; }
+.libellule-logo g path:nth-child(18) { fill: salmon !important; }
+.libellule-logo g path:nth-child(19) { fill: gold !important; }
