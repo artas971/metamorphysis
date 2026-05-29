@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card bg-dark border-secondary text-light shadow-lg">
+                <div class="card-body p-5">
+                    <h2 class="text-center text-or fw-bold mb-4">Créer un compte</h2>
+                    
+                    {{ form_errors(registrationForm) }}
+
+{{ form_start(registrationForm) }}
+                        {# CHAMP NOM #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'form-label text-or'}}) }}
+                            {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                        </div>
+                        {# CHAMP PRÉNOM #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.prenom, 'Prénom', {'label_attr': {'class': 'form-label text-or'}}) }}
+                            {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                        </div>
+
+                        {# NOUVEAU CHAMP TÉLÉPHONE #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.telephone, 'Numéro de téléphone', {'label_attr': {'class': 'form-label text-or'}}) }}
+                            {{ form_widget(registrationForm.telephone, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                        </div>
+
+                        {# CHAMP EMAIL #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.email, 'Adresse Email', {'label_attr': {'class': 'form-label text-or'}}) }}
+                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                        </div>
+                        
+                        {# CHAMP MOT DE PASSE #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label text-or'}}) }}
+                            {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                        </div>
+
+                        <div class="mb-4 form-check text-muted small">
+                            {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input bg-dark border-secondary'}}) }}
+                            {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-premium w-100 py-2">S'inscrire</button>
+                    {{ form_end(registrationForm) }}
+                    
+                    <div class="text-center mt-4 pt-3 border-top border-secondary">
+                        <p class="small text-muted">Déjà un compte ? <a href="/login" class="text-or text-decoration-none">Se connecter</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

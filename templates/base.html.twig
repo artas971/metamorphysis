@@ -76,9 +76,31 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact</a>
                     </li>
-                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        <a class="btn btn-premium btn-sm px-4 py-2" href="#">Réserver</a>
-                    </li>
+
+                    {# --- LOGIQUE TWIG : L'UTILISATEUR EST-IL CONNECTÉ ? --- #}
+                    {% if app.user %}
+                        {# Menu déroulant pour l'utilisateur connecté #}
+                        <li class="nav-item dropdown ms-lg-3 mt-2 mt-lg-0">
+                            <a class="btn btn-outline-warning btn-sm px-4 py-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mon Compte
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary" aria-labelledby="navbarDropdown">
+                                {# On affiche son prénom grâce à la base de données #}
+                                <li><span class="dropdown-item-text text-or fw-bold">Bonjour, {{ app.user.prenom }}</span></li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><a class="dropdown-item text-light" href="#">Mes rendez-vous</a></li>
+                                <li><a class="dropdown-item text-danger" href="/logout">Se déconnecter</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        {# Boutons pour les visiteurs non connectés #}
+                        <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                            <a class="nav-link text-light" href="/login">Connexion</a>
+                        </li>
+                        <li class="nav-item mt-2 mt-lg-0 ms-2">
+                            <a class="btn btn-premium btn-sm px-4 py-2" href="/register">S'inscrire</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
