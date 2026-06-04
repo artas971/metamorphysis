@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prestation - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 pt-5">
+    
+    <div class="row align-items-center mb-5 pb-4 border-bottom border-secondary">
+        <div class="col-md-6 mb-4 mb-md-0">
+            {# On utilise temporairement le slug pour afficher un titre. On remplacera les tirets par des espaces. #}
+            <span class="badge bg-warning text-dark mb-2 px-3 py-2 text-uppercase tracking-wider">Soin Exclusif</span>
+            <h1 class="text-or fw-bold text-capitalize display-4">{{ slug|replace({'-': ' '}) }}</h1>
+            <p class="text-muted fs-5 mt-3">
+                Une expérience unique conçue pour harmoniser le corps et l'esprit. Laissez-vous porter par notre expertise pour un moment de pure métamorphose.
+            </p>
+            <div class="d-flex align-items-center mt-4">
+                <h3 class="text-light fw-bold mb-0 me-4">95 €</h3>
+                <span class="text-muted"><i class="far fa-clock me-2"></i>1h30</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary p-4 shadow-lg rounded-4">
+                <h4 class="text-or mb-4 text-center">Réserver ce soin</h4>
+                
+                {% if app.user %}
+                    <p class="text-center text-light mb-4">Prêt pour votre séance, <strong class="text-warning">{{ app.user.prenom }}</strong> ?</p>
+                    <button class="btn btn-premium w-100 py-3 fw-bold fs-5">Confirmer ma réservation</button>
+                    <p class="text-muted small text-center mt-3 mb-0"><i class="fas fa-lock me-1"></i> Paiement sur place</p>
+                {% else %}
+                    <div class="alert alert-dark border-secondary text-center">
+                        <i class="fas fa-user-lock fa-2x text-muted mb-3"></i>
+                        <p class="mb-3 text-light">Vous devez posséder un compte pour planifier une séance.</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-outline-warning w-100 mb-2">Me connecter</a>
+                        <a href="{{ path('app_register') }}" class="text-muted small text-decoration-none">Créer un compte client</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# DÉTAILS DE LA SÉANCE #}
+    <div class="row text-light">
+        <div class="col-md-8">
+            <h3 class="text-or mb-4">Déroulement de la séance</h3>
+            <p class="text-muted lh-lg">
+                Ici viendra la description complète et détaillée de la prestation. Pour l'instant, c'est un texte générique d'attente. Nous configurerons plus tard la base de données pour que chaque soin affiche sa propre description, ses propres bienfaits et ses propres contre-indications.
+            </p>
+            <ul class="list-unstyled mt-4 text-muted">
+                <li class="mb-2"><i class="fas fa-check text-or me-2"></i> Entretien personnalisé de 15 minutes</li>
+                <li class="mb-2"><i class="fas fa-check text-or me-2"></i> Soin sur-mesure</li>
+                <li class="mb-2"><i class="fas fa-check text-or me-2"></i> Conseils post-séance</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

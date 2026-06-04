@@ -81,13 +81,17 @@
                     {% if app.user %}
                         {# Menu déroulant pour l'utilisateur connecté #}
                         <li class="nav-item dropdown ms-lg-3 mt-2 mt-lg-0">
+                            {# On remet le href="#" ici car ce bouton ne sert qu'à ouvrir le menu #}
                             <a class="btn btn-outline-warning btn-sm px-4 py-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Mon Compte
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary" aria-labelledby="navbarDropdown">
-                                {# On affiche son prénom grâce à la base de données #}
                                 <li><span class="dropdown-item-text text-or fw-bold">Bonjour, {{ app.user.prenom }}</span></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
+                                
+                                {# LE VRAI LIEN VERS LE TABLEAU DE BORD EST ICI #}
+                                <li><a class="dropdown-item text-light fw-bold" href="{{ path('app_account') }}">Mon tableau de bord</a></li>
+                                
                                 <li><a class="dropdown-item text-light" href="#">Mes rendez-vous</a></li>
                                 <li><a class="dropdown-item text-danger" href="/logout">Se déconnecter</a></li>
                             </ul>
