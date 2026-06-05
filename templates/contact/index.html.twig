@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            {# Conteneur principal : Fond sombre et bordure dorée pour l'ambiance #}
+            <div class="card shadow-lg bg-dark border-warning" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    
+                    <h1 class="text-center text-warning mb-4" style="font-family: 'Impact', sans-serif; letter-spacing: 2px;">
+                        CONTACTEZ-NOUS
+                    </h1>
+                    
+                    {{ form_start(contactForm) }}
+                    
+                    {# Champ : Nom #}
+                    <div class="mb-4">
+                        {{ form_label(contactForm.nom, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
+                        {{ form_widget(contactForm.nom, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
+                        <div class="text-danger mt-1">{{ form_errors(contactForm.nom) }}</div>
+                    </div>
+
+                    {# Champ : Email #}
+                    <div class="mb-4">
+                        {{ form_label(contactForm.email, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
+                        {{ form_widget(contactForm.email, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
+                        <div class="text-danger mt-1">{{ form_errors(contactForm.email) }}</div>
+                    </div>
+
+                    {# Champ : Sujet #}
+                    <div class="mb-4">
+                        {{ form_label(contactForm.sujet, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
+                        {{ form_widget(contactForm.sujet, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
+                        <div class="text-danger mt-1">{{ form_errors(contactForm.sujet) }}</div>
+                    </div>
+
+                    {# Champ : Message #}
+                    <div class="mb-4">
+                        {{ form_label(contactForm.message, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
+                        {{ form_widget(contactForm.message, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
+                        <div class="text-danger mt-1">{{ form_errors(contactForm.message) }}</div>
+                    </div>
+                    
+                    {# Bouton de soumission #}
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-outline-warning btn-lg px-5 fw-bold" style="border-width: 2px; border-radius: 30px;">
+                            ENVOYER LE MESSAGE
+                        </button>
+                    </div>
+
+                    {{ form_end(contactForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
