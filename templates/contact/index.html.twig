@@ -13,6 +13,12 @@
                     <h1 class="text-center text-warning mb-4" style="font-family: 'Impact', sans-serif; letter-spacing: 2px;">
                         CONTACTEZ-NOUS
                     </h1>
+                    {# Affichage des messages de succès #}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success text-center fw-bold" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
                     
                     {{ form_start(contactForm) }}
                     
