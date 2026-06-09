@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-center vh-100 bg-black overflow-hidden">    
+    <a href="{{ path('app_prestation_index') }}" class="logo-link" style="display: block; width: 100%; text-decoration: none;">{# On inclut le fichier contenant le logo SVG #}
+{{ include('partials/beta.html.twig') }}
+</a>
+</div>
+<style>
+    .logo-link {
+        transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .logo-link:hover {
+        transform: scale(1.02); /* Le logo grossit très légèrement */
+        filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.4)); /* Accentue le halo doré */
+    }
+</style>
+{% endblock %}
