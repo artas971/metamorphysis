@@ -111,7 +111,17 @@
         </div>
     </nav>
 
-    <main class="container">
+<main class="container">
+        {# --- SYSTÈME D'AFFICHAGE DES MESSAGES FLASH --- #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }} alert-dismissible fade show mt-4 shadow-sm" role="alert" style="border-left: 5px solid {% if label == 'success' %}#198754{% else %}#dc3545{% endif %};">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
         {% block body %}{% endblock %}
     </main>
 

@@ -1,0 +1,12 @@
+<h1>Nouvelle demande de rendez-vous</h1>
+
+<p>Bonjour,</p>
+<p>Vous venez de recevoir une nouvelle demande de réservation sur Metamorphysis.</p>
+
+<ul>
+    <li><strong>Client :</strong> {{ client.prenom }} ({{ client.email }})</li>
+    <li><strong>Prestation :</strong> {{ prestation.nom }}</li>
+    <li><strong>Date souhaitée :</strong> {{ reservation.dateRendezVous|date('d/m/Y à H:i') }}</li>
+</ul>
+
+<p>Connectez-vous à votre espace administrateur pour confirmer ou annuler ce rendez-vous.</p>
