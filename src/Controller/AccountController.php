@@ -2,18 +2,31 @@
 
 namespace App\Controller;
 
+use App\Repository\ReservationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-// C'est cette ligne ci-dessous qui change (Attribute au lieu de Annotation) :
-use Symfony\Component\Routing\Attribute\Route; 
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// Cette ligne bloque l'accès à toute personne qui n'est pas connectée
 #[IsGranted('ROLE_USER')]
 class AccountController extends AbstractController
 {
-    #[Route('/compte', name: 'app_account')]
-    public function index(): Response
+    #[Route('/mon-compte', name: 'app_account')]
+    public function index(ReservationRepository $reservationRepository): Response
     {
-        return $this->render('account/index.html.twig');
+        // On récupère l'utilisateur actuellement connecté
+        $user = $this->getUser();
+
+        // On va chercher toutes SES réservations dans la base de données, 
+        // triées par date (la plus récente en premier)
+        $reservations = $reservationRepository->findBy(
+            ['user' => $user],
+            ['dateRendezVous' => 'DESC']
+        );
+
+        return $this->render('account/index.html.twig', [
+            'reservations' => $reservations,
+        ]);
     }
 }

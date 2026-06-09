@@ -53,6 +53,15 @@
         main {
             flex: 1;
         }
+        /* Adaptation du menu déroulant au thème sombre */
+        .dropdown-item:hover {
+            background-color: var(--or-premium);
+            color: var(--fond-sombre) !important;
+        }
+        .dropdown-item.text-danger:hover {
+            background-color: #dc3545;
+            color: white !important;
+        }
     </style>
 
     {% block stylesheets %}
@@ -79,22 +88,23 @@
                     </li>
 
                     {# --- LOGIQUE TWIG : L'UTILISATEUR EST-IL CONNECTÉ ? --- #}
-                    {% if app.user %}
-                        {# Menu déroulant pour l'utilisateur connecté #}
+                     {% if app.user %}
+                        {# Menu déroulant fonctionnel pour l'utilisateur connecté #}
                         <li class="nav-item dropdown ms-lg-3 mt-2 mt-lg-0">
-                            {# On remet le href="#" ici car ce bouton ne sert qu'à ouvrir le menu #}
-                            <a class="btn btn-outline-warning btn-sm px-4 py-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            
+                            {# Le bouton principal avec les attributs Bootstrap obligatoires #}
+                            <a class="nav-link dropdown-toggle text-warning border border-warning rounded px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Mon Compte
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary" aria-labelledby="navbarDropdown">
+                            
+                            {# Le contenu du menu déroulant #}
+                            <ul class="dropdown-menu dropdown-menu-end bg-dark border-warning mt-2 shadow-lg" aria-labelledby="navbarDropdown">
                                 <li><span class="dropdown-item-text text-or fw-bold">Bonjour, {{ app.user.prenom }}</span></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 
-                                {# LE VRAI LIEN VERS LE TABLEAU DE BORD EST ICI #}
-                                <li><a class="dropdown-item text-light fw-bold" href="{{ path('app_account') }}">Mon tableau de bord</a></li>
-                                
-                                <li><a class="dropdown-item text-light" href="#">Mes rendez-vous</a></li>
-                                <li><a class="dropdown-item text-danger" href="/logout">Se déconnecter</a></li>
+                                <li><a class="dropdown-item text-light" href="{{ path('app_account') }}"><i class="bi bi-person-badge me-2 text-warning"></i>Mon tableau de bord</a></li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><a class="dropdown-item text-danger fw-bold" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Se déconnecter</a></li>
                             </ul>
                         </li>
                     {% else %}
