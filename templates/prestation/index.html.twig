@@ -18,39 +18,39 @@
         
         {% for prestation in prestations %}
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 bg-dark border-warning shadow-lg transition-hover" style="border-radius: 15px;">
-                    <div class="card-body d-flex flex-column p-4">
-                        
-                        {# Titre et Prix #}
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h3 class="card-title text-warning fw-bold mb-0">{{ prestation.nom }}</h3>
-                            <span class="badge bg-warning text-dark fs-5">{{ prestation.prix }} €</span>
-                        </div>
-                        
-                        {# Durée #}
-                        <div class="mb-3 text-secondary">
-                            <i class="bi bi-clock-history"></i> Durée estimée : {{ prestation.duree }} min
-                        </div>
-                        
-                        {# Description #}
-                        <p class="card-text text-white grow">
-                            {{ prestation.description }}
-                        </p>
-                        
-                        {# Boutons d'action #}
-                        <div class="mt-4 text-center d-flex gap-2">
-                            {# Bouton pour voir les détails #}
-                            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="btn btn-warning w-50 fw-bold" style="border-radius: 30px;">
-                                DÉTAILS
-                            </a>
-                            {# Bouton vers le contact #}
-                            <a href="{{ path('app_contact') }}" class="btn btn-outline-warning w-50 fw-bold" style="border-width: 2px; border-radius: 30px;">
-                                DEVIS
-                            </a>
-                        </div>
-                        
-                    </div>
-                </div>
+                <div class="card bg-dark border-warning shadow-lg h-100" style="border-radius: 15px; overflow: hidden;">
+    
+    {# 1. L'IMAGE DOIT ÊTRE TOUT EN HAUT #}
+    {% if prestation.imageName %}
+        <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
+             class="card-img-top" 
+             alt="{{ prestation.nom }}" 
+             style="object-fit: cover; height: 250px; border-bottom: 2px solid #ffc107;">
+    {% else %}
+        <div class="card-img-top bg-black d-flex align-items-center justify-content-center" 
+             style="height: 250px; border-bottom: 2px solid #ffc107;">
+            <h3 class="text-warning fw-bold" style="font-family: 'Impact', sans-serif; opacity: 0.5;">METAMORPHYSIS</h3>
+        </div>
+    {% endif %}
+
+    {# 2. LE CONTENU (Titre, prix, texte, boutons) EN DESSOUS #}
+    <div class="card-body d-flex flex-column p-4">
+        
+        {# Garde ici ton code actuel pour le titre et le prix... #}
+        <h4 class="text-warning fw-bold mb-3">{{ prestation.nom }} <span class="badge bg-warning text-dark float-end">{{ prestation.prix }} €</span></h4>
+        
+        {# Garde ta durée et ta description... #}
+        <p class="text-white-50"><i class="bi bi-clock"></i> {{ prestation.duree }} min</p>
+        <p class="text-white flex-grow-1">{{ prestation.description }}</p>
+
+        {# Garde tes boutons existants... #}
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="btn btn-warning fw-bold" style="border-radius: 20px; width: 48%;">DÉTAILS</a>            {# On connecte le bouton DEVIS à ta nouvelle route de réservation #}
+            <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-outline-warning fw-bold" style="border-radius: 20px; width: 48%;">RÉSERVER</a>
+        </div>
+        
+    </div>
+</div>
             </div>
         {% else %}
             {# Message affiché si la base de données est vide #}

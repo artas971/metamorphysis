@@ -5,52 +5,60 @@
 {% block body %}
 <div class="container mt-5 mb-5">
     
-    {# Bouton de retour à la liste #}
+    {# Bouton retour #}
     <div class="mb-4">
         <a href="{{ path('app_prestation_index') }}" class="text-warning text-decoration-none fw-bold">
             <i class="bi bi-arrow-left"></i> Retour aux prestations
         </a>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px;">
-                <div class="card-body p-5">
+    <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px; overflow: hidden;">
+        <div class="row g-0">
+            
+            {# COLONNE GAUCHE : L'IMAGE #}
+            <div class="col-md-5 col-lg-4 border-end border-warning">
+                {% if prestation.imageName %}
+                    <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
+                         class="img-fluid w-100 h-100" 
+                         alt="{{ prestation.nom }}" 
+                         style="object-fit: cover; min-height: 400px;">
+                {% else %}
+                    <div class="bg-black w-100 h-100 d-flex align-items-center justify-content-center" style="min-height: 400px;">
+                        <h3 class="text-warning fw-bold text-center" style="font-family: 'Impact', sans-serif; opacity: 0.5;">METAMORPHYSIS</h3>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# COLONNE DROITE : LES INFORMATIONS #}
+            <div class="col-md-7 col-lg-8 d-flex flex-column">
+                <div class="card-body p-5 flex-grow-1">
                     
-                    {# En-tête de la prestation #}
-                    <div class="text-center mb-5">
-                        <h1 class="text-warning display-5 mb-3" style="font-family: 'Impact', sans-serif; letter-spacing: 2px;">
-                            {{ prestation.nom|upper }}
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <h1 class="text-warning fw-bold text-uppercase" style="font-family: 'Impact', sans-serif;">
+                            {{ prestation.nom }}
                         </h1>
-                        
-                        <div class="d-flex justify-content-center gap-4">
-                            <span class="badge bg-warning text-dark fs-5 p-2">
-                                <i class="bi bi-tag-fill"></i> {{ prestation.prix }} €
-                            </span>
-                            <span class="badge border border-warning text-warning fs-5 p-2">
-                                <i class="bi bi-clock-history"></i> {{ prestation.duree }} min
-                            </span>
-                        </div>
+                        <span class="badge bg-warning text-dark fs-5 p-2">{{ prestation.prix }} €</span>
                     </div>
 
-                    {# Contenu de la description #}
-                    <div class="text-white fs-5 mb-5" style="line-height: 1.8;">
-                        <h4 class="text-warning mb-3 border-bottom border-warning pb-2">Description de l'accompagnement</h4>
-                        <p>
-                            {{ prestation.description }}
-                        </p>
-                    </div>
+                    <h5 class="text-white-50 mb-4">
+                        <i class="bi bi-clock me-2"></i> Durée estimée : {{ prestation.duree }} minutes
+                    </h5>
 
-                    {# Section d'appel à l'action (Boutons) #}
-                    <div class="bg-black p-4 rounded text-center border border-secondary">
-                        <h5 class="text-light mb-3">Cette prestation correspond à vos besoins ?</h5>
-                        <a href="{{ path('app_contact') }}" class="btn btn-warning btn-lg fw-bold px-5" style="border-radius: 30px;">
-                            DEMANDER UN DEVIS
-                        </a>
+                    <div class="text-white fs-5 lh-lg mb-5">
+                        {# Le filtre nl2br permet de respecter les retours à la ligne de ta description #}
+                        {{ prestation.description|nl2br }}
                     </div>
 
                 </div>
+                
+                {# LE BOUTON D'ACTION EN BAS #}
+                <div class="card-footer bg-transparent border-top border-warning p-4">
+                    <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-warning w-100 fs-4 fw-bold py-3" style="border-radius: 30px; font-family: 'Impact', sans-serif;">
+                        RÉSERVER CE SOIN
+                    </a>
+                </div>
             </div>
+
         </div>
     </div>
 </div>

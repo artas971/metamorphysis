@@ -25,11 +25,14 @@ class PrestationController extends AbstractController
     // 2. La route pour afficher UNE SEULE prestation en détail
     // On utilise {id} car c'est ce qui existe dans ton entité
     #[Route('/prestation/{id}', name: 'app_prestation_show')]
-    public function show(Prestation $prestation): Response
-    {
-        // Grâce à "Prestation $prestation", Symfony trouve tout seul la bonne ligne dans la base !
-        return $this->render('prestation/show.html.twig', [
-            'prestation' => $prestation,
-        ]);
-    }
+        public function show(Prestation $prestation): Response
+        {
+            // Symfony est intelligent : grâce à l'ID dans l'URL, 
+            // il va chercher automatiquement la bonne prestation en base de données !
+            
+            return $this->render('prestation/show.html.twig', [
+                'prestation' => $prestation,
+            ]);
+        }
+    
 }
