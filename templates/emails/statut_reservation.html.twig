@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mise à jour de votre réservation</title>
+</head>
+<body style="background-color: #1a1a1a; color: #f8f9fa; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 40px 0;">
+
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #111111; border: 1px solid #D4AF37; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        
+        {# EN-TÊTE : Logo de la marque #}
+        <tr>
+            <td style="background-color: #000000; padding: 30px; text-align: center; border-bottom: 1px solid #222222;">
+                <h1 style="color: #D4AF37; font-size: 26px; font-weight: bold; margin: 0; letter-spacing: 2px;">METAMORPHYSIS</h1>
+            </td>
+        </tr>
+
+        {# CORPS DE L'E-MAIL #}
+        <tr>
+            <td style="padding: 40px 30px;">
+                <p style="font-size: 18px; margin-top: 0; color: #f8f9fa;">Bonjour <strong style="color: #D4AF37;">{{ client.prenom }}</strong>,</p>
+                
+                {# CONDITION TWIG : CAS DU RENDEZ-VOUS CONFIRMÉ #}
+                {% if statut == 'Confirmé' %}
+                    <p style="font-size: 16px; line-height: 1.6; color: #cccccc;">
+                        Bonne nouvelle ! Votre demande de réservation a été validée avec succès. Nous avons hâte de vous recevoir pour votre moment de soin.
+                    </p>
+                    
+                    <div style="background-color: #1a1a1a; border-left: 4px solid #198754; padding: 20px; margin: 30px 0; border-radius: 4px;">
+                        <h3 style="margin-top: 0; color: #198754; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Détails de votre session</h3>
+                        <p style="margin: 5px 0; font-size: 15px;"><strong>Soin :</strong> {{ reservation.prestation.nom }}</p>
+                        <p style="margin: 5px 0; font-size: 15px;"><strong>Date & Heure :</strong> {{ reservation.dateRendezVous|date('d/m/Y à H:i') }}</p>
+                        <p style="margin: 5px 0; font-size: 15px;"><strong>Statut :</strong> <span style="background-color: #198754; color: #ffffff; padding: 2px 8px; font-size: 12px; border-radius: 3px; font-weight: bold;">CONFIRMÉ</span></p>
+                    </div>
+
+                    <p style="font-size: 15px; line-height: 1.6; color: #aaaaaa;">
+                        Si vous avez un empêchement, merci de nous prévenir au moins 24 heures à l'avance en utilisant notre formulaire de contact ou depuis votre espace.
+                    </p>
+
+                {# CONDITION TWIG : CAS DU RENDEZ-VOUS ANNULÉ #}
+                {% elseif statut == 'Annulé' %}
+                    <p style="font-size: 16px; line-height: 1.6; color: #cccccc;">
+                        Nous vous informons que votre demande de rendez-vous pour le soin <strong style="color: #D4AF37;">{{ reservation.prestation.nom }}</strong> prévu le {{ reservation.dateRendezVous|date('d/m/Y à H:i') }} n'a pas pu être validée et a été annulée.
+                    </p>
+                    
+                    <div style="background-color: #1a1a1a; border-left: 4px solid #dc3545; padding: 20px; margin: 30px 0; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 15px; color: #e0a0a0;">
+                            <strong style="color: #dc3545;">Statut du rendez-vous :</strong> Annulé / Indisponible
+                        </p>
+                    </div>
+
+                    <p style="font-size: 15px; line-height: 1.6; color: #aaaaaa;">
+                        Le créneau choisi n'était malheureusement plus disponible. Nous vous invitons à vous reconnecter pour sélectionner un autre horaire qui vous conviendrait.
+                    </p>
+                {% endif %}
+
+                {# BOUTON D'ACCÈS AU SITE (Valable pour tous les cas) #}
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-top: 30px;">
+                    <tr>
+                        <td align="center" style="background-color: #D4AF37; border-radius: 25px;">
+                            {# Remplace l'URL par ton vrai domaine lors de la mise en ligne, pour le test http://localhost:8000 convient #}
+                            <a href="http://localhost:8000/mon-compte" target="_blank" style="display: inline-block; padding: 14px 30px; color: #111111; text-decoration: none; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                                Accéder à mon espace
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+
+        {# PIED DE PAGE #}
+        <tr>
+            <td style="background-color: #0b0b0b; padding: 20px 30px; text-align: center; border-top: 1px solid #222222;">
+                <p style="font-size: 12px; color: #666666; margin: 0;">
+                    &copy; {{ 'now'|date('Y') }} Metamorphysis. Tous droits réservés.
+                </p>
+                <p style="font-size: 11px; color: #444444; margin: 5px 0 0 0;">
+                    Cet e-mail est automatique, merci de ne pas y répondre directement.
+                </p>
+            </td>
+        </tr>
+
+    </table>
+
+</body>
+</html>
