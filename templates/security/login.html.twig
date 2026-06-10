@@ -33,9 +33,17 @@
                                 <label for="inputPassword" class="form-label text-or">Mot de passe</label>
                                 <input type="password" name="password" id="inputPassword" class="form-control bg-dark text-light border-secondary" autocomplete="current-password" required>
                             </div>
+                            <div class="mb-3 text-end">
+                                <a href="{{ path('app_forgot_password_request') }}" class="text-warning text-decoration-none small">
+                                    Mot de passe oublié ?
+                                </a>
+                                
+                            </div>
+                                
 
                             {# Jeton de sécurité obligatoire pour Symfony #}
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
 
                             {# La case "Se souvenir de moi" #}
                             <div class="mb-4 form-check text-muted small">
