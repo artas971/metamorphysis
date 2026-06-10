@@ -76,36 +76,36 @@ h1, h2, h3, h4, h5, h6, .brand-logo {
 }
 
 /* On supprime l'animation du corps pour éviter les conflits */
-#body, #Lower_body {
+#body,#Lower_body{
     transform-box: fill-box; 
     /* Ils suivent juste le mouvement global de #libellule-entiere */
 }
 
-/* --- ARTICULATIONS SUR-MESURE DES AILES --- */
+/* --- ARTICULATIONS SUR-MESURE DES AILES --- */    
 /* Pour chaque aile, on gère son propre point d'attache (X Y) */
 
-#Upper_left_wing {
+#Upper_left_wing,#Upper_left {
     transform-box: fill-box; 
     /* 95% = Presque tout à droite / 80% = Vers le bas de l'aile */
     transform-origin: 100% 80%; 
     animation: flapLeft 0.8s ease-in-out infinite alternate;
 }
 
-#Lower_left_wing {
+#Lower_left_wing,#Bottom_left {
     transform-box: fill-box; 
     /* 95% = Presque tout à droite / 20% = Vers le haut de l'aile */
     transform-origin: 100% 20%; 
     animation: flapLeft 0.8s ease-in-out infinite alternate;
 }
 
-#Upper_right_wing {
+#Upper_right_wing,#Upper_right {
     transform-box: fill-box; 
     /* 5% = Presque tout à gauche / 80% = Vers le bas de l'aile */
     transform-origin: 0% 80%; 
     animation: flapRight 0.8s ease-in-out infinite alternate;
 }
 
-#Lower_right_wing {
+#Lower_right_wing,#Bottom_right {
     transform-box: fill-box; 
     /* 5% = Presque tout à gauche / 20% = Vers le haut de l'aile */
     transform-origin: 0% 20%; 
