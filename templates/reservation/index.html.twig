@@ -17,8 +17,24 @@
 
                     {# Le Formulaire #}
                     {{ form_start(form) }}
-                        <div class="mb-4 text-white">
-                            {{ form_row(form.dateRendezVous) }}
+                        <div class="mb-4">
+                            {# 1. Le Label personnalisé #}
+                            {{ form_label(form.dateRendezVous, 'Choisissez une date et une heure', {
+                                'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}
+                            }) }}
+                            
+                            {# 2. Le Champ (Widget) personnalisé #}
+                            {{ form_widget(form.dateRendezVous, {
+                                'attr': {
+                                    'class': 'form-control bg-dark text-white border-warning mt-2', 
+                                    'style': 'color-scheme: dark;' 
+                                }
+                            }) }}
+                            
+                            {# 3. L'affichage des erreurs (en rouge si l'utilisateur se trompe) #}
+                            <div class="text-danger mt-2 fw-bold">
+                                {{ form_errors(form.dateRendezVous) }}
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-warning w-100 fw-bold py-2" style="border-radius: 30px;">

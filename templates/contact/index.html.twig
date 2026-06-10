@@ -6,60 +6,54 @@
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            {# Conteneur principal : Fond sombre et bordure dorée pour l'ambiance #}
-            <div class="card shadow-lg bg-dark border-warning" style="border-radius: 15px;">
+            
+            <div class="text-center mb-5">
+                <h1 class="text-warning fw-bold text-uppercase" style="font-family: 'Impact', sans-serif;">NOUS CONTACTER</h1>
+                <p class="text-white-50 fs-5">Une question ? Un projet ? Écrivez-nous directement.</p>
+            </div>
+
+            <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px;">
                 <div class="card-body p-5">
                     
-                    <h1 class="text-center text-warning mb-4" style="font-family: 'Impact', sans-serif; letter-spacing: 2px;">
-                        CONTACTEZ-NOUS
-                    </h1>
-                    {# Affichage des messages de succès #}
-{% for message in app.flashes('success') %}
-    <div class="alert alert-success text-center fw-bold" role="alert">
-        {{ message }}
-    </div>
-{% endfor %}
-                    
-                    {{ form_start(contactForm) }}
-                    
-                    {# Champ : Nom #}
-                    <div class="mb-4">
-                        {{ form_label(contactForm.nom, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
-                        {{ form_widget(contactForm.nom, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
-                        <div class="text-danger mt-1">{{ form_errors(contactForm.nom) }}</div>
-                    </div>
+                    {{ form_start(form) }}
+                        
+                        {# Champ Nom #}
+                        <div class="mb-4">
+                            {{ form_label(form.nom, 'Votre Nom', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control bg-dark text-white border-warning mt-2'}}) }}
+                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.nom) }}</div>
+                        </div>
 
-                    {# Champ : Email #}
-                    <div class="mb-4">
-                        {{ form_label(contactForm.email, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
-                        {{ form_widget(contactForm.email, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
-                        <div class="text-danger mt-1">{{ form_errors(contactForm.email) }}</div>
-                    </div>
+                        {# Champ Email #}
+                        <div class="mb-4">
+                            {{ form_label(form.email, 'Votre Adresse Email', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control bg-dark text-white border-warning mt-2'}}) }}
+                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.email) }}</div>
+                        </div>
 
-                    {# Champ : Sujet #}
-                    <div class="mb-4">
-                        {{ form_label(contactForm.sujet, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
-                        {{ form_widget(contactForm.sujet, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
-                        <div class="text-danger mt-1">{{ form_errors(contactForm.sujet) }}</div>
-                    </div>
+                        {# Champ Sujet #}
+                        <div class="mb-4">
+                            {{ form_label(form.sujet, 'Sujet de votre demande', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.sujet, {'attr': {'class': 'form-control bg-dark text-white border-warning mt-2'}}) }}
+                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.sujet) }}</div>
+                        </div>
 
-                    {# Champ : Message #}
-                    <div class="mb-4">
-                        {{ form_label(contactForm.message, null, {'label_attr': {'class': 'form-label text-warning fw-bold'}}) }}
-                        {{ form_widget(contactForm.message, {'attr': {'class': 'form-control bg-dark text-white border-warning shadow-none'}}) }}
-                        <div class="text-danger mt-1">{{ form_errors(contactForm.message) }}</div>
-                    </div>
-                    
-                    {# Bouton de soumission #}
-                    <div class="text-center mt-5">
-                        <button type="submit" class="btn btn-outline-warning btn-lg px-5 fw-bold" style="border-width: 2px; border-radius: 30px;">
+                        {# Champ Message #}
+                        <div class="mb-5">
+                            {{ form_label(form.message, 'Votre Message', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.message, {'attr': {'class': 'form-control bg-dark text-white border-warning mt-2', 'rows': 5}}) }}
+                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.message) }}</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-3 fs-5" style="border-radius: 30px; font-family: 'Impact', sans-serif;">
                             ENVOYER LE MESSAGE
                         </button>
-                    </div>
 
-                    {{ form_end(contactForm) }}
+                    {{ form_end(form) }}
+
                 </div>
             </div>
+            
         </div>
     </div>
 </div>

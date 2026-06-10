@@ -6,9 +6,9 @@ use App\Form\ContactType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractController
 {
@@ -18,35 +18,25 @@ class ContactController extends AbstractController
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
 
-        // Si le formulaire est soumis et que les données sont valides
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            // On récupère toutes les données du formulaire
-            $donnees = $form->getData();
+            $data = $form->getData();
 
-            // On prépare l'e-mail
+            // Création de l'e-mail
             $email = (new Email())
-                ->from($donnees['email']) // L'e-mail saisi par le visiteur
-                ->to('contact@metamorphysis.fr') // Ton adresse de réception
-                ->subject('Nouvelle demande : ' . $donnees['sujet'])
-                ->text(
-                    "Nom : " . $donnees['nom'] . "\n" .
-                    "Email : " . $donnees['email'] . "\n\n" .
-                    "Message :\n" . $donnees['message']
-                );
+                ->from($data['email'])
+                ->to('contact@metamorphysis.com') // L'adresse de l'administratrice
+                ->subject('Nouveau message de : ' . $data['nom'] . ' - ' . $data['sujet'])
+                ->text($data['message']);
 
-            // On envoie l'e-mail
             $mailer->send($email);
 
-            // On ajoute un message de succès pour l'utilisateur
-            $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons très vite !');
+            $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.');
 
-            // On redirige vers la page de contact pour vider le formulaire
             return $this->redirectToRoute('app_contact');
         }
 
         return $this->render('contact/index.html.twig', [
-            'contactForm' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 }
