@@ -1,0 +1,8 @@
+{# On boucle sur toutes les pages récupérées par le MenuController #}
+{% for page in pages %}
+    <li class="nav-item">
+        <a class="nav-link text-ivory nav-link-premium" href="{{ path('app_page_show', {'slug': page.slug}) }}">
+            {{ page.titre }}
+        </a>
+    </li>
+{% endfor %}

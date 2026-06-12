@@ -7,9 +7,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             
-            <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px;">
+            <div class="card-premium shadow-lg">
                 <div class="card-body p-5">
-                    <h2 class="text-warning fw-bold text-center mb-4" style="font-family: 'Impact', sans-serif;">CHOISIR UN NOUVEAU MOT DE PASSE</h2>
+                    <h2 class="text-gold fw-bold text-center mb-4">CHOISIR UN NOUVEAU MOT DE PASSE</h2>
 
                     {{ form_start(resetForm) }}
                         
@@ -17,14 +17,14 @@
                         <div class="text-white mb-4">
                             {% for passwordField in resetForm.plainPassword %}
                                 <div class="mb-3">
-                                    {{ form_label(passwordField, null, {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase small', 'style': 'letter-spacing: 1px;'}}) }}
-                                    {{ form_widget(passwordField, {'attr': {'class': 'form-control bg-dark text-white border-warning mt-1'}}) }}
+                                    {{ form_label(passwordField, null, {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase small'}}) }}
+                                    {{ form_widget(passwordField, {'attr': {'class': 'form-control bg-grad-subtle text-white border-gold mt-1'}}) }}
                                     <div class="text-danger mt-1 fw-bold">{{ form_errors(passwordField) }}</div>
                                 </div>
                             {% endfor %}
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 fw-bold py-3 fs-5 mt-2" style="border-radius: 30px; font-family: 'Impact', sans-serif;">
+                        <button type="submit" class="btn btn-premium w-100 fw-bold py-3 fs-5 mt-2 rounded-pill">
                             VALIDER LE NOUVEAU MOT DE PASSE
                         </button>
 

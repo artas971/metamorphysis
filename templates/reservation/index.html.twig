@@ -6,13 +6,13 @@
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px;">
+            <div class="card-premium shadow-lg">
                 <div class="card-body p-5">
                     
                     <div class="text-center mb-4">
-                        <h2 class="text-warning fw-bold" style="font-family: 'Impact', sans-serif;">RÉSERVER</h2>
+                        <h2 class="text-gold fw-bold">RÉSERVER</h2>
                         <p class="text-white fs-5 mt-2">{{ prestation.nom }}</p>
-                        <span class="badge bg-warning text-dark fs-6">{{ prestation.prix }} €</span>
+                        <span class="badge bg-gold text-dark fs-6">{{ prestation.prix }} €</span>
                     </div>
 
                     {# Le Formulaire #}
@@ -20,14 +20,13 @@
                         <div class="mb-4">
                             {# 1. Le Label personnalisé #}
                             {{ form_label(form.dateRendezVous, 'Choisissez une date et une heure', {
-                                'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}
+                                'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}
                             }) }}
                             
                             {# 2. Le Champ (Widget) personnalisé #}
                             {{ form_widget(form.dateRendezVous, {
                                 'attr': {
-                                    'class': 'form-control bg-dark text-white border-warning mt-2', 
-                                    'style': 'color-scheme: dark;' 
+                                    'class': 'form-control bg-grad-subtle text-white border-gold mt-2'
                                 }
                             }) }}
                             
@@ -37,7 +36,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2" style="border-radius: 30px;">
+                        <button type="submit" class="btn btn-premium w-100 fw-bold py-2 rounded-pill">
                             CONFIRMER LA DEMANDE
                         </button>
                     {{ form_end(form) }}

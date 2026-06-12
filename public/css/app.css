@@ -1,113 +1,233 @@
-/* Importation des polices Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400&display=swap');
+/* =========================================
+   IMPORTATION DES POLICES (Google Fonts)
+   Cormorant Garamond (Titres) | Inter (Textes) | Cinzel (Symbolique)
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400&display=swap');
 
-/* Définition des couleurs exactes de la maquette */
+/* =========================================
+   CHARTE GRAPHIQUE OFFICIELLE - METAMORPHYSIS
+   ========================================= */
+
 :root {
-    --bg-dark: #0A0A09;
-    --bg-prune: #21141C;
-    --text-light: #F4F4F4;
-    --text-muted: #A0A0A0;
-    --gold-accent: #C4A47C; 
+    /* 1. La Palette de Couleurs Haut de Gamme (Inchangée) */
+    --meta-black: #0A0A09;         
+    --meta-plum: #21141C;          
+    --meta-olive: #4A4F41;         
+    --meta-sage: #727763;          
+    --meta-gold: #B89A63;          
+    --meta-ivory: #D8D0BE;         
     
-    --font-title: 'Cormorant Garamond', serif;
-    --font-text: 'Inter', sans-serif;
+    --meta-gold-hover: #9c804f;    
+    --meta-olive-hover: #5d6352;   
+
+    /* 2. NOUVEAUX DÉGRADÉS : Doux, radiaux et transparents */
+    
+    /* Fond global : Un halo prune très doux en haut qui se fond dans le noir */
+    --grad-main: radial-gradient(ellipse at top center, #21141C 0%, #0A0A09 70%, #0A0A09 100%);
+    
+    /* Cartes : Presque transparentes avec un très léger voile noir/olive */
+    --grad-subtle: linear-gradient(135deg, rgba(33, 20, 28, 0.6) 0%, rgba(10, 10, 9, 0.8) 100%);
+
+    /* 3. La Typographie */
+    --font-title: 'Cormorant Garamond', serif; 
+    --font-body: 'Inter', sans-serif;
+    --font-accent: 'Cinzel', serif;
+
+    /* 4. Les Formes & Tailles */
+    --radius-card: 15px;
+    --radius-btn: 30px;
+    --radius-input: 8px;
 }
 
-/* Application du dégradé sombre sur tout le site */
+/* =========================================
+   BASE DE LA PAGE ET TYPOGRAPHIE
+   ========================================= */
 body {
-    background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-prune) 50%, var(--bg-dark) 100%);
-    color: var(--text-light);
-    font-family: var(--font-text);
-    min-height: 100vh;
+    /* On applique la couleur de base, puis le halo de lumière par-dessus */
+    background-color: var(--meta-black);
+    background-image: var(--grad-main);
     background-attachment: fixed; 
+    
+    color: var(--meta-ivory); 
+    font-family: var(--font-body);
     font-weight: 300;
-    line-height: 1.7;
+    line-height: 1.7; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Polices des titres */
-h1, h2, h3, h4, h5, h6, .brand-logo {
+ 
+main {
+    flex: 1;
+}
+/* Style ultra-épuré pour les liens du menu principal */
+.nav-link-premium {
+    font-size: 0.75rem; /* Texte très petit */
+    text-transform: uppercase;
+    letter-spacing: 0.15em; /* Espacement large et luxueux */
+    transition: color 0.3s ease;
+}
+
+.nav-link-premium:hover {
+    color: var(--meta-gold) !important;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     font-family: var(--font-title);
     font-weight: 300;
-    letter-spacing: 0.08em;
-    color: var(--text-light);
+    letter-spacing: 0.08em; 
+    color: var(--meta-gold); 
 }
 
-/* Classes utilitaires personnalisées */
-.text-gold { color: var(--gold-accent) !important; }
-.border-gold { border-color: var(--gold-accent) !important; }
+/* =========================================
+   CLASSES UTILITAIRES TYPOGRAPHIQUES
+   ========================================= */
+.typo-symbolic {
+    font-family: var(--font-accent);
+    font-weight: 400;
+    letter-spacing: 2px;
+}
 
-/* Bouton Premium */
+.typo-citation {
+    font-family: var(--font-title);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: var(--meta-ivory);
+}
+
+/* =========================================
+   CLASSES UTILITAIRES COULEURS & FONDS
+   ========================================= */
+.text-gold { color: var(--meta-gold) !important; }
+.text-ivory { color: var(--meta-ivory) !important; }
+.text-sage { color: var(--meta-sage) !important; } 
+.text-olive { color: var(--meta-olive) !important; }
+
+.border-gold { border-color: var(--meta-gold) !important; }
+.border-sage { border-color: var(--meta-sage) !important; border-width: 1px; border-style: solid; }
+
+.bg-grad-main { background: var(--grad-main); }
+.bg-grad-subtle { background: var(--grad-subtle); }
+
+/* =========================================
+   COMPOSANTS UI (Cartes, Boutons, Inputs)
+   ========================================= */
+
+/* Cartes Premium : Effet "Glassmorphism" subtil */
+.card-premium {
+    background: var(--grad-subtle);
+    
+    /* L'astuce luxe absolue : floute légèrement ce qu'il y a derrière la carte */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* Bordure ultra-fine et discrète */
+    border: 1px solid rgba(184, 154, 99, 0.15);
+    border-radius: var(--radius-card);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5); /* Ombre très diffuse */
+}
+
+
+/* Bouton principal (Plein - Or Antique) */
+.btn-gold {
+    background-color: var(--meta-gold);
+    color: var(--meta-black);
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1.1rem;
+    padding: 12px 24px;
+    border-radius: var(--radius-btn);
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: var(--meta-gold-hover);
+    color: var(--meta-black);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(184, 154, 99, 0.3);
+}
+
+/* Bouton secondaire (Contour transparent) */
 .btn-premium {
     background-color: transparent;
-    color: var(--gold-accent);
-    border: 1px solid var(--gold-accent);
-    font-family: var(--font-text);
+    color: var(--meta-gold);
+    border: 1px solid var(--meta-gold);
+    font-family: var(--font-body);
+    padding: 10px 20px;
+    border-radius: var(--radius-btn);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     transition: all 0.3s ease;
 }
 
 .btn-premium:hover {
-    background-color: var(--gold-accent);
-    color: var(--bg-dark);
+    background-color: var(--meta-gold);
+    color: var(--meta-black);
 }
+
+/* Champs de Formulaire */
+.input-premium {
+    background-color: var(--meta-black) !important;
+    color: var(--meta-ivory) !important;
+    border: 1px solid rgba(184, 154, 99, 0.4) !important;
+    border-radius: var(--radius-input);
+    color-scheme: dark;
+    font-family: var(--font-body);
+}
+
+.input-premium:focus {
+    box-shadow: 0 0 0 0.25rem rgba(184, 154, 99, 0.1) !important;
+    border-color: var(--meta-gold) !important;
+}
+
 /* ==========================================================================
    DESIGN ET ANIMATION 3D DE LA LIBELLULE
    ========================================================================== */
 
-/* --- COULEUR OR EXACTE (#B89A63) --- */
-/* On cible absolument tous les groupes du logo pour qu'ils soient de la même couleur */
-#texte-decor, #body, #Lower_body, #Upper_left_wing, #Upper_right_wing, #Lower_left_wing, #Lower_right_wing, #outline{
-    fill: #B89A63; 
+#texte-decor, #body, #Lower_body, #Upper_left_wing, #Upper_right_wing, #Lower_left_wing, #Lower_right_wing, #outline {
+    fill: var(--meta-gold); 
 }
 
-/* Option de sécurité : si certains tracés du contour sont des lignes (strokes) et pas des remplissages */
 #texte-decor path {
-    fill: #B89A63;
-    stroke: #B89A63;
+    fill: var(--meta-gold);
+    stroke: var(--meta-gold);
 }
 
-/* --- LÉVITATION DE LA LIBELLULE ENTIÈRE --- */
 #whole-dragonfly {
     transform-box: fill-box; 
     transform-origin: center center;
-    /* La lévitation s'applique maintenant à tout le groupe (corps + ailes) */
     animation: levitation 4s ease-in-out infinite;
 }
 
-/* On supprime l'animation du corps pour éviter les conflits */
-#body,#Lower_body{
+#body, #Lower_body {
     transform-box: fill-box; 
-    /* Ils suivent juste le mouvement global de #libellule-entiere */
 }
 
-/* --- ARTICULATIONS SUR-MESURE DES AILES --- */    
-/* Pour chaque aile, on gère son propre point d'attache (X Y) */
-
-#Upper_left_wing,#Upper_left {
+#Upper_left_wing, #Upper_left {
     transform-box: fill-box; 
-    /* 95% = Presque tout à droite / 80% = Vers le bas de l'aile */
     transform-origin: 100% 80%; 
     animation: flapLeft 0.8s ease-in-out infinite alternate;
 }
 
-#Lower_left_wing,#Bottom_left {
+#Lower_left_wing, #Bottom_left {
     transform-box: fill-box; 
-    /* 95% = Presque tout à droite / 20% = Vers le haut de l'aile */
     transform-origin: 100% 20%; 
     animation: flapLeft 0.8s ease-in-out infinite alternate;
 }
 
-#Upper_right_wing,#Upper_right {
+#Upper_right_wing, #Upper_right {
     transform-box: fill-box; 
-    /* 5% = Presque tout à gauche / 80% = Vers le bas de l'aile */
     transform-origin: 0% 80%; 
     animation: flapRight 0.8s ease-in-out infinite alternate;
 }
 
-#Lower_right_wing,#Bottom_right {
+#Lower_right_wing, #Bottom_right {
     transform-box: fill-box; 
-    /* 5% = Presque tout à gauche / 20% = Vers le haut de l'aile */
     transform-origin: 0% 20%; 
     animation: flapRight 0.8s ease-in-out infinite alternate;
 }
@@ -115,21 +235,19 @@ h1, h2, h3, h4, h5, h6, .brand-logo {
 #body {
     transform-box: fill-box;
     transform-origin: center center;
-    /* On utilise la même durée que la lévitation (4s) pour que ce soit synchro */
     animation: respiration 4s ease-in-out infinite;
 }
+
 /* --- LES IMAGES CLÉS (KEYFRAMES) --- */
 
 @keyframes levitation {
     0%, 100% { 
         transform: translateY(0); 
-        /* Ombre avec tes valeurs RGB exactes */
-        filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.3)); 
+        filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.2)); 
     }
     50% { 
         transform: translateY(-15px); 
-        /* Ombre accentuée au point le plus haut */
-        filter: drop-shadow(0px 20px 25px rgba(184, 154, 99, 0.6));
+        filter: drop-shadow(0px 20px 25px rgba(184, 154, 99, 0.4));
     }
 }
 
@@ -142,12 +260,8 @@ h1, h2, h3, h4, h5, h6, .brand-logo {
     0%   { transform: rotateY(0deg) rotateZ(0deg); }
     100% { transform: rotateY(-60deg) rotateZ(-5deg); }
 }
+
 @keyframes respiration {
-    0%, 100% { 
-        transform: scale(1); 
-    }
-    50% { 
-        /* On augmente la taille de 5% seulement pour rester subtil */
-        transform: scale(1.05); 
-    }
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.05); }
 }

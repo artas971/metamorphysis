@@ -7,24 +7,24 @@
     
     {# Bouton retour #}
     <div class="mb-4">
-        <a href="{{ path('app_prestation_index') }}" class="text-warning text-decoration-none fw-bold">
+        <a href="{{ path('app_prestation_index') }}" class="text-gold text-decoration-none fw-bold">
             <i class="bi bi-arrow-left"></i> Retour aux prestations
         </a>
     </div>
 
-    <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px; overflow: hidden;">
+    <div class="card-premium shadow-lg overflow-hidden">
         <div class="row g-0">
             
             {# COLONNE GAUCHE : L'IMAGE #}
-            <div class="col-md-5 col-lg-4 border-end border-warning">
+            <div class="col-md-5 col-lg-4 border-end border-gold">
                 {% if prestation.imageName %}
                     <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
                          class="img-fluid w-100 h-100" 
                          alt="{{ prestation.nom }}" 
                          style="object-fit: cover; min-height: 400px;">
                 {% else %}
-                    <div class="bg-black w-100 h-100 d-flex align-items-center justify-content-center" style="min-height: 400px;">
-                        <h3 class="text-warning fw-bold text-center" style="font-family: 'Impact', sans-serif; opacity: 0.5;">METAMORPHYSIS</h3>
+                    <div class="bg-grad-subtle w-100 h-100 d-flex align-items-center justify-content-center" style="min-height: 400px;">
+                        <h3 class="text-gold fw-bold text-center" style="opacity: 0.5;">METAMORPHYSIS</h3>
                     </div>
                 {% endif %}
             </div>
@@ -34,10 +34,10 @@
                 <div class="card-body p-5 flex-grow-1">
                     
                     <div class="d-flex justify-content-between align-items-start mb-4">
-                        <h1 class="text-warning fw-bold text-uppercase" style="font-family: 'Impact', sans-serif;">
+                        <h1 class="text-gold fw-bold text-uppercase">
                             {{ prestation.nom }}
                         </h1>
-                        <span class="badge bg-warning text-dark fs-5 p-2">{{ prestation.prix }} €</span>
+                        <span class="badge bg-gold text-dark fs-5 p-2">{{ prestation.prix }} €</span>
                     </div>
 
                     <h5 class="text-white-50 mb-4">
@@ -52,8 +52,8 @@
                 </div>
                 
                 {# LE BOUTON D'ACTION EN BAS #}
-                <div class="card-footer bg-transparent border-top border-warning p-4">
-                    <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-warning w-100 fs-4 fw-bold py-3" style="border-radius: 30px; font-family: 'Impact', sans-serif;">
+                <div class="card-footer bg-transparent border-top border-gold p-4">
+                    <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-premium w-100 fs-4 fw-bold py-3 rounded-pill">
                         RÉSERVER CE SOIN
                     </a>
                 </div>

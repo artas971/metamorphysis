@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 pt-5 mb-5">
+    <div class="row justify-content-center">
+        
+        {# On limite la largeur à col-lg-8 pour que le texte soit confortable à lire (comme un livre) #}
+        <div class="col-lg-8">
+            
+            {# Le titre géré par le client #}
+            <h1 class="text-center text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
+            
+            {# Le contenu géré par le client. 
+               Le filtre "|raw" est OBLIGATOIRE pour afficher le gras, l'italique, etc. #}
+            <div class="text-ivory fs-5 content-premium">
+                {{ page.contenu|raw }}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Petits ajustements pour que le texte généré par l'éditeur soit parfaitement formaté */
+    .content-premium p {
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        text-align: justify;
+    }
+    .content-premium a {
+        color: var(--meta-gold);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(184, 154, 99, 0.3);
+        transition: all 0.3s ease;
+    }
+    .content-premium a:hover {
+        border-bottom-color: var(--meta-gold);
+    }
+    .content-premium ul {
+        margin-bottom: 1.5rem;
+    }
+    .content-premium li {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}

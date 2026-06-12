@@ -5,61 +5,51 @@
 {% block body %}
 <div class="container mt-5 pt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card bg-dark border-secondary text-light shadow-lg">
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-premium shadow-lg">
                 <div class="card-body p-5">
-                    <h2 class="text-center text-or fw-bold mb-4">Se connecter</h2>
+                    <h2 class="text-center text-gold fw-bold mb-4 typo-titre">CONNEXION</h2>
 
                     <form method="post">
-                        {# Affichage des erreurs de connexion (mauvais mot de passe, etc.) #}
                         {% if error %}
-                            <div class="alert alert-danger bg-danger text-light border-0">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            <div class="alert alert-danger mb-4" style="background: transparent; border: 1px solid #dc3545; color: #dc3545;">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
                         {% endif %}
 
-                        {# Message si l'utilisateur est déjà connecté #}
                         {% if app.user %}
-                            <div class="mb-3 text-center">
-                                Vous êtes déjà connecté en tant que <strong class="text-or">{{ app.user.userIdentifier }}</strong>.<br>
-                                <a href="{{ path('app_logout') }}" class="text-muted small text-decoration-none mt-2 d-block">Me déconnecter</a>
+                            <div class="mb-3 text-center text-ivory">
+                                Déjà connecté : <strong class="text-gold">{{ app.user.userIdentifier }}</strong>.
+                                <a href="{{ path('app_logout') }}" class="text-sage small d-block mt-2">Déconnexion</a>
                             </div>
                         {% else %}
-
-                            <div class="mb-3">
-                                <label for="inputEmail" class="form-label text-or">Adresse Email</label>
-                                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control bg-dark text-light border-secondary" autocomplete="email" required autofocus>
+                            <div class="mb-4">
+                                <label for="inputEmail" class="form-label text-gold typo-symbolic small">ADRESSE EMAIL</label>
+                                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control input-premium" required autofocus>
                             </div>
 
                             <div class="mb-3">
-                                <label for="inputPassword" class="form-label text-or">Mot de passe</label>
-                                <input type="password" name="password" id="inputPassword" class="form-control bg-dark text-light border-secondary" autocomplete="current-password" required>
+                                <label for="inputPassword" class="form-label text-gold typo-symbolic small">MOT DE PASSE</label>
+                                <input type="password" name="password" id="inputPassword" class="form-control input-premium" required>
                             </div>
-                            <div class="mb-3 text-end">
-                                <a href="{{ path('app_forgot_password_request') }}" class="text-warning text-decoration-none small">
-                                    Mot de passe oublié ?
-                                </a>
-                                
-                            </div>
-                                
 
-                            {# Jeton de sécurité obligatoire pour Symfony #}
+                            <div class="mb-4 text-end">
+                                <a href="{{ path('app_forgot_password_request') }}" class="text-sage text-decoration-none small">Mot de passe oublié ?</a>
+                            </div>
+
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-
-                            {# La case "Se souvenir de moi" #}
-                            <div class="mb-4 form-check text-muted small">
-                                <input type="checkbox" name="_remember_me" id="remember_me" class="form-check-input bg-dark border-secondary">
-                                <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
+                            <div class="mb-4 form-check">
+                                <input type="checkbox" name="_remember_me" id="remember_me" class="form-check-input" style="background-color: var(--meta-black); border-color: var(--meta-gold);">
+                                <label class="form-check-label text-ivory small" for="remember_me">Se souvenir de moi</label>
                             </div>
 
-                            <button class="btn btn-premium w-100 py-2" type="submit">
-                                Entrer
-                            </button>
-                            
+                            <button class="btn btn-gold w-100 py-3" type="submit">ENTRER</button>
                         {% endif %}
                     </form>
 
-                    <div class="text-center mt-4 pt-3 border-top border-secondary">
-                        <p class="small text-muted">Nouveau client ? <a href="/register" class="text-or text-decoration-none">Créer un compte</a></p>
+                    <div class="text-center mt-4 pt-3 border-top border-sage">
+                        <p class="small text-ivory">Nouveau client ? <a href="{{ path('app_register') }}" class="text-gold text-decoration-none">Créer un compte</a></p>
                     </div>
                 </div>
             </div>

@@ -8,19 +8,19 @@
         <div class="col-md-8 col-lg-6">
             
             <div class="mb-4">
-                <a href="{{ path('app_account') }}" class="text-warning text-decoration-none fw-bold">
+                <a href="{{ path('app_account') }}" class="text-gold text-decoration-none fw-bold">
                     <i class="bi bi-arrow-left"></i> Retour à mon espace
                 </a>
             </div>
 
-            <div class="card bg-dark border-warning shadow-lg" style="border-radius: 15px;">
+            <div class="card-premium shadow-lg">
                 <div class="card-body p-5">
-                    <h2 class="text-warning fw-bold text-center mb-4" style="font-family: 'Impact', sans-serif;">MODIFIER MON PROFIL</h2>
+                    <h2 class="text-gold fw-bold text-center mb-4">MODIFIER MON PROFIL</h2>
                     
                     {{ form_start(form) }}
                         
                         <div class="mb-4">
-                            {{ form_label(form.email, 'Adresse Email', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_label(form.email, 'Adresse Email', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}}) }}
                             
                             {# On change légèrement la classe CSS (bg-secondary au lieu de bg-dark) pour assombrir le champ et montrer qu'il est inactif #}
                             {{ form_widget(form.email, {'attr': {'class': 'form-control bg-secondary text-white-50 border-secondary mt-2'}}) }}
@@ -34,12 +34,12 @@
                         </div>
 
                         <div class="mb-5">
-                            {{ form_label(form.telephone, 'Numéro de Téléphone', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase', 'style': 'letter-spacing: 1px;'}}) }}
-                            {{ form_widget(form.telephone, {'attr': {'class': 'form-control bg-dark text-white border-warning mt-2'}}) }}
+                            {{ form_label(form.telephone, 'Numéro de Téléphone', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}}) }}
+                            {{ form_widget(form.telephone, {'attr': {'class': 'form-control bg-grad-subtle text-white border-gold mt-2'}}) }}
                             <div class="text-danger mt-1 fw-bold">{{ form_errors(form.telephone) }}</div>
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 fw-bold py-3 fs-5" style="border-radius: 30px; font-family: 'Impact', sans-serif;">
+                        <button type="submit" class="btn btn-premium w-100 fw-bold py-3 fs-5 rounded-pill">
                             ENREGISTRER LES MODIFICATIONS
                         </button>
 

@@ -5,3 +5,7 @@ vich_uploader:
             uri_prefix: /uploads/prestations
             upload_destination: '%kernel.project_dir%/public/uploads/prestations'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+        pages_images:
+            uri_prefix: /uploads/pages
+            upload_destination: '%kernel.project_dir%/public/uploads/pages'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

@@ -7,10 +7,8 @@
     
     {# En-tête de la page #}
     <div class="text-center mb-5">
-        <h1 class="text-warning display-4" style="font-family: 'Impact', sans-serif; letter-spacing: 2px;">
-            NOS PRESTATIONS
-        </h1>
-        <p class="text-light lead">Découvrez nos offres d'accompagnement sur mesure.</p>
+        <h1 class="text-gold display-4 fw-bold typo-titre">NOS PRESTATIONS</h1>
+        <p class="text-ivory lead">Découvrez nos offres d'accompagnement sur mesure.</p>
     </div>
 
     {# Ouverture de la grille pour aligner les cartes #}
@@ -18,43 +16,54 @@
         
         {% for prestation in prestations %}
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card bg-dark border-warning shadow-lg h-100" style="border-radius: 15px; overflow: hidden;">
+                
+                {# Ajout de la classe 'card' classique et 'transition-hover' pour l'animation #}
+                <div class="card card-premium shadow-lg h-100 overflow-hidden transition-hover">
     
-    {# 1. L'IMAGE DOIT ÊTRE TOUT EN HAUT #}
-    {% if prestation.imageName %}
-        <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
-             class="card-img-top" 
-             alt="{{ prestation.nom }}" 
-             style="object-fit: cover; height: 250px; border-bottom: 2px solid #ffc107;">
-    {% else %}
-        <div class="card-img-top bg-black d-flex align-items-center justify-content-center" 
-             style="height: 250px; border-bottom: 2px solid #ffc107;">
-            <h3 class="text-warning fw-bold" style="font-family: 'Impact', sans-serif; opacity: 0.5;">METAMORPHYSIS</h3>
-        </div>
-    {% endif %}
+                    {# 1. L'IMAGE TOUT EN HAUT #}
+                    {% if prestation.imageName %}
+                        <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
+                             class="card-img-top object-fit-cover" 
+                             alt="{{ prestation.nom }}" 
+                             style="height: 250px; border-bottom: 1px solid rgba(184, 154, 99, 0.3);">
+                    {% else %}
+                        <div class="card-img-top bg-grad-subtle d-flex align-items-center justify-content-center" 
+                             style="height: 250px; border-bottom: 1px solid rgba(184, 154, 99, 0.3);">
+                            <h3 class="text-gold fw-bold typo-symbolic" style="opacity: 0.5;">METAMORPHYSIS</h3>
+                        </div>
+                    {% endif %}
 
-    {# 2. LE CONTENU (Titre, prix, texte, boutons) EN DESSOUS #}
-    <div class="card-body d-flex flex-column p-4">
-        
-        {# Garde ici ton code actuel pour le titre et le prix... #}
-        <h4 class="text-warning fw-bold mb-3">{{ prestation.nom }} <span class="badge bg-warning text-dark float-end">{{ prestation.prix }} €</span></h4>
-        
-        {# Garde ta durée et ta description... #}
-        <p class="text-white-50"><i class="bi bi-clock"></i> {{ prestation.duree }} min</p>
-        <p class="text-white flex-grow-1">{{ prestation.description }}</p>
+                    {# 2. LE CONTENU DE LA CARTE #}
+                    <div class="card-body d-flex flex-column p-4">
+                        
+                        {# Le titre et le prix #}
+                        <h4 class="text-gold fw-bold mb-3 typo-titre">
+                            {{ prestation.nom }} 
+                            <span class="float-end text-ivory fs-5">{{ prestation.prix }} €</span>
+                        </h4>
+                        
+                        {# La durée en Sauge #}
+                        <p class="text-sage mb-3">
+                            <i class="bi bi-clock"></i> {{ prestation.duree }} min
+                        </p>
+                        
+                        {# La description en Ivoire (sans le flex-grow-1) #}
+                        <p class="text-ivory mb-4">
+                            {{ prestation.description }}
+                        </p>
 
-        {# Garde tes boutons existants... #}
-        <div class="d-flex justify-content-between mt-3">
-            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="btn btn-warning fw-bold" style="border-radius: 20px; width: 48%;">DÉTAILS</a>            {# On connecte le bouton DEVIS à ta nouvelle route de réservation #}
-            <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-outline-warning fw-bold" style="border-radius: 20px; width: 48%;">RÉSERVER</a>
-        </div>
-        
-    </div>
-</div>
+                        {# Les boutons poussés tout en bas grâce à 'mt-auto' #}
+                        <div class="d-flex justify-content-between mt-auto gap-3">
+                            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="btn btn-premium w-50 text-center">DÉTAILS</a> 
+                            <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-gold w-50 text-center">RÉSERVER</a>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         {% else %}
             {# Message affiché si la base de données est vide #}
-            <div class="col-12 text-center text-white">
+            <div class="col-12 text-center text-ivory">
                 <p>Aucune prestation n'est disponible pour le moment. Revenez très vite !</p>
             </div>
         {% endfor %}
@@ -65,11 +74,12 @@
 {# CSS pour l'effet de survol #}
 <style>
     .transition-hover {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
     }
     .transition-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2) !important;
+        transform: translateY(-8px);
+        /* Utilisation des vraies valeurs RGB de l'Or Antique (184, 154, 99) */
+        box-shadow: 0 15px 30px rgba(184, 154, 99, 0.15) !important;
     }
 </style>
 {% endblock %}

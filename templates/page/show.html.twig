@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 pt-5 mb-5">
+    
+    {# Le titre global de la page #}
+    <h1 class="text-center text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
+
+    {# 
+       LA MAGIE : On boucle sur les sections de la page, 
+       et on les trie automatiquement par leur numéro d'ordre (1, 2, 3...) 
+    #}
+    {% for section in page.sections|sort((a, b) => a.ordre <=> b.ordre) %}
+        
+        <div class="section-bloc mb-5 pb-4">
+            
+            {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
+            {% if section.disposition == 'texte_centre' %}
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-ivory content-premium text-center">
+                        {{ section.contenu|raw }}
+                    </div>
+                </div>
+
+            {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
+            {% elseif section.disposition == 'img_gauche' %}
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-5 mb-4 mb-md-0 text-center text-md-end pr-md-4">
+                        {% if section.media %}
+                            <img src="{{ asset('uploads/pages/' ~ section.media) }}" 
+                                 alt="Illustration" 
+                                 class="img-fluid shadow-lg" 
+                                 style="border: 1px solid var(--meta-gold); {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-5 text-ivory content-premium text-start pl-md-4">
+                        {{ section.contenu|raw }}
+                    </div>
+                </div>
+
+            {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
+            {% elseif section.disposition == 'img_droite' %}
+                <div class="row align-items-center justify-content-center">
+                    {# On utilise les classes "order" de Bootstrap pour inverser l'ordre sur mobile #}
+                    <div class="col-md-5 order-2 order-md-1 text-ivory content-premium text-start pr-md-4">
+                        {{ section.contenu|raw }}
+                    </div>
+                    <div class="col-md-5 order-1 order-md-2 mb-4 mb-md-0 text-center text-md-start pl-md-4">
+                        {% if section.media %}
+                            <img src="{{ asset('uploads/pages/' ~ section.media) }}" 
+                                 alt="Illustration" 
+                                 class="img-fluid shadow-lg" 
+                                 style="border: 1px solid var(--meta-gold); {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                        {% endif %}
+                    </div>
+                </div>
+
+            {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
+            {% elseif section.disposition == 'banniere' %}
+                <div class="row justify-content-center">
+                    <div class="col-12 text-center mb-4">
+                        {% if section.media %}
+                            <img src="{{ asset('uploads/pages/' ~ section.media) }}" 
+                                 alt="Bannière" 
+                                 class="img-fluid w-100 shadow-lg" 
+                                 style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
+                        {% endif %}
+                    </div>
+                    {% if section.contenu %}
+                        <div class="col-lg-8 text-ivory content-premium text-center">
+                            {{ section.contenu|raw }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </div>
+        
+    {% endfor %}
+    
+</div>
+
+<style>
+    /* Sécurisation visuelle de la charte graphique générée par le client */
+    .content-premium p {
+        line-height: 1.8;
+        margin-bottom: 1.2rem;
+        font-weight: 300;
+    }
+    .content-premium h2, .content-premium h3 {
+        color: var(--meta-gold);
+        font-family: var(--font-title), serif;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 1.5rem;
+    }
+    .content-premium a {
+        color: var(--meta-gold);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(184, 154, 99, 0.3);
+        transition: all 0.3s ease;
+    }
+    .content-premium a:hover {
+        border-bottom-color: var(--meta-gold);
+        color: #FFF;
+    }
+</style>
+{% endblock %}

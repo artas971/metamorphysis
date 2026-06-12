@@ -4,21 +4,21 @@
 
 {% block body %}
 <div class="container mt-5 mb-5 text-white">
-    <h1 class="text-warning fw-bold mb-5 text-uppercase" style="font-family: 'Impact', sans-serif;">Mon Espace Personnel</h1>
+    <h1 class="text-gold fw-bold mb-5 text-uppercase">Mon Espace Personnel</h1>
     
     <div class="row g-4">
         {# COLONNE GAUCHE : Informations personnelles #}
                 <div class="col-md-4">
-                    <div class="card bg-dark border-warning shadow-lg h-100" style="border-radius: 15px;">
+                    <div class="card-premium shadow-lg h-100">
                         <div class="card-body p-4">
-                            <h4 class="text-warning fw-bold mb-4" style="font-family: 'Impact', sans-serif;">Mes Informations</h4>
+                            <h4 class="text-gold fw-bold mb-4">Mes Informations</h4>
                             
                             <div class="d-flex flex-column gap-4">
                                 {# Bloc Nom / Prénom (Mise à jour : Prénom + Nom) #}
                                 <div>
                                     <small class="text-white-50 text-uppercase fw-bold" style="letter-spacing: 1px;">Identité</small>
                                     <div class="fs-5 mt-1 text-capitalize">
-                                        <i class="bi bi-person text-warning me-2"></i> 
+                                        <i class="bi bi-person text-gold me-2"></i> 
                                         {{ app.user.prenom }} {{ app.user.nom }}
                                     </div>
                                 </div>
@@ -26,14 +26,14 @@
                                 {# Bloc Email #}
                                 <div>
                                     <small class="text-white-50 text-uppercase fw-bold" style="letter-spacing: 1px;">Email de contact</small>
-                                    <div class="fs-6 mt-1"><i class="bi bi-envelope text-warning me-2"></i> {{ app.user.email }}</div>
+                                    <div class="fs-6 mt-1"><i class="bi bi-envelope text-gold me-2"></i> {{ app.user.email }}</div>
                                 </div>
 
                                 {# Bloc Téléphone #}
                                 <div>
                                     <small class="text-white-50 text-uppercase fw-bold" style="letter-spacing: 1px;">Téléphone</small>
                                     <div class="fs-6 mt-1">
-                                        <i class="bi bi-telephone text-warning me-2"></i> 
+                                        <i class="bi bi-telephone text-gold me-2"></i> 
                                         {% if app.user.telephone is defined and app.user.telephone %}
                                             {{ app.user.telephone }}
                                         {% else %}
@@ -49,14 +49,14 @@
                                 </div>
                             </div>
                             
-                    <hr class="border-warning my-4">
+                                    <hr class="border-gold my-4">
                     
                     {# NOUVEAU BOUTON DE MODIFICATION #}
-                    <a href="{{ path('app_account_edit') }}" class="btn btn-warning w-100 fw-bold mb-3" style="border-radius: 20px;">
+                    <a href="{{ path('app_account_edit') }}" class="btn btn-premium w-100 fw-bold mb-3 rounded-pill">
                         <i class="bi bi-pencil-square me-2"></i> MODIFIER MON PROFIL
                     </a>
                     
-                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger w-100 fw-bold" style="border-radius: 20px;">
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger w-100 fw-bold rounded-pill">
                         <i class="bi bi-box-arrow-right me-2"></i> SE DÉCONNECTER
                     </a>
                         </div>
@@ -65,15 +65,15 @@
         
         {# COLONNE DROITE : Historique des réservations #}
         <div class="col-md-8">
-            <div class="card bg-dark border-warning shadow-lg h-100" style="border-radius: 15px;">
+            <div class="card-premium shadow-lg h-100">
                 <div class="card-body p-4">
-                    <h4 class="text-warning fw-bold mb-4" style="font-family: 'Impact', sans-serif;">Mes Rendez-vous</h4>
+                            <h4 class="text-gold fw-bold mb-4">Mes Rendez-vous</h4>
                     
                     {% if reservations is not empty %}
                         <div class="table-responsive">
                             <table class="table table-dark table-hover align-middle text-white">
                                 <thead>
-                                    <tr class="text-warning border-bottom border-warning">
+                                    <tr class="text-gold border-bottom border-gold">
                                         <th scope="col">Prestation</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Statut</th>
@@ -90,13 +90,13 @@
                                                 {% if reservation.statut == 'Confirmé' %}
                                                     <span class="badge bg-success px-3 py-2">Confirmé</span>
                                                 {% elseif reservation.statut == 'En attente' %}
-                                                    <span class="badge bg-warning text-dark px-3 py-2">En attente</span>
+                                                    <span class="badge bg-gold text-dark px-3 py-2">En attente</span>
                                                 {% else %}
                                                     <span class="badge bg-danger px-3 py-2">Annulé</span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-end">
-                                                <a href="{{ path('app_prestation_show', {'id': reservation.prestation.id}) }}" class="btn btn-sm btn-outline-warning rounded-pill">
+                                                <a href="{{ path('app_prestation_show', {'id': reservation.prestation.id}) }}" class="btn btn-sm btn-outline-gold rounded-pill">
                                                     Voir le soin
                                                 </a>
                                             </td>
@@ -109,7 +109,7 @@
                         {# Message affiché si le client n'a aucun rendez-vous #}
                         <div class="text-center py-4">
                             <p class="text-white-50 fs-5 mb-4">Vous n'avez pas encore effectué de réservation.</p>
-                            <a href="{{ path('app_prestation_index') }}" class="btn btn-warning fw-bold py-2 px-4" style="border-radius: 30px;">
+                            <a href="{{ path('app_prestation_index') }}" class="btn btn-premium fw-bold py-2 px-4 rounded-pill">
                                 DÉCOUVRIR NOS OFFRES
                             </a>
                         </div>

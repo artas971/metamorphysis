@@ -2,65 +2,27 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Metamorphysis{% endblock %}</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    {# Ton fichier CSS Premium qui contient toute la DA #}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    
     <style>
-        :root {
-            --or-premium: #D4AF37;
-            --fond-sombre: #1a1a1a;
-            --texte-clair: #f8f9fa;
+        /* On ne garde ici que les petits ajustements spécifiques au menu déroulant de Bootstrap */
+        .dropdown-menu {
+            background-color: var(--meta-black);
+            border: 1px solid var(--meta-gold);
         }
-
-        body {
-            background-color: var(--fond-sombre);
-            color: var(--texte-clair);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Personnalisation des éléments Bootstrap */
-        .text-or {
-            color: var(--or-premium) !important;
-        }
-        
-        .bg-or {
-            background-color: var(--or-premium) !important;
-            color: var(--fond-sombre) !important;
-        }
-
-        .btn-premium {
-            background-color: var(--or-premium);
-            color: var(--fond-sombre);
-            border: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .btn-premium:hover {
-            background-color: #b5952f;
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Le contenu principal prendra tout l'espace disponible entre le header et le footer */
-        main {
-            flex: 1;
-        }
-        /* Adaptation du menu déroulant au thème sombre */
         .dropdown-item:hover {
-            background-color: var(--or-premium);
-            color: var(--fond-sombre) !important;
+            background-color: var(--meta-plum);
+            color: var(--meta-gold) !important;
         }
         .dropdown-item.text-danger:hover {
-            background-color: #dc3545;
-            color: white !important;
+            background-color: rgba(220, 53, 69, 0.1);
         }
     </style>
 
@@ -69,51 +31,52 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark border-bottom border-secondary mb-4">
+    {# La Navbar : Bordure Sauge fumée, fond transparent pour laisser voir le dégradé du body #}
+    {# La Navbar : Plus de bordure, fond transparent, ultra épurée #}
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: transparent;">
         <div class="container">
-            <a class="navbar-brand text-or fw-bold" href="{{ path('app_home') }}">METAMORPHYSIS</a>
+            <a class="navbar-brand text-gold typo-symbolic" href="{{ path('app_home') }}">METAMORPHYSIS</a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    
+                    {{ render(controller('App\\Controller\\MenuController::renderDynamicNav')) }}
+                    {# Liens fonctionnels existants #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                        <a class="nav-link text-ivory nav-link-premium" href="{{ path('app_prestation_index') }}">Prestations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_prestation_index') }}">Prestations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_contact') }}">Contact</a>
+                        <a class="nav-link text-ivory nav-link-premium" href="{{ path('app_contact') }}">Contact</a>
                     </li>
 
                     {# --- LOGIQUE TWIG : L'UTILISATEUR EST-IL CONNECTÉ ? --- #}
                      {% if app.user %}
-                        {# Menu déroulant fonctionnel pour l'utilisateur connecté #}
-                        <li class="nav-item dropdown ms-lg-3 mt-2 mt-lg-0">
+                        <li class="nav-item dropdown ms-lg-4 mt-2 mt-lg-0">
                             
-                            {# Le bouton principal avec les attributs Bootstrap obligatoires #}
-                            <a class="nav-link dropdown-toggle text-warning border border-warning rounded px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle btn-premium py-1 px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Mon Compte
                             </a>
                             
-                            {# Le contenu du menu déroulant #}
-                            <ul class="dropdown-menu dropdown-menu-end bg-dark border-warning mt-2 shadow-lg" aria-labelledby="navbarDropdown">
-                                <li><span class="dropdown-item-text text-or fw-bold">Bonjour, {{ app.user.prenom }}</span></li>
-                                <li><hr class="dropdown-divider border-secondary"></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="navbarDropdown">
+                                <li><span class="dropdown-item-text text-gold typo-citation">Bonjour, {{ app.user.prenom }}</span></li>
+                                <li><hr class="dropdown-divider border-sage"></li>
                                 
-                                <li><a class="dropdown-item text-light" href="{{ path('app_account') }}"><i class="bi bi-person-badge me-2 text-warning"></i>Mon tableau de bord</a></li>
-                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><a class="dropdown-item text-ivory" href="{{ path('app_account') }}"><i class="bi bi-person-badge me-2 text-gold"></i>Mon tableau de bord</a></li>
+                                <li><hr class="dropdown-divider border-sage"></li>
                                 <li><a class="dropdown-item text-danger fw-bold" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Se déconnecter</a></li>
                             </ul>
                         </li>
                     {% else %}
                         {# Boutons pour les visiteurs non connectés #}
-                        <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                            <a class="nav-link text-light" href="/login">Connexion</a>
+                        <li class="nav-item ms-lg-4 mt-2 mt-lg-0">
+                            <a class="nav-link text-ivory nav-link-premium" href="/login">Connexion</a>
                         </li>
                         <li class="nav-item mt-2 mt-lg-0 ms-2">
-                            <a class="btn btn-premium btn-sm px-4 py-2" href="/register">S'inscrire</a>
+                            <a class="btn btn-gold btn-sm px-4 py-2" style="font-size: 0.75rem; letter-spacing: 0.1em;" href="/register">S'inscrire</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -121,13 +84,13 @@
         </div>
     </nav>
 
-<main class="container">
+    <main class="container">
         {# --- SYSTÈME D'AFFICHAGE DES MESSAGES FLASH --- #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }} alert-dismissible fade show mt-4 shadow-sm" role="alert" style="border-left: 5px solid {% if label == 'success' %}#198754{% else %}#dc3545{% endif %};">
-                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }} alert-dismissible fade show mt-4 shadow-sm text-ivory" role="alert">
+                    <i class="bi bi-info-circle-fill me-2 text-gold"></i> {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endfor %}
@@ -135,12 +98,28 @@
         {% block body %}{% endblock %}
     </main>
 
-    <footer class="mt-5 py-4 border-top border-secondary text-center text-muted">
-        <div class="container">
-            <small>&copy; {{ 'now'|date('Y') }} Metamorphysis. Tous droits réservés.</small>
+    {# Le Footer : Bordure et texte en Sauge fumée #}
+{# Le Footer : Discret, élégant, repoussé tout en bas grâce à mt-auto #}
+    <footer class="mt-auto py-5">
+        <div class="container text-center">
+            
+            {# Ligne séparatrice extrêmement subtile #}
+            <hr class="border-sage mb-4 mx-auto" style="opacity: 0.15; width: 50%;">
+            
+            {# Liens secondaires et légaux #}
+            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4 mb-4">
+                <a href="#" class="text-sage text-decoration-none nav-link-premium" style="font-size: 0.65rem;">Mentions Légales</a>
+                <a href="#" class="text-sage text-decoration-none nav-link-premium" style="font-size: 0.65rem;">Confidentialité</a>
+                <a href="#" class="text-sage text-decoration-none nav-link-premium" style="font-size: 0.65rem;">CGV</a>
+            </div>
+
+            {# Copyright final en Sauge fumée pour rester en retrait #}
+            <p class="text-sage m-0 typo-symbolic" style="font-size: 0.7rem; opacity: 0.7;">
+                &copy; {{ 'now'|date('Y') }} METAMORPHYSIS. TOUS DROITS RÉSERVÉS.
+            </p>
+            
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     {% block javascripts %}
