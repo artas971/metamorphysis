@@ -34,6 +34,12 @@ class Page
     #[ORM\Column]
     private ?bool $afficherMenu = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $metaDescription = null;
+
+    #[ORM\Column]
+    private ?bool $isPublished = false; 
+
     public function __construct()
     {
         $this->sections = new ArrayCollection();
@@ -118,6 +124,30 @@ class Page
     public function setAfficherMenu(bool $afficherMenu): static
     {
         $this->afficherMenu = $afficherMenu;
+
+        return $this;
+    }
+
+    public function getMetaDescription(): ?string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(?string $metaDescription): static
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->isPublished;
+    }
+
+    public function setIsPublished(bool $isPublished): static
+    {
+        $this->isPublished = $isPublished;
 
         return $this;
     }

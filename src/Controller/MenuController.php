@@ -9,11 +9,15 @@ use Symfony\Component\HttpFoundation\Response;
 class MenuController extends AbstractController
 {
     public function renderDynamicNav(PageRepository $pageRepository): Response
-    {
-        // On récupère uniquement les pages où afficherMenu est à "true" (coché)
-        $pages = $pageRepository->findBy(['afficherMenu' => true]);
-        return $this->render('partials/_nav_links.html.twig', [
-            'pages' => $pages,
-        ]);
-    }
+        {
+            // On exige afficherMenu = true ET isPublished = true
+            $pages = $pageRepository->findBy([
+                'afficherMenu' => true,
+                'isPublished' => true
+            ]);
+
+            return $this->render('partials/_nav_links.html.twig', [
+                'pages' => $pages,
+            ]);
+        }
 }

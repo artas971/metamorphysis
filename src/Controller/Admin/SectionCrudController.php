@@ -7,8 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
  use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use Vich\UploaderBundle\Form\Type\VichImageType;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField; 
+use Vich\UploaderBundle\Form\Type\VichImageType; 
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 // Supprime l'ancienne ligne : use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 // Et ajoute celle-ci :

@@ -8,6 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+
 
 class PageCrudController extends AbstractCrudController
 {
@@ -20,11 +22,15 @@ class PageCrudController extends AbstractCrudController
     {
         return [
             TextField::new('titre', 'Titre de la page'),
+            BooleanField::new('isPublished', 'Publier la page (En ligne)')
+                ->setHelp('Si décoché, la page restera en mode Brouillon (invisible pour le public).'),
             
             SlugField::new('slug', 'URL de la page')
                 ->setTargetFieldName('titre')
                 ->hideOnIndex(),
-
+            TextareaField::new('metaDescription', 'Description SEO (Google)')
+                            ->setHelp('Texte de 150 caractères max résumant la page pour les moteurs de recherche.')
+                            ->setRequired(false),               
             BooleanField::new('afficherMenu', 'Afficher dans la barre de navigation')
              ->setHelp('Cochez cette case pour que le lien apparaisse en haut du site.'),
             

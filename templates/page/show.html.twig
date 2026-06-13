@@ -1,8 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
+ {% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
 
-{% block body %}
+{% block meta %}
+    {% if page.metaDescription %}
+        <meta name="description" content="{{ page.metaDescription }}">
+    {% else %}
+        {# Une description de secours au cas où la cliente oublie de remplir le champ #}
+        <meta name="description" content="Découvrez nos prestations premium et notre univers exclusif sur Metamorphysis.">
+    {% endif %}
+{% endblock %}
+
+ {% block body %}
 <div class="container mt-5 pt-5 mb-5">
     
     {# Le titre global de la page #}
