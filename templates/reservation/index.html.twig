@@ -11,27 +11,28 @@
                     
                     <div class="text-center mb-4">
                         <h2 class="text-gold fw-bold">RÉSERVER</h2>
-                        <p class="text-white fs-5 mt-2">{{ prestation.nom }}</p>
-                        <span class="badge bg-gold text-dark fs-6">{{ prestation.prix }} €</span>
+                        <p class="text-white fs-5 mt-2 mb-1">{{ prestation.nom }}</p>
+                        {# Le prix affiché proprement en Or #}
+                        <p class="text-gold fs-4 mb-4">{{ prestation.prix }} €</p>
                     </div>
 
                     {# Le Formulaire #}
                     {{ form_start(form) }}
-                        <div class="mb-4">
-                            {# 1. Le Label personnalisé #}
+                        <div class="mb-4 text-start">
+                            {# 1. Le Label personnalisé en Sauge #}
                             {{ form_label(form.dateRendezVous, 'Choisissez une date et une heure', {
-                                'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}
+                                'label_attr': {'class': 'form-label text-sage fw-bold text-uppercase small'}
                             }) }}
                             
-                            {# 2. Le Champ (Widget) personnalisé #}
+                            {# 2. Le Champ (Widget) personnalisé avec input-premium #}
                             {{ form_widget(form.dateRendezVous, {
                                 'attr': {
-                                    'class': 'form-control bg-grad-subtle text-white border-gold mt-2'
+                                    'class': 'form-control input-premium p-3'
                                 }
                             }) }}
                             
-                            {# 3. L'affichage des erreurs (en rouge si l'utilisateur se trompe) #}
-                            <div class="text-danger mt-2 fw-bold">
+                            {# 3. L'affichage des erreurs #}
+                            <div class="text-danger mt-1 small">
                                 {{ form_errors(form.dateRendezVous) }}
                             </div>
                         </div>

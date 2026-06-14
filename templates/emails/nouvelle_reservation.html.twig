@@ -1,12 +1,30 @@
-<h1>Nouvelle demande de rendez-vous</h1>
-
-<p>Bonjour,</p>
-<p>Vous venez de recevoir une nouvelle demande de réservation sur Metamorphysis.</p>
-
-<ul>
-    <li><strong>Client :</strong> {{ client.prenom }} ({{ client.email }})</li>
-    <li><strong>Prestation :</strong> {{ prestation.nom }}</li>
-    <li><strong>Date souhaitée :</strong> {{ reservation.dateRendezVous|date('d/m/Y à H:i') }}</li>
-</ul>
-
-<p>Connectez-vous à votre espace administrateur pour confirmer ou annuler ce rendez-vous.</p>
+<div style="font-family: Arial, sans-serif; background-color: #0A0A09; color: #D8D0BE; padding: 40px; border: 1px solid #B89A63; border-radius: 8px; max-width: 600px; margin: 0 auto;">
+    
+    {# En-tête avec le logo textuel #}
+    <h1 style="color: #B89A63; text-align: center; font-weight: normal; letter-spacing: 3px; margin-bottom: 30px;">METAMORPHYSIS</h1>
+    
+    <h2 style="color: #ffffff; border-bottom: 1px solid #4A4F41; padding-bottom: 10px; font-weight: 300;">Nouvelle demande de rendez-vous</h2>
+    
+    <p style="font-size: 16px; line-height: 1.5;">Bonjour,</p>
+    <p style="font-size: 16px; line-height: 1.5;">Vous venez de recevoir une nouvelle demande de réservation sur Metamorphysis.</p>
+    
+    {# Bloc récapitulatif avec fond Prune foncé #}
+    <div style="background-color: #21141C; padding: 25px; border-radius: 8px; margin: 30px 0; border: 1px solid rgba(184, 154, 99, 0.2);">
+        <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 16px; line-height: 1.8;">
+            <li style="margin-bottom: 10px;">
+                <strong style="color: #727763;">Client :</strong> <span style="color: #B89A63;">{{ client.prenom }}</span> ({{ client.email }})
+            </li>
+            <li style="margin-bottom: 10px;">
+                <strong style="color: #727763;">Prestation :</strong> {{ prestation.nom }}
+            </li>
+            <li style="margin-bottom: 10px;">
+                <strong style="color: #727763;">Prix :</strong> {{ prestation.prix }} €
+            </li>
+            <li style="margin-bottom: 0;">
+                <strong style="color: #727763;">Date souhaitée :</strong> <span style="color: #ffffff;">{{ reservation.dateRendezVous|date('d/m/Y à H:i') }}</span>
+            </li>
+        </ul>
+    </div>
+    
+    <p style="font-size: 15px; color: #999999; line-height: 1.5;">Connectez-vous à votre espace administrateur pour confirmer ou annuler ce rendez-vous.</p>
+</div>

@@ -238,6 +238,20 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     animation: respiration 4s ease-in-out infinite;
 }
 
+/* =========================================
+   MESSAGES FLASH (NOTIFICATIONS)
+   ========================================= */
+.alert-premium {
+    background: var(--grad-subtle);
+    border: 1px solid var(--meta-gold);
+    color: var(--meta-ivory);
+    border-radius: var(--radius-input);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+}
+.alert-premium .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%); /* Rend la petite croix blanche */
+}
 /* --- LES IMAGES CLÉS (KEYFRAMES) --- */
 
 @keyframes levitation {
@@ -264,4 +278,90 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 @keyframes respiration {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.05); }
+}
+
+/* =========================================
+   COMPOSANT : CARROUSEL PRESTATIONS (Hybride)
+   ========================================= */
+
+.transition-hover {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.transition-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(184, 154, 99, 0.15) !important;
+}
+
+/* Conteneur principal avec une "zone de sécurité" de 60px pour les flèches */
+.prestation-slider-container {
+    width: 100%;
+    position: relative; 
+    padding: 1rem 60px; /* Espace pour loger les flèches */
+}
+
+/* La piste de défilement */
+.prestation-track {
+    display: flex;
+    flex-wrap: nowrap; 
+    overflow-x: auto; 
+    gap: 2rem; 
+    padding-bottom: 1rem; 
+    scroll-snap-type: x mandatory; 
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth; /* Défilement fluide pour le JavaScript */
+    
+    /* ASTUCE : Masquer la barre de défilement sur tous les navigateurs */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.prestation-track::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Style des Flèches de navigation Premium */
+.slider-btn {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: var(--meta-black);
+    border: 1px solid var(--meta-gold);
+    color: var(--meta-gold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+}
+
+.slider-btn:hover {
+    background-color: var(--meta-gold);
+    color: var(--meta-black);
+    box-shadow: 0 0 20px rgba(184, 154, 99, 0.4);
+}
+
+/* Flèche gauche posée dans la zone vide à gauche */
+.slider-btn-left { left: 0; }
+/* Flèche droite posée dans la zone vide à droite */
+.slider-btn-right { right: 0; }
+
+.prestation-card-item {
+    flex: 0 0 auto; 
+    width: 380px; 
+    scroll-snap-align: start; 
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    /* Sur mobile, on enlève l'espace de 60px vu qu'il n'y a plus de flèches */
+    .prestation-slider-container {
+        padding: 1rem 0;
+    }
+    .prestation-card-item { 
+        width: 300px; 
+    }
+    .slider-btn { 
+        display: none !important; 
+    }
 }
