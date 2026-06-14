@@ -22,8 +22,7 @@ class Page
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $contenu = null;
+ 
 
     /**
      * @var Collection<int, Section>
@@ -74,17 +73,7 @@ class Page
         return $this;
     }
 
-    public function getContenu(): ?string
-    {
-        return $this->contenu;
-    }
-
-    public function setContenu(string $contenu): static
-    {
-        $this->contenu = $contenu;
-
-        return $this;
-    }
+ 
 
     /**
      * @return Collection<int, Section>

@@ -20,4 +20,16 @@ class MenuController extends AbstractController
                 'pages' => $pages,
             ]);
         }
+        public function renderDynamicFooter(PageRepository $pageRepository): Response
+    {
+        // On cherche les pages publiées MAIS qui ne sont pas dans le menu principal
+        $pages = $pageRepository->findBy([
+            'isPublished' => true,
+            'afficherMenu' => false
+        ]);
+
+        return $this->render('partials/_footer_links.html.twig', [
+            'pages' => $pages,
+        ]);
+    }
 }

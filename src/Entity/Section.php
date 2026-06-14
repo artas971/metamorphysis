@@ -26,8 +26,8 @@ class Section
     
     #[ORM\Column(length: 255)]
     private ?string $disposition = 'texte_centre'; 
-    
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $contenu = null;
 
     #[ORM\Column(length: 255, nullable: true)]

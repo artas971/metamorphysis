@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page introuvable - Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-center align-items-center vh-100 flex-column text-center">
+    
+    {# Le grand 404 en or #}
+    <h1 style="font-size: 8rem; color: #D4AF37; margin-bottom: 0; text-shadow: 0 0 30px rgba(184, 154, 99, 0.3);">
+        404
+    </h1>
+    
+    {# Le message de Metamorphysis #}
+    <h2 style="font-size: 1.8rem; font-weight: 300; color: white; margin-bottom: 3rem;">
+        Cette page n'existe pas ou a été transformée.
+    </h2>
+    
+    {# Le bouton de retour élégant #}
+    <a href="{{ path('app_home') }}" class="btn-premium">
+        Retour à l'accueil
+    </a>
+
+</div>
+
+<style>
+    /* Style du bouton Premium */
+    .btn-premium {
+        display: inline-block;
+        padding: 15px 35px;
+        color: #000; /* Texte noir */
+        background-color: #D4AF37; /* Fond or */
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 3px;
+        transition: all 0.4s ease-in-out;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    /* Animation au survol */
+    .btn-premium:hover {
+        background-color: #fff; /* Devient blanc */
+        color: #000;
+        transform: translateY(-3px); /* Se soulève légèrement */
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4); /* Le halo s'agrandit */
+    }
+</style>
+{% endblock %}

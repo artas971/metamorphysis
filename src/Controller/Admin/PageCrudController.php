@@ -25,9 +25,10 @@ class PageCrudController extends AbstractCrudController
             BooleanField::new('isPublished', 'Publier la page (En ligne)')
                 ->setHelp('Si décoché, la page restera en mode Brouillon (invisible pour le public).'),
             
-            SlugField::new('slug', 'URL de la page')
+// L'astuce est le setTargetFieldName('titre') qui copie le titre et le transforme en slug !
+            SlugField::new('slug', 'URL de la page (Slug)')
                 ->setTargetFieldName('titre')
-                ->hideOnIndex(),
+                ->setHelp('Se remplit automatiquement d\'après le titre.'),
             TextareaField::new('metaDescription', 'Description SEO (Google)')
                             ->setHelp('Texte de 150 caractères max résumant la page pour les moteurs de recherche.')
                             ->setRequired(false),               

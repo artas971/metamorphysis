@@ -38,8 +38,9 @@ class SectionCrudController extends AbstractCrudController
             
 // On remplace TextEditorField par TextareaField et on lui donne 8 lignes de hauteur
             TextareaField::new('contenu', 'Texte (HTML autorisé)')
-                ->setNumOfRows(8)
-                ->setHelp('Tu peux utiliser des balises HTML basiques comme &lt;b&gt; pour le gras ou &lt;br&gt; pour sauter une ligne.'),
+                            ->setNumOfRows(8)
+                            ->setRequired(false) // Ajoute cette ligne ici
+                            ->setHelp('Tu peux utiliser des balises HTML basiques comme <b> pour le gras ou <br> pour sauter une ligne.'),
                             
             // Configuration de l'upload d'image/vidéo
             Field::new('imageFile', 'Image')

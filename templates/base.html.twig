@@ -102,27 +102,7 @@
     </main>
 
     {# Le Footer : Bordure et texte en Sauge fumée #}
-{# Le Footer : Discret, élégant, repoussé tout en bas grâce à mt-auto #}
-    <footer class="mt-auto py-5">
-        <div class="container text-center">
-            
-            {# Ligne séparatrice extrêmement subtile #}
-            <hr class="border-sage mb-4 mx-auto" style="opacity: 0.15; width: 50%;">
-            
-            {# Liens secondaires et légaux #}
-            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4 mb-4">
-                <a href="#" class="text-sage text-decoration-none nav-link-premium" style="font-size: 0.65rem;">Mentions Légales</a>
-                <a href="#" class="text-sage text-decoration-none nav-link-premium" style="font-size: 0.65rem;">Confidentialité</a>
-                <a href="#" class="text-sage text-decoration-none nav-link-premium" style="font-size: 0.65rem;">CGV</a>
-            </div>
-
-            {# Copyright final en Sauge fumée pour rester en retrait #}
-            <p class="text-sage m-0 typo-symbolic" style="font-size: 0.7rem; opacity: 0.7;">
-                &copy; {{ 'now'|date('Y') }} METAMORPHYSIS. TOUS DROITS RÉSERVÉS.
-            </p>
-            
-        </div>
-    </footer>
+    {{ render(controller('App\\Controller\\MenuController::renderDynamicFooter')) }}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     {% block javascripts %}

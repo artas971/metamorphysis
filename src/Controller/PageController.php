@@ -9,21 +9,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class PageController extends AbstractController
-{
-    // On utilise "/page/{slug}" pour éviter de casser tes autres routes comme /login ou /register
-    #[Route('/page/{slug}', name: 'app_page_show')]
-        public function show(string $slug, EntityManagerInterface $entityManager): Response
-        {
-            // On cherche la page dans la base de données grâce à son slug
-            $page = $entityManager->getRepository(Page::class)->findOneBy(['slug' => $slug]);
+{ 
+    // 2. LES AUTRES PAGES (URL propre, sans le mot /page/)
+    // L'astuce magique est "priority: -1" : Symfony testera cette route en tout dernier !
+    #[Route('/{slug}', name: 'app_page_show', priority: -1)]
+    public function show(string $slug, EntityManagerInterface $entityManager): Response
+    {
+        $page = $entityManager->getRepository(Page::class)->findOneBy(['slug' => $slug]);
 
-            // LA SÉCURITÉ EST ICI : Si la page n'existe pas (!page) OU qu'elle n'est pas publiée
-            if (!$page || !$page->isPublished()) {
-                    throw $this->createNotFoundException('Cette page est en cours de rédaction ou n\'existe pas.');
-            }
-
-            return $this->render('page/show.html.twig', [
-                'page' => $page,
-            ]);
+        if (!$page || !$page->isPublished()) {
+            throw $this->createNotFoundException('Cette page est en cours de rédaction ou n\'existe pas.');
         }
+
+        return $this->render('page/show.html.twig', [
+            'page' => $page,
+        ]);
+    }
 }
