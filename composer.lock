@@ -1200,16 +1200,16 @@
         },
         {
             "name": "easycorp/easyadmin-bundle",
-            "version": "v5.0.13",
+            "version": "v5.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/EasyAdminBundle.git",
-                "reference": "11b06ef648b6d5fccb3e62ccd8f67f59534e006a"
+                "reference": "7cd41fd22d2f7ae0760f6b2a0c25e98a5bf79218"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/11b06ef648b6d5fccb3e62ccd8f67f59534e006a",
-                "reference": "11b06ef648b6d5fccb3e62ccd8f67f59534e006a",
+                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/7cd41fd22d2f7ae0760f6b2a0c25e98a5bf79218",
+                "reference": "7cd41fd22d2f7ae0760f6b2a0c25e98a5bf79218",
                 "shasum": ""
             },
             "require": {
@@ -1295,7 +1295,7 @@
             ],
             "support": {
                 "issues": "https://github.com/EasyCorp/EasyAdminBundle/issues",
-                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v5.0.13"
+                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v5.0.14"
             },
             "funding": [
                 {
@@ -1303,7 +1303,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-04T06:25:35+00:00"
+            "time": "2026-06-15T18:47:17+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -8508,16 +8508,16 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "2.4.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "9007ea6f45ecf352a9422b36644e4bfc039b9155"
+                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/9007ea6f45ecf352a9422b36644e4bfc039b9155",
-                "reference": "9007ea6f45ecf352a9422b36644e4bfc039b9155",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/2ccb7c2e821038c03a3e6e1700c570c158c55f70",
+                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70",
                 "shasum": ""
             },
             "require": {
@@ -8568,9 +8568,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/2.4.0"
+                "source": "https://github.com/webmozarts/assert/tree/2.4.1"
             },
-            "time": "2026-05-20T13:07:01+00:00"
+            "time": "2026-06-15T15:31:57+00:00"
         }
     ],
     "packages-dev": [
