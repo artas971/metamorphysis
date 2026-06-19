@@ -58,4 +58,17 @@ class ReservationController extends AbstractController
             'prestation' => $prestation,
         ]);
     }
+    #[Route('/reservation/{id}', name: 'app_reservation_show')]
+    #[IsGranted('ROLE_USER')]
+    public function show(Reservation $reservation): Response
+    {
+        // SÉCURITÉ : On vérifie que la réservation appartient bien à l'utilisateur connecté
+        if ($reservation->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à voir ce rendez-vous.');
+        }
+
+        return $this->render('reservation/show.html.twig', [
+            'reservation' => $reservation,
+        ]);
+    }
 }

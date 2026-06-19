@@ -18,6 +18,16 @@ class ContactType extends AbstractType
             ->add('email', EmailType::class)
             ->add('sujet', TextType::class)
             ->add('message', TextareaType::class)
+            ->add('fax_number', TextType::class, [
+        'mapped' => false,
+        'required' => false,
+        'label' => false,
+        'attr' => [
+            'class' => 'honeypot-field',
+            'tabindex' => '-1', // Empêche l'utilisateur d'y accéder avec la touche Tab
+            'autocomplete' => 'off'
+        ]
+    ])
         ;
     }
 

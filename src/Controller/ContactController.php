@@ -19,6 +19,16 @@ class ContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+                        // On récupère la valeur du faux champ
+            $honeypot = $form->get('fax_number')->getData();
+
+            // Si le champ n'est pas vide, c'est un robot !
+            if (!empty($honeypot)) {
+                // On fait croire au bot que ça a marché pour qu'il ne cherche pas d'autres failles
+                return $this->redirectToRoute('app_home'); 
+            }
+
+// Sinon, on continue le traitement normal (envoi du mail, sauvegarde en BDD...)
             $data = $form->getData();
 
             // Création de l'e-mail

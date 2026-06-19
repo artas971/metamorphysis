@@ -170,6 +170,18 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     color: var(--meta-black);
 }
 
+/* --- NOUVEAU : Bouton Contour Or (Petites actions et icônes) --- */
+.btn-outline-gold {
+    color: var(--meta-gold);
+    border: 1px solid var(--meta-gold);
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+.btn-outline-gold:hover {
+    background-color: var(--meta-gold);
+    color: var(--meta-black);
+}
+
 /* Champs de Formulaire */
 .input-premium {
     background-color: var(--meta-black) !important;
@@ -252,6 +264,7 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 .alert-premium .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%); /* Rend la petite croix blanche */
 }
+
 /* --- LES IMAGES CLÉS (KEYFRAMES) --- */
 
 @keyframes levitation {
@@ -364,4 +377,9 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     .slider-btn { 
         display: none !important; 
     }
+}/* Protection Anti-Spam Honeypot */
+    .honeypot-field {
+        display: none !important;
+        position: absolute;
+        left: -9999px;
 }
