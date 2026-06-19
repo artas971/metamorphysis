@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Confirmation de réservation</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+
+    {# Fond global noir profond #}
+    <div style="background-color: #0a0a0a; padding: 40px 20px; width: 100%; box-sizing: border-box;">
+        
+        {# Conteneur central avec bordure dorée #}
+        <div style="max-width: 600px; margin: 0 auto; background-color: #141414; border: 1px solid #B89A63; border-radius: 8px; overflow: hidden;">
+            
+            {# En-tête (Logo / Titre) #}
+            <div style="text-align: center; padding: 40px 20px; border-bottom: 1px solid rgba(184, 154, 99, 0.2);">
+                <h1 style="color: #B89A63; margin: 0; font-size: 28px; letter-spacing: 4px; text-transform: uppercase; font-weight: normal;">Metamorphysis</h1>
+                <p style="color: #888888; font-style: italic; font-size: 14px; margin-top: 10px;">Prestations d'exception</p>
+            </div>
+
+            {# Corps du message #}
+            <div style="padding: 40px 30px; color: #e0e0e0; line-height: 1.8; font-size: 16px;">
+                <p style="font-size: 20px; color: #B89A63; margin-bottom: 25px;">Bonjour {{ reservation.user.prenom|capitalize }},</p>
+                
+                <p>Nous avons le plaisir de vous confirmer votre réservation pour la prestation :<br>
+                <strong style="color: #B89A63; font-size: 18px;">{{ reservation.prestation.nom }}</strong></p>
+                
+                <div style="background-color: rgba(184, 154, 99, 0.05); border-left: 3px solid #B89A63; padding: 15px 20px; margin: 30px 0;">
+                    <p style="margin: 0;"><strong>Date :</strong> {{ reservation.dateRendezVous|date('d/m/Y') }}</p>
+                    <p style="margin: 5px 0 0 0;"><strong>Heure :</strong> {{ reservation.dateRendezVous|date('H:i') }}</p>
+                </div>
+
+                <p>Vous trouverez en pièce jointe la facture correspondante à votre rendez-vous au format PDF.</p>
+                
+                <p style="margin-top: 40px;">Dans l'attente de vous recevoir,</p>
+                <p style="color: #B89A63; font-weight: bold; letter-spacing: 1px;">L'équipe Metamorphysis</p>
+            </div>
+
+            {# Pied de page #}
+            <div style="background-color: #0a0a0a; text-align: center; padding: 25px 20px; font-size: 12px; color: #555555; border-top: 1px solid rgba(184, 154, 99, 0.2);">
+                <p style="margin: 0;">&copy; {{ 'now'|date('Y') }} Metamorphysis. Tous droits réservés.</p>
+                <p style="margin: 5px 0 0 0;">Cet email a été généré automatiquement, merci de ne pas y répondre directement.</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

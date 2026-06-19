@@ -383,3 +383,43 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
         position: absolute;
         left: -9999px;
 }
+
+ /* ==========================================================================
+   ANIMATION LOGO NAVBAR (Pièce de monnaie)
+   ========================================================================== */
+
+@keyframes coinFlip {
+    0% { transform: perspective(1000px) rotateY(0deg); }
+    100% { transform: perspective(1000px) rotateY(360deg); }
+}
+
+/* Conteneur fixe pour la navbar (sans overflow hidden pour laisser la 3D respirer) */
+.navbar-logo-container {
+    width: 160px; 
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* On applique la rotation 3D uniquement sur ce logo précis */
+.navbar-logo-spin {
+    animation: coinFlip 10s linear infinite;
+    transform-style: preserve-3d;
+    transition: filter 0.3s ease;
+}
+
+.navbar-logo-spin:hover {
+    filter: drop-shadow(0 0 10px rgba(184, 154, 99, 0.8));
+}
+
+/* Désactivation des animations complexes quand le logo est dans la navbar */
+.navbar-logo-spin #Upper_left_wing,
+.navbar-logo-spin #Lower_left_wing,
+.navbar-logo-spin #Upper_right_wing,
+.navbar-logo-spin #Lower_right_wing,
+.navbar-logo-spin #body,
+.navbar-logo-spin #whole-dragonfly {
+    animation: none !important;
+    transform: none !important;
+}
