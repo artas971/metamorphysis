@@ -8,11 +8,13 @@ use App\Form\ReservationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\PlanningService;
 
 class ReservationController extends AbstractController
 {
@@ -70,5 +72,19 @@ class ReservationController extends AbstractController
         return $this->render('reservation/show.html.twig', [
             'reservation' => $reservation,
         ]);
+    }
+    #[Route('/api/disponibilites/{id}/{date}', name: 'api_disponibilites', methods: ['GET'])]
+    public function getDisponibilites(Prestation $prestation, string $date, PlanningService $planningService): JsonResponse
+    {
+        try {
+            $dateRecherchee = new \DateTime($date);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Format de date invalide'], 400);
+        }
+
+        // On envoie la durée exacte de la prestation souhaitée au cerveau
+        $creneaux = $planningService->getCreneauxDisponibles($dateRecherchee, $prestation->getDuree());
+
+        return new JsonResponse($creneaux);
     }
 }

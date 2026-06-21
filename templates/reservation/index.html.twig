@@ -12,32 +12,28 @@
                     <div class="text-center mb-4">
                         <h2 class="text-gold fw-bold">RÉSERVER</h2>
                         <p class="text-white fs-5 mt-2 mb-1">{{ prestation.nom }}</p>
-                        {# Le prix affiché proprement en Or #}
                         <p class="text-gold fs-4 mb-4">{{ prestation.prix }} €</p>
                     </div>
 
-                    {# Le Formulaire #}
-                    {{ form_start(form) }}
+                    {{ form_start(form, {'attr': {'id': 'reservation-form'}}) }}
                         <div class="mb-4 text-start">
-                            {# 1. Le Label personnalisé en Sauge #}
-                            {{ form_label(form.dateRendezVous, 'Choisissez une date et une heure', {
-                                'label_attr': {'class': 'form-label text-sage fw-bold text-uppercase small'}
-                            }) }}
+                            <label class="form-label text-sage fw-bold text-uppercase small">1. Choisissez une date</label>
                             
-                            {# 2. Le Champ (Widget) personnalisé avec input-premium #}
-                            {{ form_widget(form.dateRendezVous, {
-                                'attr': {
-                                    'class': 'form-control input-premium p-3'
-                                }
-                            }) }}
+                            {# Le champ texte que Flatpickr va transformer #}
+                            <input type="text" id="date-picker" class="form-control input-premium p-3 mb-4" placeholder="Sélectionnez une date..." required>
                             
-                            {# 3. L'affichage des erreurs #}
-                            <div class="text-danger mt-1 small">
-                                {{ form_errors(form.dateRendezVous) }}
+                            <label class="form-label text-sage fw-bold text-uppercase small">2. Choisissez une heure</label>
+                            
+                            <div id="time-slots-container" class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="text-white-50 small fst-italic">Veuillez d'abord sélectionner une date.</span>
+                            </div>
+
+                            <div class="d-none">
+                                {{ form_widget(form.dateRendezVous, {'attr': {'id': 'real-datetime-input'}}) }}
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-premium w-100 fw-bold py-2 rounded-pill">
+                        <button type="submit" id="submit-btn" class="btn btn-premium w-100 fw-bold py-2 rounded-pill" disabled>
                             CONFIRMER LA DEMANDE
                         </button>
                     {{ form_end(form) }}
@@ -54,4 +50,110 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Correction de la couleur du placeholder "Sélectionnez une date..." */
+    #date-picker::placeholder {
+        color: rgba(212, 175, 55, 0.5) !important; /* Or transparent */
+        font-style: italic;
+    }
+    
+    /* Le fond du calendrier Flatpickr */
+    .flatpickr-calendar {
+        background: #111 !important; 
+        border: 1px solid #D4AF37 !important; 
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15) !important;
+    }
+    .flatpickr-month, .flatpickr-weekday {
+        color: #D4AF37 !important;
+        fill: #D4AF37 !important;
+    }
+    .flatpickr-prev-month svg, .flatpickr-next-month svg {
+        fill: #D4AF37 !important;
+    }
+    .flatpickr-day {
+        color: #fff !important; 
+    }
+    .flatpickr-day:hover {
+        background: rgba(212, 175, 55, 0.2) !important;
+        border-color: #D4AF37 !important;
+    }
+    .flatpickr-day.selected {
+        background: #D4AF37 !important;
+        border-color: #D4AF37 !important;
+        color: #000 !important;
+        font-weight: bold;
+    }
+    .flatpickr-day.flatpickr-disabled {
+        color: #555 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const datePickerElement = document.getElementById('date-picker');
+        const timeSlotsContainer = document.getElementById('time-slots-container');
+        const realInput = document.querySelector('[name="reservation[dateRendezVous]"]'); 
+        const submitBtn = document.getElementById('submit-btn');
+
+        flatpickr(datePickerElement, {
+            locale: "fr",
+            minDate: "today",
+            disableMobile: true,
+            onChange: function(selectedDates, dateStr, instance) {
+                
+                timeSlotsContainer.innerHTML = '<span class="text-gold small"><i class="bi bi-hourglass-split"></i> Analyse des disponibilités...</span>';
+                submitBtn.disabled = true;
+
+                fetch('/api/disponibilites/{{ prestation.id }}/' + dateStr)
+                    .then(response => response.json())
+                    .then(creneaux => {
+                        timeSlotsContainer.innerHTML = '';
+
+                        if (creneaux.length === 0) {
+                            timeSlotsContainer.innerHTML = '<span class="text-white-50 small fst-italic"><i class="bi bi-calendar-x text-gold me-1"></i> Toutes nos disponibilités sont réservées pour cette date.</span>';
+                            return;
+                        }
+
+                        creneaux.forEach(heure => {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = 'btn rounded-pill px-4 py-2 text-gold border border-gold';
+                            btn.style.transition = 'all 0.3s ease';
+                            btn.textContent = heure;
+
+                            btn.addEventListener('click', function() {
+                                document.querySelectorAll('#time-slots-container button').forEach(b => {
+                                    b.className = 'btn rounded-pill px-4 py-2 text-gold border border-gold';
+                                    b.style.backgroundColor = 'transparent';
+                                });
+                                
+                                this.className = 'btn rounded-pill px-4 py-2 text-dark border border-gold fw-bold';
+                                this.style.backgroundColor = '#D4AF37';
+
+                                realInput.value = dateStr + 'T' + heure;
+                                submitBtn.disabled = false;
+                            });
+
+                            btn.addEventListener('mouseenter', function() {
+                                if (!this.classList.contains('fw-bold')) {
+                                    this.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                                }
+                            });
+                            btn.addEventListener('mouseleave', function() {
+                                if (!this.classList.contains('fw-bold')) {
+                                    this.style.backgroundColor = 'transparent';
+                                }
+                            });
+
+                            timeSlotsContainer.appendChild(btn);
+                        });
+                    })
+                    .catch(error => {
+                        timeSlotsContainer.innerHTML = '<span class="text-white-50 small"><i class="bi bi-exclamation-circle text-gold me-1"></i> Une erreur est survenue lors de la recherche des créneaux.</span>';
+                    });
+            }
+        });
+    });
+</script>
 {% endblock %}

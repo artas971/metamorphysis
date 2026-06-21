@@ -6,7 +6,6 @@ use App\Repository\HoraireHebdomadaireRepository;
 use App\Repository\IndisponibiliteRepository;
 use App\Repository\ReservationRepository;
 use DateTimeInterface;
-use DateInterval;
 
 class PlanningService
 {
@@ -16,29 +15,21 @@ class PlanningService
         private ReservationRepository $reservationRepo
     ) {}
 
-    /**
-     * Calcule tous les créneaux disponibles pour une date donnée.
-     */
-    public function getCreneauxDisponibles(DateTimeInterface $dateRecherchee, int $dureeMinutes = 30): array
+    public function getCreneauxDisponibles(DateTimeInterface $dateRecherchee, int $dureePrestation): array
     {
-        $creneaux = [];
-
-        // 1. Quel jour de la semaine sommes-nous ? (1 = Lundi, 7 = Dimanche)
         $jourSemaine = (int) $dateRecherchee->format('N');
         $horaire = $this->horaireRepo->findOneBy(['jour' => $jourSemaine, 'estOuvert' => true]);
 
-        // Si tu n'as pas activé ce jour dans "Ma Semaine Type", on renvoie un tableau vide.
         if (!$horaire) {
             return [];
         }
 
-        // 2. Y a-t-il une fermeture exceptionnelle (Indisponibilité) ce jour-là ?
-        $debutJournee = clone $dateRecherchee;
+        $debutJournee = \DateTime::createFromInterface($dateRecherchee);
         $debutJournee->setTime(0, 0, 0);
-        $finJournee = clone $dateRecherchee;
+        
+        $finJournee = \DateTime::createFromInterface($dateRecherchee);
         $finJournee->setTime(23, 59, 59);
 
-        // On interroge la base de données pour voir si une absence croise cette journée
         $indisponibilites = $this->indispoRepo->createQueryBuilder('i')
             ->where('i.debut <= :fin')
             ->andWhere('i.fin >= :debut')
@@ -48,48 +39,78 @@ class PlanningService
             ->getResult();
 
         if (count($indisponibilites) > 0) {
-            // Si une indisponibilité touche ce jour, le cabinet est fermé.
             return [];
         }
 
-        // 3. Découpage de la journée en blocs (Matin et Après-midi)
+        $reservations = $this->reservationRepo->createQueryBuilder('r')
+            ->where('r.dateRendezVous >= :debut')
+            ->andWhere('r.dateRendezVous <= :fin')
+            ->setParameter('debut', $debutJournee)
+            ->setParameter('fin', $finJournee)
+            ->getQuery()
+            ->getResult();
+
+        $intervallesReserves = [];
+        foreach ($reservations as $resa) {
+            $debutResa = clone $resa->getDateRendezVous();
+            $finResa = clone $debutResa;
+            
+            $duree = $resa->getPrestation()->getDuree();
+            $finResa->modify("+{$duree} minutes");
+
+            // BYPASS DU BUG JIT
+            array_push($intervallesReserves, [
+                'debut' => $debutResa,
+                'fin' => $finResa
+            ]);
+        }
+
+        $creneaux = [];
+
         if ($horaire->getOuvertureMatin() && $horaire->getFermetureMatin()) {
-            $creneaux = array_merge($creneaux, $this->genererBlocs($dateRecherchee, $horaire->getOuvertureMatin(), $horaire->getFermetureMatin(), $dureeMinutes));
+            $creneaux = array_merge($creneaux, $this->genererBlocsFiltres($dateRecherchee, $horaire->getOuvertureMatin(), $horaire->getFermetureMatin(), $dureePrestation, $intervallesReserves));
         }
 
         if ($horaire->getOuvertureApresMidi() && $horaire->getFermetureApresMidi()) {
-            $creneaux = array_merge($creneaux, $this->genererBlocs($dateRecherchee, $horaire->getOuvertureApresMidi(), $horaire->getFermetureApresMidi(), $dureeMinutes));
+            $creneaux = array_merge($creneaux, $this->genererBlocsFiltres($dateRecherchee, $horaire->getOuvertureApresMidi(), $horaire->getFermetureApresMidi(), $dureePrestation, $intervallesReserves));
         }
-
-        // 4. Étape Finale : Filtrer les créneaux déjà réservés par d'autres clients.
-        // (Nous allons l'ajouter juste après).
 
         return $creneaux;
     }
 
-    /**
-     * Fonction utilitaire : Découpe un intervalle de temps en boutons de X minutes.
-     */
-    private function genererBlocs(DateTimeInterface $date, \DateTimeInterface $ouverture, \DateTimeInterface $fermeture, int $dureeMinutes): array
+    private function genererBlocsFiltres(DateTimeInterface $date, \DateTimeInterface $ouverture, \DateTimeInterface $fermeture, int $dureePrestation, array $intervallesReserves): array
     {
         $blocs = [];
-        $actuel = clone $date;
+        $pas = 30;
+
+        $actuel = \DateTime::createFromInterface($date);
         $actuel->setTime((int)$ouverture->format('H'), (int)$ouverture->format('i'));
 
-        $limite = clone $date;
+        $limite = \DateTime::createFromInterface($date);
         $limite->setTime((int)$fermeture->format('H'), (int)$fermeture->format('i'));
 
         while ($actuel < $limite) {
-            $finCreneau = clone $actuel;
-            $finCreneau->add(new DateInterval('PT' . $dureeMinutes . 'M'));
+            $finCreneauPossible = clone $actuel;
+            $finCreneauPossible->modify("+{$dureePrestation} minutes");
 
-            // Si le créneau déborde sur la fermeture (ex: un rdv d'1h qui commence 15min avant la fermeture), on l'annule.
-            if ($finCreneau > $limite) {
+            if ($finCreneauPossible > $limite) {
                 break;
             }
 
-            $blocs[] = $actuel->format('H:i'); // On stocke l'heure sous format texte "09:00"
-            $actuel = $finCreneau;
+            $chevauchement = false;
+            foreach ($intervallesReserves as $intervalle) {
+                if ($actuel < $intervalle['fin'] && $finCreneauPossible > $intervalle['debut']) {
+                    $chevauchement = true;
+                    break;
+                }
+            }
+
+            if (!$chevauchement) {
+                // BYPASS DU BUG JIT
+                array_push($blocs, $actuel->format('H:i'));
+            }
+
+            $actuel->modify("+{$pas} minutes");
         }
 
         return $blocs;
