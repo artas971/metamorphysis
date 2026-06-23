@@ -423,3 +423,9 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     animation: none !important;
     transform: none !important;
 }
+/* Redimensionnement élégant du logo dans la barre de navigation */
+.navbar-brand img, .navbar-brand svg {
+    height: 45px !important; /* Hauteur maximale fixe (tu pourras ajuster entre 40px et 55px selon tes goûts) */
+    width: auto !important; /* Garde les proportions intactes */
+    object-fit: contain;
+}
