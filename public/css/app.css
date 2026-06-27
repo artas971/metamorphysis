@@ -7,47 +7,39 @@
 /* =========================================
    CHARTE GRAPHIQUE OFFICIELLE - METAMORPHYSIS
    ========================================= */
-
 :root {
-    /* 1. La Palette de Couleurs Haut de Gamme (Inchangée) */
+    /* 1. Palette Haut de Gamme */
     --meta-black: #0A0A09;         
     --meta-plum: #21141C;          
     --meta-olive: #4A4F41;         
     --meta-sage: #727763;          
     --meta-gold: #B89A63;          
     --meta-ivory: #D8D0BE;         
-    
     --meta-gold-hover: #9c804f;    
     --meta-olive-hover: #5d6352;   
 
-    /* 2. NOUVEAUX DÉGRADÉS : Doux, radiaux et transparents */
-    
-    /* Fond global : Un halo prune très doux en haut qui se fond dans le noir */
+    /* 2. DÉGRADÉS */
     --grad-main: radial-gradient(ellipse at top center, #21141C 0%, #0A0A09 70%, #0A0A09 100%);
-    
-    /* Cartes : Presque transparentes avec un très léger voile noir/olive */
     --grad-subtle: linear-gradient(135deg, rgba(33, 20, 28, 0.6) 0%, rgba(10, 10, 9, 0.8) 100%);
 
-    /* 3. La Typographie */
+    /* 3. Typographie */
     --font-title: 'Cormorant Garamond', serif; 
     --font-body: 'Inter', sans-serif;
     --font-accent: 'Cinzel', serif;
 
-    /* 4. Les Formes & Tailles */
+    /* 4. Formes */
     --radius-card: 15px;
     --radius-btn: 30px;
     --radius-input: 8px;
 }
 
 /* =========================================
-   BASE DE LA PAGE ET TYPOGRAPHIE
+   BASE DE LA PAGE
    ========================================= */
 body {
-    /* On applique la couleur de base, puis le halo de lumière par-dessus */
     background-color: var(--meta-black);
     background-image: var(--grad-main);
     background-attachment: fixed; 
-    
     color: var(--meta-ivory); 
     font-family: var(--font-body);
     font-weight: 300;
@@ -57,18 +49,19 @@ body {
     flex-direction: column;
 }
 
- 
 main {
     flex: 1;
 }
-/* Style ultra-épuré pour les liens du menu principal */
+
+/* =========================================
+   TYPOGRAPHIE
+   ========================================= */
 .nav-link-premium {
-    font-size: 0.75rem; /* Texte très petit */
+    font-size: 0.75rem; 
     text-transform: uppercase;
-    letter-spacing: 0.15em; /* Espacement large et luxueux */
+    letter-spacing: 0.15em; 
     transition: color 0.3s ease;
 }
-
 .nav-link-premium:hover {
     color: var(--meta-gold) !important;
 }
@@ -80,9 +73,6 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     color: var(--meta-gold); 
 }
 
-/* =========================================
-   CLASSES UTILITAIRES TYPOGRAPHIQUES
-   ========================================= */
 .typo-symbolic {
     font-family: var(--font-accent);
     font-weight: 400;
@@ -98,7 +88,7 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 }
 
 /* =========================================
-   CLASSES UTILITAIRES COULEURS & FONDS
+   COULEURS & FONDS
    ========================================= */
 .text-gold { color: var(--meta-gold) !important; }
 .text-ivory { color: var(--meta-ivory) !important; }
@@ -114,23 +104,15 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 /* =========================================
    COMPOSANTS UI (Cartes, Boutons, Inputs)
    ========================================= */
-
-/* Cartes Premium : Effet "Glassmorphism" subtil */
 .card-premium {
     background: var(--grad-subtle);
-    
-    /* L'astuce luxe absolue : floute légèrement ce qu'il y a derrière la carte */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    
-    /* Bordure ultra-fine et discrète */
     border: 1px solid rgba(184, 154, 99, 0.15);
     border-radius: var(--radius-card);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5); /* Ombre très diffuse */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-
-/* Bouton principal (Plein - Or Antique) */
 .btn-gold {
     background-color: var(--meta-gold);
     color: var(--meta-black);
@@ -144,7 +126,6 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     letter-spacing: 0.1em;
     transition: all 0.3s ease;
 }
-
 .btn-gold:hover {
     background-color: var(--meta-gold-hover);
     color: var(--meta-black);
@@ -152,7 +133,6 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     box-shadow: 0 5px 15px rgba(184, 154, 99, 0.3);
 }
 
-/* Bouton secondaire (Contour transparent) */
 .btn-premium {
     background-color: transparent;
     color: var(--meta-gold);
@@ -164,13 +144,11 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     letter-spacing: 0.1em;
     transition: all 0.3s ease;
 }
-
 .btn-premium:hover {
     background-color: var(--meta-gold);
     color: var(--meta-black);
 }
 
-/* --- NOUVEAU : Bouton Contour Or (Petites actions et icônes) --- */
 .btn-outline-gold {
     color: var(--meta-gold);
     border: 1px solid var(--meta-gold);
@@ -182,7 +160,6 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     color: var(--meta-black);
 }
 
-/* Champs de Formulaire */
 .input-premium {
     background-color: var(--meta-black) !important;
     color: var(--meta-ivory) !important;
@@ -191,67 +168,13 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     color-scheme: dark;
     font-family: var(--font-body);
 }
-
 .input-premium:focus {
     box-shadow: 0 0 0 0.25rem rgba(184, 154, 99, 0.1) !important;
     border-color: var(--meta-gold) !important;
 }
 
-/* ==========================================================================
-   DESIGN ET ANIMATION 3D DE LA LIBELLULE
-   ========================================================================== */
-
-#texte-decor, #body, #Lower_body, #Upper_left_wing, #Upper_right_wing, #Lower_left_wing, #Lower_right_wing, #outline {
-    fill: var(--meta-gold); 
-}
-
-#texte-decor path {
-    fill: var(--meta-gold);
-    stroke: var(--meta-gold);
-}
-
-#whole-dragonfly {
-    transform-box: fill-box; 
-    transform-origin: center center;
-    animation: levitation 4s ease-in-out infinite;
-}
-
-#body, #Lower_body {
-    transform-box: fill-box; 
-}
-
-#Upper_left_wing, #Upper_left {
-    transform-box: fill-box; 
-    transform-origin: 100% 80%; 
-    animation: flapLeft 0.8s ease-in-out infinite alternate;
-}
-
-#Lower_left_wing, #Bottom_left {
-    transform-box: fill-box; 
-    transform-origin: 100% 20%; 
-    animation: flapLeft 0.8s ease-in-out infinite alternate;
-}
-
-#Upper_right_wing, #Upper_right {
-    transform-box: fill-box; 
-    transform-origin: 0% 80%; 
-    animation: flapRight 0.8s ease-in-out infinite alternate;
-}
-
-#Lower_right_wing, #Bottom_right {
-    transform-box: fill-box; 
-    transform-origin: 0% 20%; 
-    animation: flapRight 0.8s ease-in-out infinite alternate;
-}
-
-#body {
-    transform-box: fill-box;
-    transform-origin: center center;
-    animation: respiration 4s ease-in-out infinite;
-}
-
 /* =========================================
-   MESSAGES FLASH (NOTIFICATIONS)
+   MESSAGES FLASH
    ========================================= */
 .alert-premium {
     background: var(--grad-subtle);
@@ -262,170 +185,87 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     backdrop-filter: blur(10px);
 }
 .alert-premium .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%); /* Rend la petite croix blanche */
-}
-
-/* --- LES IMAGES CLÉS (KEYFRAMES) --- */
-
-@keyframes levitation {
-    0%, 100% { 
-        transform: translateY(0); 
-        filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.2)); 
-    }
-    50% { 
-        transform: translateY(-15px); 
-        filter: drop-shadow(0px 20px 25px rgba(184, 154, 99, 0.4));
-    }
-}
-
-@keyframes flapLeft {
-    0%   { transform: rotateY(0deg) rotateZ(0deg); }
-    100% { transform: rotateY(60deg) rotateZ(5deg); }
-}
-
-@keyframes flapRight {
-    0%   { transform: rotateY(0deg) rotateZ(0deg); }
-    100% { transform: rotateY(-60deg) rotateZ(-5deg); }
-}
-
-@keyframes respiration {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.05); }
+    filter: invert(1) grayscale(100%) brightness(200%); 
 }
 
 /* =========================================
-   COMPOSANT : CARROUSEL PRESTATIONS (Hybride)
+   DESIGN DU LOGO DANS LA NAVBAR
    ========================================= */
-
-.transition-hover {
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+.navbar-brand svg, .navbar-brand img {
+    height: 55px !important; 
+    width: 55px !important; 
+    object-fit: contain;
+    transform: scale(2.5); 
+    transform-origin: center; 
+    filter: brightness(1.2) drop-shadow(0px 0px 2px rgba(212, 175, 55, 0.4));
+    transition: filter 0.3s ease; 
 }
-.transition-hover:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(184, 154, 99, 0.15) !important;
-}
-
-/* Conteneur principal avec une "zone de sécurité" de 60px pour les flèches */
-.prestation-slider-container {
-    width: 100%;
-    position: relative; 
-    padding: 1rem 60px; /* Espace pour loger les flèches */
+.navbar-brand:hover svg, .navbar-brand:hover img {
+    filter: brightness(1.4) drop-shadow(0px 0px 8px rgba(212, 175, 55, 0.8));
 }
 
-/* La piste de défilement */
-.prestation-track {
-    display: flex;
-    flex-wrap: nowrap; 
-    overflow-x: auto; 
-    gap: 2rem; 
-    padding-bottom: 1rem; 
-    scroll-snap-type: x mandatory; 
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth; /* Défilement fluide pour le JavaScript */
-    
-    /* ASTUCE : Masquer la barre de défilement sur tous les navigateurs */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-.prestation-track::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-}
+/* =========================================
+   ANIMATIONS DU GRAND LOGO CENTRAL (Hero Section)
+   ========================================= */
+#texte-decor, #body, #Lower_body, #Upper_left_wing, #Upper_right_wing, #Lower_left_wing, #Lower_right_wing, #outline { fill: var(--meta-gold); }
+#texte-decor path { fill: var(--meta-gold); stroke: var(--meta-gold); }
 
-/* Style des Flèches de navigation Premium */
-.slider-btn {
-    position: absolute;
-    top: 45%;
-    transform: translateY(-50%);
-    z-index: 10;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background-color: var(--meta-black);
-    border: 1px solid var(--meta-gold);
-    color: var(--meta-gold);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-}
+#whole-dragonfly { transform-box: fill-box; transform-origin: center center; animation: levitation 4s ease-in-out infinite; }
+#body, #Lower_body { transform-box: fill-box; }
+#Upper_left_wing, #Upper_left { transform-box: fill-box; transform-origin: 100% 80%; animation: flapLeft 0.8s ease-in-out infinite alternate; }
+#Lower_left_wing, #Bottom_left { transform-box: fill-box; transform-origin: 100% 20%; animation: flapLeft 0.8s ease-in-out infinite alternate; }
+#Upper_right_wing, #Upper_right { transform-box: fill-box; transform-origin: 0% 80%; animation: flapRight 0.8s ease-in-out infinite alternate; }
+#Lower_right_wing, #Bottom_right { transform-box: fill-box; transform-origin: 0% 20%; animation: flapRight 0.8s ease-in-out infinite alternate; }
+#body { transform-box: fill-box; transform-origin: center center; animation: respiration 4s ease-in-out infinite; }
 
-.slider-btn:hover {
-    background-color: var(--meta-gold);
-    color: var(--meta-black);
-    box-shadow: 0 0 20px rgba(184, 154, 99, 0.4);
+@keyframes levitation {
+    0%, 100% { transform: translateY(0); filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.2)); }
+    50% { transform: translateY(-15px); filter: drop-shadow(0px 20px 25px rgba(184, 154, 99, 0.4)); }
 }
+@keyframes flapLeft { 0% { transform: rotateY(0deg) rotateZ(0deg); } 100% { transform: rotateY(60deg) rotateZ(5deg); } }
+@keyframes flapRight { 0% { transform: rotateY(0deg) rotateZ(0deg); } 100% { transform: rotateY(-60deg) rotateZ(-5deg); } }
+@keyframes respiration { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-/* Flèche gauche posée dans la zone vide à gauche */
+/* =========================================
+   COMPOSANT : CARROUSEL PRESTATIONS
+   ========================================= */
+.transition-hover { transition: transform 0.4s ease, box-shadow 0.4s ease; }
+.transition-hover:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(184, 154, 99, 0.15) !important; }
+.prestation-slider-container { width: 100%; position: relative; padding: 1rem 60px; }
+.prestation-track { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 2rem; padding-bottom: 1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
+.prestation-track::-webkit-scrollbar { display: none; }
+.slider-btn { position: absolute; top: 45%; transform: translateY(-50%); z-index: 10; width: 55px; height: 55px; border-radius: 50%; background-color: var(--meta-black); border: 1px solid var(--meta-gold); color: var(--meta-gold); cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.6); }
+.slider-btn:hover { background-color: var(--meta-gold); color: var(--meta-black); box-shadow: 0 0 20px rgba(184, 154, 99, 0.4); }
 .slider-btn-left { left: 0; }
-/* Flèche droite posée dans la zone vide à droite */
 .slider-btn-right { right: 0; }
+.prestation-card-item { flex: 0 0 auto; width: 380px; scroll-snap-align: start; }
 
-.prestation-card-item {
-    flex: 0 0 auto; 
-    width: 380px; 
-    scroll-snap-align: start; 
-}
-
-/* Responsive mobile */
 @media (max-width: 768px) {
-    /* Sur mobile, on enlève l'espace de 60px vu qu'il n'y a plus de flèches */
-    .prestation-slider-container {
-        padding: 1rem 0;
-    }
-    .prestation-card-item { 
-        width: 300px; 
-    }
-    .slider-btn { 
-        display: none !important; 
-    }
-}/* Protection Anti-Spam Honeypot */
-    .honeypot-field {
-        display: none !important;
-        position: absolute;
-        left: -9999px;
+    .prestation-slider-container { padding: 1rem 0; }
+    .prestation-card-item { width: 300px; }
+    .slider-btn { display: none !important; }
 }
 
- /* ==========================================================================
-   ANIMATION LOGO NAVBAR (Pièce de monnaie)
-   ========================================================================== */
-
-@keyframes coinFlip {
-    0% { transform: perspective(1000px) rotateY(0deg); }
-    100% { transform: perspective(1000px) rotateY(360deg); }
-}
-
-/* Conteneur fixe pour la navbar (sans overflow hidden pour laisser la 3D respirer) */
-.navbar-logo-container {
-    width: 160px; 
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* On applique la rotation 3D uniquement sur ce logo précis */
-.navbar-logo-spin {
-    animation: coinFlip 10s linear infinite;
-    transform-style: preserve-3d;
-    transition: filter 0.3s ease;
-}
-
-.navbar-logo-spin:hover {
-    filter: drop-shadow(0 0 10px rgba(184, 154, 99, 0.8));
-}
-
-/* Désactivation des animations complexes quand le logo est dans la navbar */
-.navbar-logo-spin #Upper_left_wing,
-.navbar-logo-spin #Lower_left_wing,
-.navbar-logo-spin #Upper_right_wing,
-.navbar-logo-spin #Lower_right_wing,
-.navbar-logo-spin #body,
-.navbar-logo-spin #whole-dragonfly {
+/* Protection Anti-Spam */
+.honeypot-field { display: none !important; position: absolute; left: -9999px; }
+/* =========================================
+   DÉSACTIVATION DES ANIMATIONS DANS LA NAVBAR
+   ========================================= */
+.navbar-brand #whole-dragonfly,
+.navbar-brand #body,
+.navbar-brand #Lower_body,
+.navbar-brand #Upper_left_wing,
+.navbar-brand #Upper_left,
+.navbar-brand #Lower_left_wing,
+.navbar-brand #Bottom_left,
+.navbar-brand #Upper_right_wing,
+.navbar-brand #Upper_right,
+.navbar-brand #Lower_right_wing,
+.navbar-brand #Bottom_right {
     animation: none !important;
     transform: none !important;
 }
-/* Redimensionnement élégant du logo dans la barre de navigation */
-.navbar-brand img, .navbar-brand svg {
-    height: 45px !important; /* Hauteur maximale fixe (tu pourras ajuster entre 40px et 55px selon tes goûts) */
-    width: auto !important; /* Garde les proportions intactes */
-    object-fit: contain;
+/* On remonte la lame de l'épée pour combler le trou du texte dans la Navbar */
+.navbar-brand #Lower_body {
+    transform: translateY(-130px) !important; 
 }

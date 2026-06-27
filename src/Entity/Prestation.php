@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PrestationRepository::class)]
-#[Vich\Uploadable] // L'attribut est collé juste au-dessus de la classe
+#[Vich\Uploadable]
 class Prestation
 {
     #[ORM\Id]
@@ -30,12 +30,28 @@ class Prestation
 
     #[ORM\Column]
     private ?int $duree = null;
+    
+    // --- NOUVEAU CHAMP ICÔNE ---
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $icone = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'prestation', orphanRemoval: true)]
     private Collection $Entrée;
+
+    // Ce champ ne va pas dans la base de données, il sert juste à manipuler le fichier uploadé
+    #[Vich\UploadableField(mapping: 'prestations_images', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+
+    // Ce champ va dans la base de données pour stocker le nom (ex: mon-image-64a2b.jpg)
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageName = null;
+
+    // VichUploader a besoin de savoir quand l'image a été modifiée pour forcer la mise à jour
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -95,6 +111,19 @@ class Prestation
         return $this;
     }
 
+    // --- GETTER & SETTER POUR L'ICÔNE ---
+    public function getIcone(): ?string
+    {
+        return $this->icone;
+    }
+
+    public function setIcone(?string $icone): static
+    {
+        $this->icone = $icone;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Reservation>
      */
@@ -124,17 +153,6 @@ class Prestation
 
         return $this;
     }
-    // Ce champ ne va pas dans la base de données, il sert juste à manipuler le fichier uploadé
-    #[Vich\UploadableField(mapping: 'prestations_images', fileNameProperty: 'imageName')]
-    private ?File $imageFile = null;
-
-    // Ce champ va dans la base de données pour stocker le nom (ex: mon-image-64a2b.jpg)
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $imageName = null;
-
-    // VichUploader a besoin de savoir quand l'image a été modifiée pour forcer la mise à jour
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     public function setImageFile(?File $imageFile = null): void
     {
@@ -160,6 +178,7 @@ class Prestation
     {
         return $this->imageName;
     }
+
     public function __toString(): string
     {
         // On affiche simplement le nom de la prestation

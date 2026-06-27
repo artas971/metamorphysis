@@ -1,121 +1,203 @@
 {% extends 'base.html.twig' %}
 
- {% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
+{% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
 
 {% block meta %}
     {% if page.metaDescription %}
         <meta name="description" content="{{ page.metaDescription }}">
     {% else %}
-        {# Une description de secours au cas où la cliente oublie de remplir le champ #}
         <meta name="description" content="Découvrez nos prestations premium et notre univers exclusif sur Metamorphysis.">
     {% endif %}
 {% endblock %}
 
- {% block body %}
-<div class="container mt-5 pt-5 mb-5">
-    
-    {# Le titre global de la page #}
-    <h1 class="text-center text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
+{% block body %}
 
-    {# 
-       LA MAGIE : On boucle sur les sections de la page, 
-       et on les trie automatiquement par leur numéro d'ordre (1, 2, 3...) 
-    #}
-    {% for section in page.sections|sort((a, b) => a.ordre <=> b.ordre) %}
+{# On masque le grand titre H1 UNIQUEMENT si on est sur la page d'accueil #}
+{% if page.slug != 'accueil' and page.slug != 'accueil2' %}
+    <div class="container mt-5 pt-5">
+        <h1 class="text-center text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
+    </div>
+{% endif %}
+
+{# LA BOUCLE DES BLOCS #}
+{% for section in page.sections|sort((a, b) => a.ordre <=> b.ordre) %}
+    
+    <{{ section.baliseHtml|default('section') }} class="container py-5 mt-5">
         
-        <div class="section-bloc mb-5 pb-4">
-            
-            {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
-            {% if section.disposition == 'texte_centre' %}
-                <div class="row justify-content-center">
+        {% if section.titre is defined and section.titre is not null %}
+            <div class="mb-5">
+                <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">{{ section.titre }}</h2>
+            </div>
+        {% endif %}
+
+        {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
+        {% if section.disposition == 'texte_centre' %}
+            <div class="row justify-content-center">
+                <div class="col-12 text-ivory content-premium text-center">
+                    {{ section.contenu|raw }}
+                </div>
+            </div>
+
+        {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
+        {% elseif section.disposition == 'img_gauche' %}
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7 position-relative mt-5 mt-lg-0">
+                    <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;"></div>
+                    
+                    {% if section.media %}
+                        <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                             alt="Illustration" 
+                             class="img-fluid position-relative z-1 shadow-lg" 
+                             style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                    {% endif %}
+                </div>
+                <div class="col-lg-5 text-ivory content-premium text-start">
+                    {{ section.contenu|raw }}
+                </div>
+            </div>
+
+        {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
+        {% elseif section.disposition == 'img_droite' %}
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start">
+                    {{ section.contenu|raw }}
+                </div>
+                
+                <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0">
+                    <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;"></div>
+                    
+                    {% if section.media %}
+                        <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
+                             alt="Illustration" 
+                             class="img-fluid position-relative z-1 shadow-lg" 
+                             style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                    {% endif %}
+                </div>
+            </div>
+
+        {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
+        {% elseif section.disposition == 'banniere' %}
+            <div class="row justify-content-center">
+                <div class="col-12 text-center mb-4">
+                    {% if section.media %}
+                        <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                             alt="Bannière" 
+                             class="img-fluid w-100 shadow-lg" 
+                             style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
+                    {% endif %}
+                </div>
+                {% if section.contenu %}
                     <div class="col-lg-8 text-ivory content-premium text-center">
                         {{ section.contenu|raw }}
                     </div>
-                </div>
+                {% endif %}
+            </div>
 
-            {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
-            {% elseif section.disposition == 'img_gauche' %}
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-md-5 mb-4 mb-md-0 text-center text-md-end pr-md-4">
-                        {% if section.media %}
-                            <img src="{{ asset('uploads/pages/' ~ section.media) }}" 
-                                 alt="Illustration" 
-                                 class="img-fluid shadow-lg" 
-                                 style="border: 1px solid var(--meta-gold); {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-5 text-ivory content-premium text-start pl-md-4">
-                        {{ section.contenu|raw }}
-                    </div>
-                </div>
-
-            {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
-            {% elseif section.disposition == 'img_droite' %}
-                <div class="row align-items-center justify-content-center">
-                    {# On utilise les classes "order" de Bootstrap pour inverser l'ordre sur mobile #}
-                    <div class="col-md-5 order-2 order-md-1 text-ivory content-premium text-start pr-md-4">
-                        {{ section.contenu|raw }}
-                    </div>
-                    <div class="col-md-5 order-1 order-md-2 mb-4 mb-md-0 text-center text-md-start pl-md-4">
-                        {% if section.media %}
-                            <img src="{{ asset('uploads/pages/' ~ section.media) }}" 
-                                 alt="Illustration" 
-                                 class="img-fluid shadow-lg" 
-                                 style="border: 1px solid var(--meta-gold); {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                        {% endif %}
-                    </div>
-                </div>
-
-            {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
-            {% elseif section.disposition == 'banniere' %}
-                <div class="row justify-content-center">
-                    <div class="col-12 text-center mb-4">
-                        {% if section.media %}
-                            <img src="{{ asset('uploads/pages/' ~ section.media) }}" 
-                                 alt="Bannière" 
-                                 class="img-fluid w-100 shadow-lg" 
-                                 style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
-                        {% endif %}
-                    </div>
-                    {% if section.contenu %}
-                        <div class="col-lg-8 text-ivory content-premium text-center">
-                            {{ section.contenu|raw }}
-                        </div>
-                    {% endif %}
-                </div>
+        {# --- DISPOSITION 5 : SLIDER DES PRESTATIONS --- #}
+        {% elseif section.disposition == 'slider_prestations' %}
+            
+            {% if section.contenu %}
+                <div class="mb-4">{{ section.contenu|raw }}</div>
             {% endif %}
 
-        </div>
-        
-    {% endfor %}
-    
-</div>
+            <div class="prestation-slider-container">
+                <button class="slider-btn slider-btn-left" id="btn-prev" aria-label="Précédent">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
 
+                <div class="prestation-track" id="slider-track">
+                    {# LA MODIFICATION EST ICI : On boucle sur les prestations liées à la section spécifique #}
+                    {% for prestation in section.prestations %}
+                        <div class="prestation-card-item">
+                            <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
+                                <div class="mb-4 mt-2">
+                                    <i class="bi bi-person text-gold fs-3"></i>
+                                </div>
+                                <h3 class="text-gold typo-symbolic fs-6 text-uppercase mb-3">{{ prestation.nom }}</h3>
+                                <p class="text-sage small flex-grow-1 px-2 mb-4">
+                                    {{ prestation.description|striptags|length > 90 ? prestation.description|striptags|slice(0, 90) ~ '...' : prestation.description|striptags }}
+                                </p>
+                                <hr class="border-sage w-50 mx-auto mb-4">
+                                <p class="text-gold small mb-4" style="letter-spacing: 1px;">
+                                    {{ prestation.prix }} € / SÉANCE
+                                </p>
+                                <div class="mt-auto">
+                                    <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="text-gold small text-decoration-none text-uppercase fw-bold" style="letter-spacing: 1px;">
+                                        DÉCOUVRIR <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-sage fst-italic">Aucune prestation sélectionnée pour ce bloc.</div>
+                    {% endfor %}
+                </div>
+
+                <button class="slider-btn slider-btn-right" id="btn-next" aria-label="Suivant">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+
+        {# --- DISPOSITION 6 : INFO PRATIQUE (NOUVEAU) --- #}
+        {% elseif section.disposition == 'info_pratique' %}
+            
+            <div class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
+                <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
+                    <i class="bi bi-flower1 text-gold fs-4"></i>
+                </div>
+                
+                {# Le texte et le lien seront gérés via le champ "contenu" #}
+                <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
+                    {{ section.contenu|raw }}
+                </div>
+            </div>
+            
+            {# La mention de type "Sécurité sociale" sera gérée via le champ "titre" #}
+            {% if section.titre %}
+            <div class="text-center mt-5">
+                <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
+            </div>
+            {% endif %}
+            
+        {% endif %}
+
+    </{{ section.baliseHtml|default('section') }}>
+    
+{% endfor %}
+
+{# SÉCURISATION CSS POUR LE CONTENU DYNAMIQUE #}
 <style>
-    /* Sécurisation visuelle de la charte graphique générée par le client */
-    .content-premium p {
-        line-height: 1.8;
-        margin-bottom: 1.2rem;
-        font-weight: 300;
-    }
+    .content-premium p { margin-bottom: 1.5rem; }
+    
+    /* ATTENTION : Le text-transform: uppercase a été retiré ici pour respecter ta casse ! */
     .content-premium h2, .content-premium h3 {
         color: var(--meta-gold);
         font-family: var(--font-title), serif;
         margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
+        margin-bottom: 1.5rem;
         letter-spacing: 2px;
-        font-size: 1.5rem;
-    }
-    .content-premium a {
-        color: var(--meta-gold);
-        text-decoration: none;
-        border-bottom: 1px solid rgba(184, 154, 99, 0.3);
-        transition: all 0.3s ease;
-    }
-    .content-premium a:hover {
-        border-bottom-color: var(--meta-gold);
-        color: #FFF;
     }
 </style>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const track = document.getElementById('slider-track');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+
+            if (track && btnPrev && btnNext) {
+                const scrollAmount = 412; 
+                btnNext.addEventListener('click', () => {
+                    track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+                btnPrev.addEventListener('click', () => {
+                    track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
 {% endblock %}

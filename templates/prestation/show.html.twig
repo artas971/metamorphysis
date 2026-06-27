@@ -5,30 +5,36 @@
 {% block body %}
 <div class="container mt-5 mb-5">
     
-    {# Bouton de retour épuré #}
+    {# Bouton de retour épuré vers l'accueil (Splash Screen passé) #}
     <div class="mb-4">
-        <a href="{{ path('app_prestation_index') }}" class="text-gold text-decoration-none transition-hover d-inline-block">
-            <i class="bi bi-arrow-left me-2"></i>Retour aux prestations
+        <a href="{{ path('app_accueil') }}" class="text-gold text-decoration-none transition-hover d-inline-block">
+            <i class="bi bi-arrow-left me-2"></i>Retour
         </a>
     </div>
 
-    {# On limite la largeur sur grand écran avec col-lg-10 pour ne pas écraser l'utilisateur #}
+    {# On limite la largeur sur grand écran #}
     <div class="row justify-content-center">
         <div class="col-lg-10">
             
-            <div class="card-premium shadow-lg overflow-hidden">
-                <div class="row g-0"> {# g-0 enlève les gouttières (espaces) entre les colonnes #}
+            <div class="card-premium shadow-lg overflow-hidden position-relative">
+                
+                {# LA TOUCHE LUXE : L'icône en filigrane géant en arrière-plan #}
+                <i class="bi {{ prestation.icone|default('bi-star') }} position-absolute text-gold" style="font-size: 25rem; opacity: 0.03; bottom: -50px; right: -20px; z-index: 0; pointer-events: none;"></i>
+
+                <div class="row g-0 position-relative z-1"> 
                     
                     {# 1. COLONNE IMAGE (Plus étroite : col-md-5) #}
-                    <div class="col-md-5">
+                    <div class="col-md-5 d-flex">
                         {% if prestation.imageName %}
                             <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
-                                 alt="{{ prestation.nom }}" 
-                                 class="img-fluid w-100" 
-                                 style="height: 100%; min-height: 400px; max-height: 600px; object-fit: cover; border-right: 1px solid rgba(184, 154, 99, 0.2);">
+                                alt="{{ prestation.nom }}" 
+                                class="img-fluid w-100" 
+                                style="height: 100%; min-height: 400px; max-height: 600px; object-fit: contain; border-right: 1px solid rgba(184, 154, 99, 0.2);">
                         {% else %}
-                            <div class="bg-grad-subtle h-100 d-flex align-items-center justify-content-center" 
+                            <div class="bg-grad-subtle h-100 d-flex flex-column align-items-center justify-content-center" 
                                  style="min-height: 400px; border-right: 1px solid rgba(184, 154, 99, 0.2);">
+                                {# On affiche l'icône choisie au centre s'il n'y a pas d'image #}
+                                <i class="bi {{ prestation.icone|default('bi-star') }} text-gold opacity-50 mb-3" style="font-size: 4rem;"></i>
                                 <span class="text-gold typo-symbolic opacity-50">METAMORPHYSIS</span>
                             </div>
                         {% endif %}
@@ -37,10 +43,15 @@
                     {# 2. COLONNE TEXTE (Plus large : col-md-7) #}
                     <div class="col-md-7 d-flex flex-column p-4 p-md-5">
                         
+                        {# Petite icône de rappel en haut du texte #}
+                        <div class="mb-2">
+                            <i class="bi {{ prestation.icone|default('bi-star') }} text-gold fs-2"></i>
+                        </div>
+
                         {# En-tête : Titre et Prix #}
                         <div class="d-flex justify-content-between align-items-start mb-4">
                             <h1 class="text-gold typo-titre mb-0" style="font-size: 2.5rem;">{{ prestation.nom }}</h1>
-                            <span class="text-ivory fs-4 fw-light whitespace-nowrap ms-3">{{ prestation.prix }} €</span>
+                            <span class="text-ivory fs-4 fw-light text-nowrap ms-3">{{ prestation.prix }} €</span>
                         </div>
 
                         {# Durée #}
@@ -49,14 +60,15 @@
                         </p>
 
                         {# Description détaillée #}
-                        <div class="text-ivory flex-grow-1" style="font-size: 1.1rem; line-height: 1.8;">
+                        <div class="text-ivory flex-grow-1" style="font-size: 1.1rem; line-height: 1.8; font-weight: 300;">
                             {{ prestation.description|raw }}
                         </div>
 
                         {# Bloc d'action poussé en bas #}
                         <div class="mt-5 pt-4" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
-                            <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-premium w-100 py-3 fw-bold fs-5 text-uppercase">
-                                Réserver ce soin
+                            {# J'ai appliqué ta classe .btn-gold pour le faire ressortir un maximum #}
+                            <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" class="btn btn-gold w-100 py-3 fw-bold fs-5 text-uppercase" style="letter-spacing: 2px;">
+                                Réserver cette séance
                             </a>
                         </div>
                         

@@ -3,19 +3,38 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Page;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PageCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return Page::class;
+    }
+
+    // L'AJOUT EST ICI : La configuration du bouton d'aperçu
+    public function configureActions(Actions $actions): Actions
+    {
+        // On crée une action personnalisée
+        $previewAction = Action::new('preview', 'Voir l\'aperçu', 'fa fa-eye')
+            ->linkToRoute('app_page_preview', function (Page $page) {
+                return ['slug' => $page->getSlug()];
+            })
+            ->setHtmlAttributes(['target' => '_blank']); // Ouvre dans un nouvel onglet
+
+        return $actions
+            // On ajoute le bouton sur la liste des pages
+            ->add(Crud::PAGE_INDEX, $previewAction)
+            // On ajoute le bouton sur la page de modification
+            ->add(Crud::PAGE_EDIT, $previewAction);
     }
 
     public function configureFields(string $pageName): iterable
@@ -25,18 +44,19 @@ class PageCrudController extends AbstractCrudController
             BooleanField::new('isPublished', 'Publier la page (En ligne)')
                 ->setHelp('Si décoché, la page restera en mode Brouillon (invisible pour le public).'),
             
-// L'astuce est le setTargetFieldName('titre') qui copie le titre et le transforme en slug !
             SlugField::new('slug', 'URL de la page (Slug)')
                 ->setTargetFieldName('titre')
                 ->setHelp('Se remplit automatiquement d\'après le titre.'),
+                
             TextareaField::new('metaDescription', 'Description SEO (Google)')
-                            ->setHelp('Texte de 150 caractères max résumant la page pour les moteurs de recherche.')
-                            ->setRequired(false),               
+                ->setHelp('Texte de 150 caractères max résumant la page pour les moteurs de recherche.')
+                ->setRequired(false),               
+                
             BooleanField::new('afficherMenu', 'Afficher dans la barre de navigation')
              ->setHelp('Cochez cette case pour que le lien apparaisse en haut du site.'),
             
-            // LA MAGIE EST ICI : On intègre le formulaire des Sections dans la Page !
-            CollectionField::new('sections', 'Constructeur de blocs')
+            // Le CollectionField du Page Builder
+            CollectionField::new('sections', 'Constructeur de blocs (Page Builder)')
                 ->useEntryCrudForm(SectionCrudController::class)
                 ->setHelp('Ajoutez différents blocs pour construire le design de votre page.')
         ];

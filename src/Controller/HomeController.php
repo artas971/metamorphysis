@@ -20,4 +20,14 @@ class HomeController extends AbstractController
             'prestations' => $prestations,
         ]);
     }
+    #[Route('/accueil', name: 'app_accueil')]
+        public function accueil(PrestationRepository $prestationRepository): Response
+        {
+            // On récupère toutes les prestations actives dans la base de données
+            $prestations = $prestationRepository->findAll();
+
+            return $this->render('home/accueil.html.twig', [
+                'prestations' => $prestations, // On envoie les données à la page
+            ]);
+        }
 }

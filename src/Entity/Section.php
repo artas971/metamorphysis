@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SectionRepository;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -38,12 +39,19 @@ class Section
 
     #[ORM\Column(nullable: true)]
     private ?int $hauteurMedia = null;
+ 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $titre = null;
+    // À ajouter avec tes autres propriétés
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $baliseHtml = 'section';
 
 
     public function __construct()
     {
         $this->disposition = 'texte_centre';
         $this->ordre = 0;
+        $this->prestations = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -146,6 +154,12 @@ class Section
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, Prestation>
+     */
+    #[ORM\ManyToMany(targetEntity: Prestation::class)]
+    private Collection $prestations;
+
     // 5. Ajoute les Getters et Setters tout en bas de la classe
     public function setImageFile(?File $imageFile = null): void
     {
@@ -168,6 +182,56 @@ class Section
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(?string $titre): static
+    {
+        $this->titre = $titre;
+
+        return $this;
+    }
+
+    // À ajouter tout en bas avec tes autres méthodes
+    public function getBaliseHtml(): ?string
+    {
+        return $this->baliseHtml;
+    }
+
+    public function setBaliseHtml(?string $baliseHtml): static
+    {
+        $this->baliseHtml = $baliseHtml;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Prestation>
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestation $prestation): static
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations->add($prestation);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestation $prestation): static
+    {
+        $this->prestations->removeElement($prestation);
+
         return $this;
     }
 }
