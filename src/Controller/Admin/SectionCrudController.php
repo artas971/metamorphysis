@@ -35,22 +35,6 @@ class SectionCrudController extends AbstractCrudController
                     'Bloc Info Pratique (Fleur & Note)' => 'info_pratique', // <-- NOUVELLE LIGNE // <-- LA NOUVELLE LIGNE EST ICI
                 ])
                 ->setRequired(true)
-<<<<<<< Updated upstream
-                ->renderExpanded(false),
-
-            // 2. L'ORDRE
-            IntegerField::new('ordre', 'Position (ex: 1, 2, 3...)')
-                ->setHelp('Définit l\'ordre d\'affichage de ce bloc de haut en bas sur la page.'),
-
-            // 3. LE TEXTE
-            TextField::new('titre', 'Titre de la section (Optionnel)'),
-            TextareaField::new('contenu', 'Texte (HTML autorisé)')
-                ->setNumOfRows(8)
-                ->setRequired(false)
-                ->setHelp('Tu peux utiliser des balises HTML basiques comme <b> pour le gras ou <br> pour sauter une ligne.'),
-
-            // 4. L'IMAGE (Via VichUploader)
-=======
                 ->setEmptyData('texte_centre') // Force cette valeur si vide
                 ->renderExpanded(false),
             
@@ -58,7 +42,6 @@ class SectionCrudController extends AbstractCrudController
                 ->setNumOfRows(8)
                 ->setRequired(false),
                             
->>>>>>> Stashed changes
             Field::new('imageFile', 'Image')
                 ->setFormType(VichImageType::class)
                 ->setRequired(false)
