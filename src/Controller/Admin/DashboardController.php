@@ -24,10 +24,12 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        
-        // Redirection par défaut vers les réservations
-        return $this->redirect($adminUrlGenerator->setController(ReservationCrudController::class)->generateUrl());
-    }
+        return $this->render('admin/dashboard.html.twig', [
+                'url_reservations' => $adminUrlGenerator->setController(ReservationCrudController::class)->setAction('index')->generateUrl(),
+                'url_pages' => $adminUrlGenerator->setController(PageCrudController::class)->setAction('index')->generateUrl(),
+                'url_prestations' => $adminUrlGenerator->setController(PrestationCrudController::class)->setAction('index')->generateUrl(),
+            ]);        
+         }
 
     public function configureDashboard(): Dashboard
     {

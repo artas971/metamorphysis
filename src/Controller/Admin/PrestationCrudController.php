@@ -3,14 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Prestation;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 
 class PrestationCrudController extends AbstractCrudController
 {
@@ -19,29 +21,40 @@ class PrestationCrudController extends AbstractCrudController
         return Prestation::class;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Prestation')
+            ->setEntityLabelInPlural('Prestations')
+            ->setHelp('index', 'Gérez ici votre catalogue de soins. Les modifications sont instantanément répercutées sur votre site public.');
+    }
+
     public function configureFields(string $pageName): iterable
     {
         return [
-            // On rend le nom obligatoire
             TextField::new('nom', 'Nom de la prestation')
                 ->setRequired(true),
 
-            // On rend le prix obligatoire
-            NumberField::new('prix', 'Prix (€)')
-                ->setNumDecimals(2)
+            MoneyField::new('prix', 'Tarif')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
                 ->setRequired(true)
-                ->setHelp('Exemple : 49.99'),
+                ->setHelp('Le prix sera affiché avec le symbole € automatiquement.'),
 
-            // On rend la durée obligatoire
-            IntegerField::new('duree', 'Durée (en minutes)')
-                ->setRequired(true)
-                ->setHelp('Exemple : 60 pour 1 heure'),
+            IntegerField::new('duree', 'Durée (minutes)')
+                ->setRequired(true),
 
-            TextEditorField::new('description', 'Description détaillée'),
+            // Ajout du bouton magique pour la mise en avant
+            BooleanField::new('estMisEnAvant', 'Mise en avant')
+                ->renderAsSwitch(true)
+                ->setHelp('Activez cette option pour afficher ce soin en tête de liste sur la page d\'accueil.'),
 
-            ImageField::new('imageName', 'Aperçu de l\'image')
+            TextEditorField::new('description', 'Description détaillée')
+                ->setNumOfRows(10),
+
+            ImageField::new('imageName', 'Aperçu')
                 ->setBasePath('/uploads/prestations')
-                ->hideOnForm(),
+                ->onlyOnIndex(),
 
             TextField::new('imageFile', 'Télécharger une image')
                             ->setFormType(VichImageType::class)
@@ -63,6 +76,10 @@ class PrestationCrudController extends AbstractCrudController
                 ])
                 ->renderExpanded()
                 ->setHelp('Choisissez l\'icône qui s\'affichera sur la carte de la page d\'accueil.'),
+            TextField::new('imageFile', 'Image du soin')
+                ->setFormType(VichImageType::class)
+                ->onlyOnForms()
+                ->setHelp('Téléchargez une photo de haute qualité pour illustrer ce soin.'),
         ];
         
     }

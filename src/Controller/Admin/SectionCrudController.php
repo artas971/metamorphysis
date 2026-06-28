@@ -22,7 +22,9 @@ class SectionCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            // 1. LE DESIGN
+            IntegerField::new('ordre', 'Position')
+                ->setHelp('Définit l\'ordre d\'affichage sur la page.'),
+            
             ChoiceField::new('disposition', 'Design de la section')
                 ->setChoices([
                     'Texte centré (Classique)' => 'texte_centre',
@@ -33,6 +35,7 @@ class SectionCrudController extends AbstractCrudController
                     'Bloc Info Pratique (Fleur & Note)' => 'info_pratique', // <-- NOUVELLE LIGNE // <-- LA NOUVELLE LIGNE EST ICI
                 ])
                 ->setRequired(true)
+<<<<<<< Updated upstream
                 ->renderExpanded(false),
 
             // 2. L'ORDRE
@@ -47,6 +50,15 @@ class SectionCrudController extends AbstractCrudController
                 ->setHelp('Tu peux utiliser des balises HTML basiques comme <b> pour le gras ou <br> pour sauter une ligne.'),
 
             // 4. L'IMAGE (Via VichUploader)
+=======
+                ->setEmptyData('texte_centre') // Force cette valeur si vide
+                ->renderExpanded(false),
+            
+            TextareaField::new('contenu', 'Texte (HTML autorisé)')
+                ->setNumOfRows(8)
+                ->setRequired(false),
+                            
+>>>>>>> Stashed changes
             Field::new('imageFile', 'Image')
                 ->setFormType(VichImageType::class)
                 ->setRequired(false)

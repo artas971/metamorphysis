@@ -35,6 +35,9 @@ class Prestation
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $icone = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $estMisEnAvant = false;
+
     /**
      * @var Collection<int, Reservation>
      */
@@ -183,5 +186,16 @@ class Prestation
     {
         // On affiche simplement le nom de la prestation
         return $this->nom;
+    }
+ 
+    public function isEstMisEnAvant(): bool
+    {
+        return $this->estMisEnAvant;
+    }
+
+    public function setEstMisEnAvant(bool $estMisEnAvant): self
+    {
+        $this->estMisEnAvant = $estMisEnAvant;
+        return $this;
     }
 }

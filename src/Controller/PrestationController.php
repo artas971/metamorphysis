@@ -15,8 +15,7 @@ class PrestationController extends AbstractController
     public function index(PrestationRepository $prestationRepository): Response
     {
         // On va chercher toutes les prestations dans la base de données
-        $prestations = $prestationRepository->findAll();
-
+            $prestations = $prestationRepository->findBy([], ['estMisEnAvant' => 'DESC', 'nom' => 'ASC']);
         return $this->render('prestation/index.html.twig', [
             'prestations' => $prestations,
         ]);

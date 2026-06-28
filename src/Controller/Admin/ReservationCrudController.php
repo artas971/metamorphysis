@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField; 
 class ReservationCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -44,29 +44,36 @@ class ReservationCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
 
-            // On affiche le client, mais on bloque la modification
+            // Le client
             AssociationField::new('user', 'Client')
                 ->setDisabled(true),
 
-            // On affiche la prestation, mais on bloque la modification
+            // Téléphone (Uniquement en index)
+            TextField::new('user.telephone', 'Téléphone Client')
+                ->formatValue(function ($value, $entity) {
+                    return $entity->getUser() ? $entity->getUser()->getTelephone() : 'Non renseigné';
+                })
+                ->onlyOnIndex(),
+
+            // La prestation
             AssociationField::new('prestation', 'Soin réservé')
                 ->setDisabled(true),
 
-            // La date reste modifiable si l'admin veut décaler le RDV en accord avec le client
+            // La date
             DateTimeField::new('dateRendezVous', 'Date et Heure du RDV')
                 ->setFormat('dd/MM/yyyy HH:mm'),
 
-            // Le statut avec le système de badges colorés
+            // Le statut avec badges
             ChoiceField::new('statut', 'Statut de la demande')
                 ->setChoices([
                     'En attente' => 'En attente',
-                    'Confirmé' => 'Confirmé',
-                    'Annulé' => 'Annulé',
+                    'Confirmé'   => 'Confirmé',
+                    'Annulé'     => 'Annulé',
                 ])
                 ->renderAsBadges([
-                    'En attente' => 'warning', // Jaune
-                    'Confirmé' => 'success', // Vert
-                    'Annulé' => 'danger',    // Rouge
+                    'En attente' => 'warning',
+                    'Confirmé'   => 'success',
+                    'Annulé'     => 'danger',
                 ]),
         ];
     }
