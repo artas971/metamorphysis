@@ -42,17 +42,35 @@ class Section
  
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre = null;
-    // À ajouter avec tes autres propriétés
+    
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $baliseHtml = 'section';
+    
+    // La bonne propriété $etapes, unique et bien configurée
+    #[ORM\OneToMany(mappedBy: 'section', targetEntity: Etape::class, orphanRemoval: true, cascade: ['persist'])]
+    private Collection $etapes;
 
+    #[Vich\UploadableField(mapping: 'pages_images', fileNameProperty: 'media')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Prestation>
+     */
+    #[ORM\ManyToMany(targetEntity: Prestation::class)]
+    private Collection $prestations;
 
     public function __construct()
     {
         $this->disposition = 'texte_centre';
         $this->ordre = 0;
         $this->prestations = new ArrayCollection();
+        $this->etapes = new ArrayCollection();
     }
+
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -141,26 +159,23 @@ class Section
 
         return $this;
     }
+    
     public function __toString(): string
     {
-        // Cela affichera "Bloc - texte_centre" ou "Bloc - img_gauche" par exemple
-        return 'Bloc de type : ' . ($this->disposition ?? 'Nouveau');
+        $dispositionLabels = [
+            'texte_centre' => '📝 Texte centré',
+            'img_gauche' => '🖼️ Image à Gauche + Texte',
+            'img_droite' => '🖼️ Texte + Image à Droite',
+            'banniere' => '✨ Bannière pleine largeur',
+            'slider_prestations' => '🎠 Slider des Prestations',
+            'info_pratique' => '🌸 Bloc Info Pratique',
+        ];
+
+        $label = $dispositionLabels[$this->disposition] ?? 'Nouveau bloc';
+        
+        return sprintf('%s (Position %d)', $label, $this->ordre);
     }
-    // 3. Ajoute le champ virtuel pour le fichier
-    #[Vich\UploadableField(mapping: 'pages_images', fileNameProperty: 'media')]
-    private ?File $imageFile = null;
-
-    // 4. Ajoute un champ date de mise à jour (obligatoire pour que Vich fonctionne bien)
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
-
-    /**
-     * @var Collection<int, Prestation>
-     */
-    #[ORM\ManyToMany(targetEntity: Prestation::class)]
-    private Collection $prestations;
-
-    // 5. Ajoute les Getters et Setters tout en bas de la classe
+    
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;
@@ -198,7 +213,6 @@ class Section
         return $this;
     }
 
-    // À ajouter tout en bas avec tes autres méthodes
     public function getBaliseHtml(): ?string
     {
         return $this->baliseHtml;
@@ -231,6 +245,36 @@ class Section
     public function removePrestation(Prestation $prestation): static
     {
         $this->prestations->removeElement($prestation);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Etape>
+     */
+    public function getEtapes(): Collection
+    {
+        return $this->etapes;
+    }
+
+    public function addEtape(Etape $etape): static
+    {
+        if (!$this->etapes->contains($etape)) {
+            $this->etapes->add($etape);
+            $etape->setSection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtape(Etape $etape): static
+    {
+        if ($this->etapes->removeElement($etape)) {
+            // set the owning side to null (unless already changed)
+            if ($etape->getSection() === $this) {
+                $etape->setSection(null);
+            }
+        }
 
         return $this;
     }

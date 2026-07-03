@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+
 class PageCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -20,6 +21,16 @@ class PageCrudController extends AbstractCrudController
         return Page::class;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Page')
+            ->setEntityLabelInPlural('Pages')
+            ->setPageTitle('index', 'Contenu des Pages')
+            
+            // La bulle d'aide pour l'image_9682da.png
+            ->setHelp('index', 'Créez de nouvelles pages ou modifiez l\'agencement et les textes de vos pages actuelles. Utilisez le Page Builder à l\'intérieur de chaque fiche pour structurer vos blocs de contenu.');
+    }
     // L'AJOUT EST ICI : La configuration du bouton d'aperçu
     public function configureActions(Actions $actions): Actions
     {
@@ -41,6 +52,7 @@ class PageCrudController extends AbstractCrudController
     {
         return [
             TextField::new('titre', 'Titre de la page'),
+            
             BooleanField::new('isPublished', 'Publier la page (En ligne)')
                 ->setHelp('Si décoché, la page restera en mode Brouillon (invisible pour le public).'),
             
@@ -53,12 +65,12 @@ class PageCrudController extends AbstractCrudController
                 ->setRequired(false),               
                 
             BooleanField::new('afficherMenu', 'Afficher dans la barre de navigation')
-             ->setHelp('Cochez cette case pour que le lien apparaisse en haut du site.'),
+                ->setHelp('Cochez cette case pour que le lien apparaisse en haut du site.'),
             
-            // Le CollectionField du Page Builder
-            CollectionField::new('sections', 'Constructeur de blocs (Page Builder)')
+            // Le CollectionField du Page Builder optimisé
+             CollectionField::new('sections', 'Constructeur de blocs (Page Builder)')
                 ->useEntryCrudForm(SectionCrudController::class)
-                ->setHelp('Ajoutez différents blocs pour construire le design de votre page.')
+                ->setHelp('💡 <b>Astuce :</b> Pour modifier l\'ordre d\'affichage sur le site, ouvrez un bloc, modifiez son numéro de "Position" (1, 2, 3...), puis sauvegardez la page.')
         ];
     }
 }

@@ -21,12 +21,13 @@ class ReservationCrudController extends AbstractCrudController
 
     // 1. Configuration globale (Titre et Tri)
     public function configureCrud(Crud $crud): Crud
-    {
-        return $crud
-            ->setEntityLabelInSingular('Réservation')
-            ->setEntityLabelInPlural('Réservations')
-            ->setDefaultSort(['dateRendezVous' => 'DESC']); // Trie par date décroissante
-    }
+        {
+            return $crud
+                ->setEntityLabelInSingular('Réservation')
+                ->setEntityLabelInPlural('Réservations')
+                ->setPageTitle('index', 'Suivi des Réservations') 
+                ->setHelp('index', 'Consultez et gérez les demandes de rendez-vous de vos clients. Vous pouvez valider les demandes en attente, suivre le statut des séances et garder un œil sur votre calendrier d\'activité en temps réel.');
+        }
 
     // 2. Configuration des boutons (Actions)
     public function configureActions(Actions $actions): Actions
@@ -77,4 +78,5 @@ class ReservationCrudController extends AbstractCrudController
                 ]),
         ];
     }
+    
 }

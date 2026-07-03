@@ -106,7 +106,6 @@
                 </button>
 
                 <div class="prestation-track" id="slider-track">
-                    {# LA MODIFICATION EST ICI : On boucle sur les prestations liées à la section spécifique #}
                     {% for prestation in section.prestations %}
                         <div class="prestation-card-item">
                             <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
@@ -138,7 +137,7 @@
                 </button>
             </div>
 
-        {# --- DISPOSITION 6 : INFO PRATIQUE (NOUVEAU) --- #}
+        {# --- DISPOSITION 6 : INFO PRATIQUE --- #}
         {% elseif section.disposition == 'info_pratique' %}
             
             <div class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
@@ -146,21 +145,58 @@
                     <i class="bi bi-flower1 text-gold fs-4"></i>
                 </div>
                 
-                {# Le texte et le lien seront gérés via le champ "contenu" #}
                 <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
                     {{ section.contenu|raw }}
                 </div>
             </div>
             
-            {# La mention de type "Sécurité sociale" sera gérée via le champ "titre" #}
             {% if section.titre %}
             <div class="text-center mt-5">
                 <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
             </div>
             {% endif %}
-            
-        {% endif %}
 
+        {# --- DISPOSITION 7 : CHEMINEMENT (DYNAMIQUE 3 OU 4 ÉTAPES) --- #}
+        {% elseif section.disposition == 'cheminement' %}
+            
+            {# 1. Twig compte le nombre d'étapes #}
+            {% set nb_etapes = section.etapes|length %}
+            
+            {# 2. Définition des variables selon le nombre d'étapes #}
+            {% if nb_etapes == 4 %}
+                {% set col_class = 'col-lg-3' %}
+                {% set line_left = '12.5%' %}
+                {% set line_width = '75%' %}
+            {% else %}
+                {# Si 3 étapes (ou autre), on centre sur 3 colonnes #}
+                {% set col_class = 'col-lg-4' %}
+                {% set line_left = '16.66%' %}
+                {% set line_width = '66.66%' %}
+            {% endif %}
+
+            {# Ajout de 'justify-content-center' pour sécuriser le centrage global #}
+            <div class="row g-4 justify-content-center position-relative pt-4">
+                
+                {# Trait horizontal de fond dynamique #}
+                <div class="d-none d-lg-block position-absolute" style="top: 59px; left: {{ line_left }}; width: {{ line_width }}; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
+                
+                {% for etape in section.etapes %}
+                    {# On injecte la variable 'col_class' dynamiquement #}
+                    <div class="col-12 col-md-6 {{ col_class }} text-center position-relative z-1">
+                        <div class="mb-3">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
+                                <i class="bi {{ etape.icone }} text-gold fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="text-gold typo-symbolic mb-1">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</div>
+                        <h4 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h4>
+                        <p class="text-sage small px-2">{{ etape.texte }}</p>
+                    </div>
+                    
+                {% endfor %}
+                
+            </div>
+        {% endif %}
     </{{ section.baliseHtml|default('section') }}>
     
 {% endfor %}
@@ -169,7 +205,6 @@
 <style>
     .content-premium p { margin-bottom: 1.5rem; }
     
-    /* ATTENTION : Le text-transform: uppercase a été retiré ici pour respecter ta casse ! */
     .content-premium h2, .content-premium h3 {
         color: var(--meta-gold);
         font-family: var(--font-title), serif;

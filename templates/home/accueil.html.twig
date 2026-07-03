@@ -12,9 +12,10 @@
         </h2>
     </div>
 
-    <div class="row g-4 position-relative pt-4">
+    <div class="row g-4 justify-content-center position-relative pt-4">
         
-        <div class="d-none d-lg-block position-absolute" style="top: 35px; left: 10%; right: 10%; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
+        {# Trait horizontal recalibré au centre exact pour 4 colonnes #}
+        <div class="d-none d-lg-block position-absolute" style="top: 59px; left: 12.5%; width: 75%; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
 
         <div class="col-12 col-md-6 col-lg-3 text-center position-relative z-1">
             <div class="mb-3">
@@ -62,107 +63,131 @@
 
     </div>
 </section>
+
 <section class="container py-5 mt-5">
-        <div class="row align-items-center g-5">
-            
-            <div class="col-lg-5">
-                <h2 class="text-ivory fw-light mb-4" style="font-size: 2.8rem; line-height: 1.3;">
-                    Chaque transformation<br>
-                    <span class="text-gold">commence par</span><br>
-                    une rencontre.
-                </h2>
-                
-                <p class="text-sage mb-4">Chaque parcours est unique.</p>
-                
-                <p class="text-sage mb-4">
-                    Certaines personnes viennent avec une problématique précise. D'autres ressentent simplement qu'un schéma se répète sans parvenir à l'expliquer.
-                </p>
-                
-                <p class="text-sage mb-5">
-                    Lors de la première rencontre, nous prenons le temps de comprendre votre situation afin de définir ensemble le rythme et l'orientation de l'accompagnement.
-                </p>
-                
-                <a href="{{ path('app_prestation_index') }}" class="btn btn-outline-gold px-4 py-2 text-uppercase rounded-0" style="letter-spacing: 2px; font-size: 0.8rem;">
-                    PRENDRE RENDEZ-VOUS <i class="bi {{ prestation.icone|default('bi-star') }} text-gold fs-3"></i>
-                </a>
-            </div>
-
-            <div class="col-lg-7 position-relative mt-5 mt-lg-0">
-                <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;"></div>
-                
-                <img src="{{ asset('images/fauteuils.jpg') }}" alt="Espace de consultation Metamorphysis" class="img-fluid position-relative z-1 shadow-lg" style="object-fit: cover; width: 100%; border-radius: 2px;">
-            </div>
-            
-        </div>
-    </section>
-    <section class="container py-5 mt-5 mb-5">
+    <div class="row align-items-center g-5">
         
-        <div class="mb-5">
-            <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
-                Les espaces d'accompagnement
+        <div class="col-lg-5">
+            <h2 class="text-ivory fw-light mb-4" style="font-size: 2.8rem; line-height: 1.3;">
+                Chaque transformation<br>
+                <span class="text-gold">commence par</span><br>
+                une rencontre.
             </h2>
-            <p class="text-sage">Différentes modalités pour répondre à vos besoins.</p>
+            
+            <p class="text-sage mb-4">Chaque parcours est unique.</p>
+            
+            <p class="text-sage mb-4">
+                Certaines personnes viennent avec une problématique précise. D'autres ressentent simplement qu'un schéma se répète sans parvenir à l'expliquer.
+            </p>
+            
+            <p class="text-sage mb-5">
+                Lors de la première rencontre, nous prenons le temps de comprendre votre situation afin de définir ensemble le rythme et l'orientation de l'accompagnement.
+            </p>
+            
+            <a href="{{ path('app_prestation_index') }}" class="btn btn-outline-gold px-4 py-2 text-uppercase rounded-0" style="letter-spacing: 2px; font-size: 0.8rem;">
+                PRENDRE RENDEZ-VOUS <i class="bi bi-star text-gold fs-5 align-middle ms-2"></i>
+            </a>
         </div>
 
-        <div class="prestation-slider-container">
-            <button class="slider-btn slider-btn-left" id="btn-prev" aria-label="Précédent">
+        <div class="col-lg-7 position-relative mt-5 mt-lg-0">
+            <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;"></div>
+            
+            <img src="{{ asset('images/fauteuils.jpg') }}" alt="Espace de consultation Metamorphysis" class="img-fluid position-relative z-1 shadow-lg" style="object-fit: cover; width: 100%; border-radius: 2px;">
+        </div>
+        
+    </div>
+</section>
+
+<section class="container py-5 mt-5 mb-5">
+    
+    <div class="mb-5">
+        <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
+            Les espaces d'accompagnement
+        </h2>
+        <p class="text-sage">Différentes modalités pour répondre à vos besoins.</p>
+    </div>
+
+    {% set nb_prestations = prestations|length %}
+
+    <div class="prestation-slider-container position-relative {% if nb_prestations > 5 %}px-5{% else %}px-5 px-lg-0{% endif %}">
+        
+        {% if nb_prestations > 1 %}
+            <button class="slider-btn position-absolute start-0 {% if nb_prestations <= 5 %}d-lg-none{% endif %}" id="btn-prev" aria-label="Précédent" style="top: 50%; transform: translateY(-50%); z-index: 10; background-color: var(--meta-black);">
                 <i class="bi bi-chevron-left"></i>
             </button>
+        {% endif %}
 
-            <div class="prestation-track" id="slider-track">
-                
-                {# LA BOUCLE SYMFONY : Pour chaque prestation en base de données, on crée une carte #}
-                {% for prestation in prestations %}
-                    <div class="prestation-card-item">
-                        <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
-                            
-                            <div class="mb-4 mt-2">
-                                <i class="bi bi-person text-gold fs-3"></i>
-                            </div>
-
-                            <h3 class="text-gold typo-symbolic fs-6 text-uppercase mb-3">{{ prestation.nom }}</h3>
-
-                            <p class="text-sage small flex-grow-1 px-2 mb-4">
-                                {{ prestation.description|length > 90 ? prestation.description|slice(0, 90) ~ '...' : prestation.description }}
-                            </p>
-
-                            <hr class="border-sage w-50 mx-auto mb-4">
-
-                            <p class="text-gold small mb-4" style="letter-spacing: 1px;">
-                                {{ prestation.prix }} € / SÉANCE
-                            </p>
-
-                            <div class="mt-auto">
-                                <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="text-gold small text-decoration-none text-uppercase fw-bold" style="letter-spacing: 1px;">
-                                    DÉCOUVRIR <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
+        <div class="prestation-track {% if nb_prestations <= 5 %}justify-content-lg-center{% endif %}" id="slider-track">
+            
+            {% for prestation in prestations %}
+                <div class="prestation-card-item">
+                    <div class="card h-100 rounded-0 text-center d-flex flex-column" style="background-color: transparent; border: 1px solid rgba(184, 154, 99, 0.3); padding: 2rem 1rem;">
+                        
+                        {# 1. Icône de profil dynamique entourée d'un cercle doré #}
+                        <div class="mb-4 mt-2 d-flex justify-content-center">
+                            <div class="rounded-circle border border-gold d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: rgba(184, 154, 99, 0.02);">
+                                <i class="bi {{ prestation.icone|default('bi-person') }} text-gold fs-4"></i>
                             </div>
                         </div>
-                    </div>
-                {% else %}
-                    <div class="text-sage fst-italic">Aucune prestation disponible pour le moment.</div>
-                {% endfor %}
-                
-            </div>
 
-            <button class="slider-btn slider-btn-right" id="btn-next" aria-label="Suivant">
+                        {# 2. Titre de la carte #}
+                        <h3 class="text-gold fs-6 text-uppercase mb-2" style="letter-spacing: 1px; font-family: var(--font-title), serif; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                            {{ prestation.nom }}
+                        </h3>
+
+                        {# 3. Le petit trait séparateur doré discret #}
+                        <hr class="mx-auto mb-4" style="width: 35px; height: 1px; background-color: var(--meta-gold); border: none; opacity: 0.4;">
+
+                        {# 4. Description nettoyée #}
+                        {% set desc_clean = prestation.description|striptags|replace({'&nbsp;': ' '}) %}
+                        <p class="text-sage small flex-grow-1 px-1 mb-4" style="font-size: 0.8rem; line-height: 1.5;">
+                            {{ desc_clean|length > 90 ? desc_clean|slice(0, 90) ~ '...' : desc_clean }}
+                        </p>
+
+                        {# 5. Prix avec unité dynamique (ex: SÉANCE, FORFAIT, MOIS) #}
+                        <p class="text-gold small mb-4" style="letter-spacing: 1px; font-size: 0.85rem;">
+                            {{ prestation.prix }} € / {{ prestation.unitePrix|default('SÉANCE')|upper }}
+                        </p>
+
+                        <div class="mt-auto">
+                            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="d-inline-block w-100 text-gold small text-decoration-none text-uppercase py-2" style="letter-spacing: 1px; background-color: var(--meta-pourpre, #21141C); transition: all 0.3s ease;">
+                                DÉCOUVRIR <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+        </div>
+
+        {% if nb_prestations > 1 %}
+            <button class="slider-btn position-absolute end-0 {% if nb_prestations <= 5 %}d-lg-none{% endif %}" id="btn-next" aria-label="Suivant" style="top: 50%; transform: translateY(-50%); z-index: 10; background-color: var(--meta-black);">
                 <i class="bi bi-chevron-right"></i>
             </button>
-        </div>
+        {% endif %}
+    </div>
 
-        <div class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
-            <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px;">
-                <i class="bi bi-flower1 text-gold fs-4"></i>
-            </div>
-            <p class="text-sage small mb-0">Le rythme et la durée de l'accompagnement sont définis ensemble lors de la première rencontre, en fonction de vos besoins et de vos objectifs.</p>
-            <a href="#" class="text-gold small text-decoration-none text-uppercase ms-md-auto text-nowrap" style="letter-spacing: 1px;">En savoir plus <i class="bi bi-arrow-right"></i></a>
+    {# Bandeau d'information pratique encadré #}
+    <div class="d-flex flex-column flex-md-row align-items-md-center gap-4 p-4 mt-5" style="border: 1px solid rgba(184, 154, 99, 0.3);">
+        <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
+            <i class="bi bi-flower1 text-gold fs-4"></i>
         </div>
-        
-        <div class="text-center mt-5">
-            <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Les séances ne sont pas remboursées par la sécurité sociale.</span>
-        </div>
-    </section>
-    {% block javascripts %}
+        <p class="text-sage small mb-0 flex-grow-1 text-center text-md-start">
+            Le rythme et la durée de l'accompagnement sont définis ensemble lors de la première rencontre, en fonction de vos besoins et de vos objectifs.
+        </p>
+        <a href="#" class="text-gold small text-decoration-none text-uppercase ms-md-auto text-nowrap" style="letter-spacing: 1px;">
+            En savoir plus <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+    
+    <div class="text-center mt-5">
+        <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Les séances ne sont pas remboursées par la sécurité sociale.</span>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -171,18 +196,19 @@
             const btnNext = document.getElementById('btn-next');
 
             if (track && btnPrev && btnNext) {
-                // Largeur de défilement à chaque clic (la taille d'une carte + la marge)
-                const scrollAmount = 412; 
-
                 btnNext.addEventListener('click', () => {
+                    // Calcule dynamiquement la largeur d'une carte + le gap de 15px
+                    const card = document.querySelector('.prestation-card-item');
+                    const scrollAmount = card.offsetWidth + 15; 
                     track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                 });
 
                 btnPrev.addEventListener('click', () => {
+                    const card = document.querySelector('.prestation-card-item');
+                    const scrollAmount = card.offsetWidth + 15;
                     track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
                 });
             }
         });
     </script>
-{% endblock %}
 {% endblock %}

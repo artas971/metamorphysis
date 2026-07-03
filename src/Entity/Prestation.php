@@ -31,9 +31,13 @@ class Prestation
     #[ORM\Column]
     private ?int $duree = null;
     
-    // --- NOUVEAU CHAMP ICÔNE ---
+    // --- CHAMP ICÔNE ---
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $icone = null;
+
+    // --- NOUVEAU CHAMP UNITÉ DE PRIX ---
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $unitePrix = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $estMisEnAvant = false;
@@ -123,6 +127,19 @@ class Prestation
     public function setIcone(?string $icone): static
     {
         $this->icone = $icone;
+
+        return $this;
+    }
+
+    // --- GETTER & SETTER POUR L'UNITÉ DE PRIX ---
+    public function getUnitePrix(): ?string
+    {
+        return $this->unitePrix;
+    }
+
+    public function setUnitePrix(?string $unitePrix): static
+    {
+        $this->unitePrix = $unitePrix;
 
         return $this;
     }

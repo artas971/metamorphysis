@@ -3,68 +3,94 @@
 {% block content_title %}Bienvenue sur votre Espace Metamorphysis{% endblock %}
 
 {% block main %}
-<div class="container-fluid mt-4">
-    {# Résumé rapide #}
+<div class="container-fluid mt-4" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+    
+    {# Message d'accueil chaleureux et guidage global #}
     <div class="row mb-5">
         <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-3">
+            <div class="card border-0 shadow-sm rounded-3" style="background-color: #111111; border-left: 4px solid #b89a63 !important;">
                 <div class="card-body p-5">
-                    <h2 class="fw-light mb-3">Bonjour ! Bienvenue dans votre cabinet digital.</h2>
-                    <p class="lead text-muted">
-                        Cet espace sécurisé a été conçu sur mesure pour vous permettre de piloter votre activité en toute simplicité.
-                        Utilisez le menu sur la gauche pour naviguer entre les différentes sections.
+                    <h2 class="fw-light mb-3" style="color: #f5f2eb; letter-spacing: 1px;">
+                        Bonjour {{ app.user.prenom|default('Aya') }}, bienvenue dans votre cabinet digital.
+                    </h2>
+                    <p class="lead" style="color: #adb5bd; max-width: 800px; font-size: 1.05rem; line-height: 1.6;">
+                        Cet espace sécurisé a été configuré sur mesure pour vous permettre de piloter l'ensemble de votre activité en toute autonomie. 
+                        Suivez le guide ci-dessous ou utilisez le menu latéral pour naviguer.
                     </p>
                 </div>
             </div>
         </div>
     </div>
 
-    {# Tes Cartes #}
+    {# Grille des piliers d'action de l'administration #}
     <div class="row g-4">
+        
         {# Carte 1 : Réservations #}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body p-4">
+            <div class="card h-100 border-0 shadow-sm" style="background-color: #161616; transition: transform 0.2s;">
+                <div class="card-body p-4 d-flex flex-column">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                        <div class="p-3 rounded-circle me-3" style="background: rgba(184, 154, 99, 0.1); color: #b89a63;">
                             <i class="fa-solid fa-calendar-check fs-4"></i>
                         </div>
-                        <h4 class="mb-0">Réservations</h4>
+                        <h4 class="mb-0 fw-normal" style="color: #f5f2eb;">Réservations</h4>
                     </div>
-                        <a href="{{ url_reservations }}" class="btn btn-outline-primary btn-sm">Gérer les réservations</a>
+                    <p class="small flex-grow-1" style="color: #8a998b; line-height: 1.5;">
+                        Consultez vos prochains rendez-vous, validez les demandes de vos clients et suivez l'historique de vos consultations en temps réel.
+                    </p>
+                    <div class="pt-3">
+                        <a href="{{ url_reservations }}" class="btn w-100" style="background-color: transparent; border: 1px solid #b89a63; color: #b89a63;">
+                            Gérer les rendez-vous
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
         
-        {# Carte 2 : Pages #}
+        {# Carte 2 : Pages (Page Builder) #}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body p-4">
+            <div class="card h-100 border-0 shadow-sm" style="background-color: #161616; transition: transform 0.2s;">
+                <div class="card-body p-4 d-flex flex-column">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle me-3">
+                        <div class="p-3 rounded-circle me-3" style="background: rgba(138, 153, 139, 0.1); color: #8a998b;">
                             <i class="fa-solid fa-file-lines fs-4"></i>
                         </div>
-                        <h4 class="mb-0">Pages (Textes)</h4>
+                        <h4 class="mb-0 fw-normal" style="color: #f5f2eb;">Contenu des Pages</h4>
                     </div>
-                     <a href="{{ url_pages }}" class="btn btn-outline-success btn-sm">Modifier le site</a>
+                    <p class="small flex-grow-1" style="color: #8a998b; line-height: 1.5;">
+                        Modifiez dynamiquement les textes, structurez vos blocs en 4 étapes et gérez la mise en page de l'accueil sans toucher au code.
+                    </p>
+                    <div class="pt-3">
+                        <a href="{{ url_pages }}" class="btn w-100" style="background-color: transparent; border: 1px solid #8a998b; color: #8a998b;">
+                            Modifier le site internet
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
         {# Carte 3 : Prestations #}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body p-4">
+            <div class="card h-100 border-0 shadow-sm" style="background-color: #161616; transition: transform 0.2s;">
+                <div class="card-body p-4 d-flex flex-column">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle me-3">
+                        <div class="p-3 rounded-circle me-3" style="background: rgba(184, 154, 99, 0.1); color: #b89a63;">
                             <i class="fa-solid fa-gem fs-4"></i>
                         </div>
-                        <h4 class="mb-0">Prestations</h4>
+                        <h4 class="mb-0 fw-normal" style="color: #f5f2eb;">Vos Prestations</h4>
                     </div>
-                   <a href="{{ url_prestations }}" class="btn btn-outline-warning btn-sm">Voir les prestations</a>
+                    <p class="small flex-grow-1" style="color: #8a998b; line-height: 1.5;">
+                        Mettez à jour vos offres de soins et d'accompagnement, ajustez vos tarifs, et déterminez quelles prestations afficher en priorité.
+                    </p>
+                    <div class="pt-3">
+                        <a href="{{ url_prestations }}" class="btn w-100" style="background-color: transparent; border: 1px solid #b89a63; color: #b89a63;">
+                            Gérer le catalogue d'offres
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

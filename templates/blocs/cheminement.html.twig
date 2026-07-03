@@ -1,0 +1,18 @@
+<div class="row g-4 position-relative pt-4">
+    {# Le trait horizontal #}
+    <div class="d-none d-lg-block position-absolute" style="top: 59px; left: 12.5%; width: 75%; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
+
+    {# La boucle pour afficher chaque étape #}
+    {% for etape in section.etapes %}
+    <div class="col-12 col-md-6 col-lg-3 text-center position-relative z-1">
+        <div class="mb-3">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
+                <i class="bi {{ etape.icone }} text-gold fs-3"></i>
+            </div>
+        </div>
+        <div class="text-gold typo-symbolic mb-1">{{ loop.index0 < 9 ? '0' : '' }}{{ loop.index }}</div>
+        <h4 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h4>
+        <p class="text-sage small px-2">{{ etape.texte }}</p>
+    </div>
+    {% endfor %}
+</div>

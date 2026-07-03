@@ -269,3 +269,50 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 .navbar-brand #Lower_body {
     transform: translateY(-130px) !important; 
 }
+
+ 
+    /* Le rail du carrousel */
+    .prestation-track {
+        display: flex;
+        overflow-x: hidden; /* Cache la barre de défilement */
+        gap: 15px; /* Espace entre les cartes */
+        padding: 10px 0;
+    }
+    
+    /* 5 cartes sur grand écran (100% / 5 - gap) */
+    .prestation-card-item {
+        flex: 0 0 auto;
+        width: calc(20% - 12px); 
+    }
+
+    /* 3 cartes sur tablette */
+    @media (max-width: 991px) {
+        .prestation-card-item { width: calc(33.333% - 10px); }
+    }
+
+    /* 1 carte sur mobile */
+    @media (max-width: 767px) {
+        .prestation-card-item { width: 100%; }
+    }
+
+    /* Boutons ronds dorés et discrets */
+    .slider-btn {
+        background: transparent;
+        border: 1px solid var(--meta-gold);
+        color: var(--meta-gold);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: 0.3s;
+    }
+    .slider-btn:hover {
+        background-color: rgba(184, 154, 99, 0.1);
+    }
+    .prestation-card-item a:hover {
+            background-color: var(--meta-gold) !important;
+            color: var(--meta-black) !important;
+        }
