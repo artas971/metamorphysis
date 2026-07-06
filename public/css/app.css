@@ -10,7 +10,7 @@
 :root {
     /* 1. Palette Haut de Gamme */
     --meta-black: #0A0A09;         
-    --meta-plum: #21141C;          
+    --meta-plum: #2A1A1E;          /* Nouveau pourpre validé */
     --meta-olive: #4A4F41;         
     --meta-sage: #727763;          
     --meta-gold: #B89A63;          
@@ -18,10 +18,10 @@
     --meta-gold-hover: #9c804f;    
     --meta-olive-hover: #5d6352;   
 
-    /* 2. DÉGRADÉS */
-    --grad-main: radial-gradient(ellipse at top center, #21141C 0%, #0A0A09 70%, #0A0A09 100%);
-    --grad-subtle: linear-gradient(135deg, rgba(33, 20, 28, 0.6) 0%, rgba(10, 10, 9, 0.8) 100%);
-
+    /* 2. DÉGRADÉS (Base Pourpre Graphiste & Cartes Kaki Olive) */
+    --grad-main: radial-gradient(ellipse at top center, #2A1A1E 0%, #0A0A09 75%, #0A0A09 100%);
+    --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.85) 0%, rgba(10, 10, 9, 0.95) 100%);
+ 
     /* 3. Typographie */
     --font-title: 'Cormorant Garamond', serif; 
     --font-body: 'Inter', sans-serif;
@@ -232,22 +232,40 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 .transition-hover { transition: transform 0.4s ease, box-shadow 0.4s ease; }
 .transition-hover:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(184, 154, 99, 0.15) !important; }
 .prestation-slider-container { width: 100%; position: relative; padding: 1rem 60px; }
-.prestation-track { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 2rem; padding-bottom: 1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
+.prestation-track { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 15px; padding-bottom: 1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
 .prestation-track::-webkit-scrollbar { display: none; }
-.slider-btn { position: absolute; top: 45%; transform: translateY(-50%); z-index: 10; width: 55px; height: 55px; border-radius: 50%; background-color: var(--meta-black); border: 1px solid var(--meta-gold); color: var(--meta-gold); cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.6); }
-.slider-btn:hover { background-color: var(--meta-gold); color: var(--meta-black); box-shadow: 0 0 20px rgba(184, 154, 99, 0.4); }
-.slider-btn-left { left: 0; }
-.slider-btn-right { right: 0; }
-.prestation-card-item { flex: 0 0 auto; width: 380px; scroll-snap-align: start; }
 
-@media (max-width: 768px) {
-    .prestation-slider-container { padding: 1rem 0; }
-    .prestation-card-item { width: 300px; }
-    .slider-btn { display: none !important; }
+/* =========================================
+   RECALIBRAGE STRUCTUREL RADICAL (4 Cartes)
+   ========================================= */
+
+/* Sur grand écran : on force le passage de 5 à 4 cartes par ligne */
+@media (min-width: 992px) {
+    .prestation-track .prestation-card-item {
+        width: calc(25% - 16px) !important;
+        flex: 0 0 calc(25% - 16px) !important;
+    }
+}
+
+/* Sur tablette : 3 cartes visibles */
+@media (max-width: 991px) and (min-width: 768px) {
+    .prestation-track .prestation-card-item {
+        width: calc(33.333% - 12px) !important;
+        flex: 0 0 calc(33.333% - 12px) !important;
+    }
+}
+
+/* Sur mobile : 1 carte pleine largeur */
+@media (max-width: 767px) {
+    .prestation-track .prestation-card-item {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+    }
 }
 
 /* Protection Anti-Spam */
 .honeypot-field { display: none !important; position: absolute; left: -9999px; }
+
 /* =========================================
    DÉSACTIVATION DES ANIMATIONS DANS LA NAVBAR
    ========================================= */
@@ -265,54 +283,59 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     animation: none !important;
     transform: none !important;
 }
-/* On remonte la lame de l'épée pour combler le trou du texte dans la Navbar */
 .navbar-brand #Lower_body {
     transform: translateY(-130px) !important; 
 }
 
- 
-    /* Le rail du carrousel */
-    .prestation-track {
-        display: flex;
-        overflow-x: hidden; /* Cache la barre de défilement */
-        gap: 15px; /* Espace entre les cartes */
-        padding: 10px 0;
-    }
-    
-    /* 5 cartes sur grand écran (100% / 5 - gap) */
-    .prestation-card-item {
-        flex: 0 0 auto;
-        width: calc(20% - 12px); 
-    }
+/* Boutons ronds dorés et discrets */
+.slider-btn {
+    background: transparent;
+    border: 1px solid var(--meta-gold);
+    color: var(--meta-gold);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: 0.3s;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+.slider-btn:hover {
+    background-color: rgba(184, 154, 99, 0.1);
+}
+.slider-btn-left { left: 0; }
+.slider-btn-right { right: 0; }
 
-    /* 3 cartes sur tablette */
-    @media (max-width: 991px) {
-        .prestation-card-item { width: calc(33.333% - 10px); }
-    }
+/* =========================================
+   AJUSTEMENTS DU CARROUSEL DE PRESTATIONS (Kaki & Pourpre #2A1A1E)
+   ========================================= */
+.prestation-track .card {
+    background: var(--grad-subtle) !important; 
+    border: 1px solid rgba(184, 154, 99, 0.25) !important;
+    border-radius: var(--radius-card) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
 
-    /* 1 carte sur mobile */
-    @media (max-width: 767px) {
-        .prestation-card-item { width: 100%; }
-    }
+/* Fixation hauteur image pour garder un ratio plus horizontal/carré */
+.prestation-track .card-img-top {
+    height: 200px !important;
+    object-fit: cover;
+}
 
-    /* Boutons ronds dorés et discrets */
-    .slider-btn {
-        background: transparent;
-        border: 1px solid var(--meta-gold);
-        color: var(--meta-gold);
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        transition: 0.3s;
-    }
-    .slider-btn:hover {
-        background-color: rgba(184, 154, 99, 0.1);
-    }
-    .prestation-card-item a:hover {
-            background-color: var(--meta-gold) !important;
-            color: var(--meta-black) !important;
-        }
+/* Le bouton adopte le pourpre #2A1A1E conseillé pour rappeler le fond de l'écran */
+.prestation-track .card .mt-auto a {
+    background-color: #2A1A1E !important; 
+    border: 1px solid rgba(184, 154, 99, 0.3) !important;
+    border-radius: 0px !important;
+}
+.prestation-track .card .mt-auto a:hover {
+    background-color: var(--meta-gold) !important;
+    color: var(--meta-black) !important;
+}
