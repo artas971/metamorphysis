@@ -45,6 +45,9 @@ class Section
     
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $baliseHtml = 'section';
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'plum'])]
+    private ?string $couleurFond = 'plum';
     
     // La bonne propriété $etapes, unique et bien configurée
     #[ORM\OneToMany(mappedBy: 'section', targetEntity: Etape::class, orphanRemoval: true, cascade: ['persist'])]
@@ -275,6 +278,18 @@ class Section
                 $etape->setSection(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCouleurFond(): ?string
+    {
+        return $this->couleurFond;
+    }
+
+    public function setCouleurFond(?string $couleurFond): static
+    {
+        $this->couleurFond = $couleurFond;
 
         return $this;
     }

@@ -19,184 +19,186 @@
     </div>
 {% endif %}
 
-{# LA BOUCLE DES BLOCS #}
+{# LA BOUCLE DES BLOCS DYNAMIQUES #}
 {% for section in page.sections|sort((a, b) => a.ordre <=> b.ordre) %}
     
-    <{{ section.baliseHtml|default('section') }} class="container py-5 mt-5">
+    {# 1. Calcul de la classe de fond selon le choix de la cliente en Base de Données #}
+    {% set classe_fond = (section.couleurFond == 'olive') ? 'bg-olive-premium' : 'bg-plum-premium' %}
+    
+    {# 2. La balise structurelle prend la couleur sur 100% de la largeur #}
+    <{{ section.baliseHtml|default('section') }} class="{{ classe_fond }} py-5">
         
-        {% if section.titre is defined and section.titre is not null %}
-            <div class="mb-5">
-                <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">{{ section.titre }}</h2>
-            </div>
-        {% endif %}
+        {# 3. Le conteneur interne centre proprement les textes et composants #}
+        <div class="container">
+        
+            {% if section.titre is defined and section.titre is not null %}
+                <div class="mb-5">
+                    <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">{{ section.titre }}</h2>
+                </div>
+            {% endif %}
 
-        {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
-        {% if section.disposition == 'texte_centre' %}
-            <div class="row justify-content-center">
-                <div class="col-12 text-ivory content-premium text-center">
-                    {{ section.contenu|raw }}
-                </div>
-            </div>
-
-        {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
-        {% elseif section.disposition == 'img_gauche' %}
-            <div class="row align-items-center g-5">
-                <div class="col-lg-7 position-relative mt-5 mt-lg-0">
-                    <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;"></div>
-                    
-                    {% if section.media %}
-                        <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
-                             alt="Illustration" 
-                             class="img-fluid position-relative z-1 shadow-lg" 
-                             style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                    {% endif %}
-                </div>
-                <div class="col-lg-5 text-ivory content-premium text-start">
-                    {{ section.contenu|raw }}
-                </div>
-            </div>
-
-        {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
-        {% elseif section.disposition == 'img_droite' %}
-            <div class="row align-items-center g-5">
-                <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start">
-                    {{ section.contenu|raw }}
-                </div>
-                
-                <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0">
-                    <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;"></div>
-                    
-                    {% if section.media %}
-                        <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
-                             alt="Illustration" 
-                             class="img-fluid position-relative z-1 shadow-lg" 
-                             style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                    {% endif %}
-                </div>
-            </div>
-
-        {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
-        {% elseif section.disposition == 'banniere' %}
-            <div class="row justify-content-center">
-                <div class="col-12 text-center mb-4">
-                    {% if section.media %}
-                        <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
-                             alt="Bannière" 
-                             class="img-fluid w-100 shadow-lg" 
-                             style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
-                    {% endif %}
-                </div>
-                {% if section.contenu %}
-                    <div class="col-lg-8 text-ivory content-premium text-center">
+            {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
+            {% if section.disposition == 'texte_centre' %}
+                <div class="row justify-content-center">
+                    <div class="col-12 text-ivory content-premium text-center">
                         {{ section.contenu|raw }}
                     </div>
-                {% endif %}
-            </div>
-
-        {# --- DISPOSITION 5 : SLIDER DES PRESTATIONS --- #}
-        {% elseif section.disposition == 'slider_prestations' %}
-            
-            {% if section.contenu %}
-                <div class="mb-4">{{ section.contenu|raw }}</div>
-            {% endif %}
-
-            <div class="prestation-slider-container">
-                <button class="slider-btn slider-btn-left" id="btn-prev" aria-label="Précédent">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-                <div class="prestation-track" id="slider-track">
-                    {% for prestation in section.prestations %}
-                        <div class="prestation-card-item">
-                            <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
-                                <div class="mb-4 mt-2">
-                                    <i class="bi bi-person text-gold fs-3"></i>
-                                </div>
-                                <h3 class="text-gold typo-symbolic fs-6 text-uppercase mb-3">{{ prestation.nom }}</h3>
-                                <p class="text-sage small flex-grow-1 px-2 mb-4">
-                                    {{ prestation.description|striptags|length > 90 ? prestation.description|striptags|slice(0, 90) ~ '...' : prestation.description|striptags }}
-                                </p>
-                                <hr class="border-sage w-50 mx-auto mb-4">
-                                <p class="text-gold small mb-4" style="letter-spacing: 1px;">
-                                    {{ prestation.prix }} € / SÉANCE
-                                </p>
-                                <div class="mt-auto">
-                                    <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="text-gold small text-decoration-none text-uppercase fw-bold" style="letter-spacing: 1px;">
-                                        DÉCOUVRIR <i class="bi bi-arrow-right ms-1"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="text-sage fst-italic">Aucune prestation sélectionnée pour ce bloc.</div>
-                    {% endfor %}
                 </div>
 
-                <button class="slider-btn slider-btn-right" id="btn-next" aria-label="Suivant">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            </div>
-
-        {# --- DISPOSITION 6 : INFO PRATIQUE --- #}
-        {% elseif section.disposition == 'info_pratique' %}
-            
-            <div class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
-                <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
-                    <i class="bi bi-flower1 text-gold fs-4"></i>
+            {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
+            {% elseif section.disposition == 'img_gauche' %}
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-7 position-relative mt-5 mt-lg-0">
+                        <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;"></div>
+                        
+                        {% if section.media %}
+                            <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                                 alt="Illustration" 
+                                 class="img-fluid position-relative z-1 shadow-lg" 
+                                 style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-5 text-ivory content-premium text-start">
+                        {{ section.contenu|raw }}
+                    </div>
                 </div>
-                
-                <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
-                    {{ section.contenu|raw }}
-                </div>
-            </div>
-            
-            {% if section.titre %}
-            <div class="text-center mt-5">
-                <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
-            </div>
-            {% endif %}
 
-        {# --- DISPOSITION 7 : CHEMINEMENT (DYNAMIQUE 3 OU 4 ÉTAPES) --- #}
-        {% elseif section.disposition == 'cheminement' %}
-            
-            {# 1. Twig compte le nombre d'étapes #}
-            {% set nb_etapes = section.etapes|length %}
-            
-            {# 2. Définition des variables selon le nombre d'étapes #}
-            {% if nb_etapes == 4 %}
-                {% set col_class = 'col-lg-3' %}
-                {% set line_left = '12.5%' %}
-                {% set line_width = '75%' %}
-            {% else %}
-                {# Si 3 étapes (ou autre), on centre sur 3 colonnes #}
-                {% set col_class = 'col-lg-4' %}
-                {% set line_left = '16.66%' %}
-                {% set line_width = '66.66%' %}
-            {% endif %}
-
-            {# Ajout de 'justify-content-center' pour sécuriser le centrage global #}
-            <div class="row g-4 justify-content-center position-relative pt-4">
-                
-                {# Trait horizontal de fond dynamique #}
-                <div class="d-none d-lg-block position-absolute" style="top: 59px; left: {{ line_left }}; width: {{ line_width }}; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
-                
-                {% for etape in section.etapes %}
-                    {# On injecte la variable 'col_class' dynamiquement #}
-                    <div class="col-12 col-md-6 {{ col_class }} text-center position-relative z-1">
-                        <div class="mb-3">
-                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
-                                <i class="bi {{ etape.icone }} text-gold fs-3"></i>
-                            </div>
-                        </div>
-                        <div class="text-gold typo-symbolic mb-1">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</div>
-                        <h4 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h4>
-                        <p class="text-sage small px-2">{{ etape.texte }}</p>
+            {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
+            {% elseif section.disposition == 'img_droite' %}
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start">
+                        {{ section.contenu|raw }}
                     </div>
                     
-                {% endfor %}
+                    <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0">
+                        <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;"></div>
+                        
+                        {% if section.media %}
+                            <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
+                                 alt="Illustration" 
+                                 class="img-fluid position-relative z-1 shadow-lg" 
+                                 style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                        {% endif %}
+                    </div>
+                </div>
+
+            {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
+            {% elseif section.disposition == 'banniere' %}
+                <div class="row justify-content-center">
+                    <div class="col-12 text-center mb-4">
+                        {% if section.media %}
+                            <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                                 alt="Bannière" 
+                                 class="img-fluid w-100 shadow-lg" 
+                                 style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
+                        {% endif %}
+                    </div>
+                    {% if section.contenu %}
+                        <div class="col-lg-8 text-ivory content-premium text-center">
+                            {{ section.contenu|raw }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            {# --- DISPOSITION 5 : SLIDER DES PRESTATIONS --- #}
+            {% elseif section.disposition == 'slider_prestations' %}
                 
-            </div>
-        {% endif %}
+                {% if section.contenu %}
+                    <div class="mb-4">{{ section.contenu|raw }}</div>
+                {% endif %}
+
+                <div class="prestation-slider-container">
+                    <button class="slider-btn slider-btn-left" id="btn-prev" aria-label="Précédent">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+
+                    <div class="prestation-track" id="slider-track">
+                        {% for prestation in section.prestations %}
+                            <div class="prestation-card-item">
+                                <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
+                                    <div class="mb-4 mt-2">
+                                        <i class="bi bi-person text-gold fs-3"></i>
+                                    </div>
+                                    <h3 class="text-gold typo-symbolic fs-6 text-uppercase mb-3">{{ prestation.nom }}</h3>
+                                    <p class="text-sage small flex-grow-1 px-2 mb-4">
+                                        {{ prestation.description|striptags|length > 90 ? prestation.description|striptags|slice(0, 90) ~ '...' : prestation.description|striptags }}
+                                    </p>
+                                    <hr class="border-sage w-50 mx-auto mb-4">
+                                    <p class="text-gold small mb-4" style="letter-spacing: 1px;">
+                                        {{ prestation.prix }} € / SÉANCE
+                                    </p>
+                                    <div class="mt-auto">
+                                        <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="text-gold small text-decoration-none text-uppercase fw-bold" style="letter-spacing: 1px;">
+                                            DÉCOUVRIR <i class="bi bi-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-sage fst-italic">Aucune prestation sélectionnée pour ce bloc.</div>
+                        {% endfor %}
+                    </div>
+
+                    <button class="slider-btn slider-btn-right" id="btn-next" aria-label="Suivant">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+
+            {# --- DISPOSITION 6 : INFO PRATIQUE --- #}
+            {% elseif section.disposition == 'info_pratique' %}
+                
+                <div class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
+                    <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
+                        <i class="bi bi-flower1 text-gold fs-4"></i>
+                    </div>
+                    
+                    <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
+                        {{ section.contenu|raw }}
+                    </div>
+                </div>
+                
+                {% if section.titre %}
+                <div class="text-center mt-5">
+                    <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
+                </div>
+                {% endif %}
+
+            {# --- DISPOSITION 7 : CHEMINEMENT (DYNAMIQUE 3 OU 4 ÉTAPES) --- #}
+            {% elseif section.disposition == 'cheminement' %}
+                
+                {% set nb_etapes = section.etapes|length %}
+                
+                {% if nb_etapes == 4 %}
+                    {% set col_class = 'col-lg-3' %}
+                    {% set line_left = '12.5%' %}
+                    {% set line_width = '75%' %}
+                {% else %}
+                    {% set col_class = 'col-lg-4' %}
+                    {% set line_left = '16.66%' %}
+                    {% set line_width = '66.66%' %}
+                {% endif %}
+
+                <div class="row g-4 justify-content-center position-relative pt-4">
+                    
+                    <div class="d-none d-lg-block position-absolute" style="top: 59px; left: {{ line_left }}; width: {{ line_width }}; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
+                    
+                    {% for etape in section.etapes %}
+                        <div class="col-12 col-md-6 {{ col_class }} text-center position-relative z-1">
+                            <div class="mb-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
+                                    <i class="bi {{ etape.icone }} text-gold fs-3"></i>
+                                </div>
+                            </div>
+                            <div class="text-gold typo-symbolic mb-1">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</div>
+                            <h4 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h4>
+                            <p class="text-sage small px-2">{{ etape.texte }}</p>
+                        </div>
+                    {% endfor %}
+                    
+                </div>
+            {% endif %}
+            
+        </div>
     </{{ section.baliseHtml|default('section') }}>
     
 {% endfor %}

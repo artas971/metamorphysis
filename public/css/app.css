@@ -218,6 +218,14 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 }
 
 /* =========================================
+   SÉCURISATION TEXTE (Anti-Overflow)
+   ========================================= */
+.content-premium {
+    /* Sécurise l'affichage en forçant le retour à la ligne pour les longs mots continus */
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+/* =========================================
    MESSAGES FLASH
    ========================================= */
 .alert-premium {
@@ -261,6 +269,23 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 #Upper_right_wing, #Upper_right { transform-box: fill-box; transform-origin: 0% 80%; animation: flapRight 0.8s ease-in-out infinite alternate; }
 #Lower_right_wing, #Bottom_right { transform-box: fill-box; transform-origin: 0% 20%; animation: flapRight 0.8s ease-in-out infinite alternate; }
 #body { transform-box: fill-box; transform-origin: center center; animation: respiration 4s ease-in-out infinite; }
+/* =========================================
+   Fonds Dynamiques des Sections (Admin)
+   ========================================= */
+
+/* Le fond Pourpre classique (par défaut) */
+.bg-plum-premium {
+    /* Tu peux utiliser ton dégradé main ou une couleur unie sombre */
+    background-color: transparent; /* Laisse transparaître le fond global du site */
+}
+
+/* Le fond Olive (Kaki) pour mettre en avant un bloc */
+.bg-olive-premium {
+    /* On réutilise le dégradé Kaki de tes cartes */
+    background: var(--grad-subtle) !important;
+    border-top: 1px solid rgba(184, 154, 99, 0.15);
+    border-bottom: 1px solid rgba(184, 154, 99, 0.15);
+}
 
 @keyframes levitation {
     0%, 100% { transform: translateY(0); filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.2)); }

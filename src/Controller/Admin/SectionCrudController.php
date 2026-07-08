@@ -89,6 +89,12 @@ class SectionCrudController extends AbstractCrudController
                 ->useEntryCrudForm(EtapeCrudController::class)
                 ->setHelp('Si vous avez choisi le design "Cheminement", ajoutez vos étapes ici. Les cercles et les traits dorés s\'adapteront tout seuls !')
                 ->hideOnIndex(),
+            ChoiceField::new('couleurFond', 'Couleur de fond')
+            ->setChoices([
+            'Pourpre (Classique)' => 'plum',
+            'Olive (Mise en avant)' => 'olive',
+            ])
+            ->renderExpanded(false),
         ];
     }
 }
