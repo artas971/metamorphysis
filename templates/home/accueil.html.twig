@@ -97,14 +97,22 @@
             </a>
         </div>
 
-        <div class="col-lg-7 position-relative mt-5 mt-lg-0">
-            {# Ajout du fond kaki (--meta-olive) et ajustement de l'opacité pour bien marquer le bloc #}
-            <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; background-color: var(--meta-olive); opacity: 0.6;"></div>
-            
-            <img src="{{ asset('images/fauteuils.jpg') }}" alt="Espace de consultation Metamorphysis" class="img-fluid position-relative z-1 shadow-lg" style="object-fit: cover; width: 100%; border-radius: 2px;">
+    <div class="col-lg-7 mt-5 mt-lg-0">
+    
+    <div class="d-flex shadow-lg" style="border-radius: 4px; overflow: hidden; width: 100%;">
+
+        <img src="{{ asset('images/fauteuils.jpg') }}" 
+             alt="Espace de consultation Metamorphysis" 
+             class="img-fluid" 
+             style="flex: 1; min-width: 0; width: 100%; height: auto; object-fit: cover; display: block;">
+
+        <div class="d-none d-md-block" 
+             style="flex: 0 0 45px; background-color: var(--meta-olive); height: auto;">
         </div>
         
     </div>
+    
+</div>
 </section>
 
 <section class="container py-5 mt-5 mb-5">
@@ -176,15 +184,21 @@
         {% endif %}
     </div>
 
-    {# Bandeau d'information pratique encadré #}
-    <div class="d-flex flex-column flex-md-row align-items-md-center gap-4 p-4 mt-5" style="border: 1px solid rgba(184, 154, 99, 0.3);">
-        <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
+{# Bandeau d'information pratique encadré #}
+    <div class="d-flex flex-column flex-md-row align-items-md-center gap-4 p-4 mt-5" 
+         style="background: var(--grad-subtle); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: var(--radius-card);">
+        
+        <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" 
+             style="width: 50px; height: 50px; flex-shrink: 0; background-color: rgba(10, 10, 9, 0.2);">
             <i class="bi bi-flower1 text-gold fs-4"></i>
         </div>
-        <p class="text-sage small mb-0 flex-grow-1 text-center text-md-start">
+        
+        <p class="text-ivory small mb-0 flex-grow-1 text-center text-md-start">
             Le rythme et la durée de l'accompagnement sont définis ensemble lors de la première rencontre, en fonction de vos besoins et de vos objectifs.
         </p>
-        <a href="#" class="text-gold small text-decoration-none text-uppercase ms-md-auto text-nowrap" style="letter-spacing: 1px;">
+        
+        <a href="#" class="text-gold small text-decoration-none text-uppercase ms-md-auto text-nowrap" 
+           style="letter-spacing: 1px; font-weight: 500;">
             En savoir plus <i class="bi bi-arrow-right ms-1"></i>
         </a>
     </div>

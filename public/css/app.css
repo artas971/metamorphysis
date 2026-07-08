@@ -1,4 +1,4 @@
-/* =========================================
+ /* =========================================
    IMPORTATION DES POLICES (Google Fonts)
    Cormorant Garamond (Titres) | Inter (Textes) | Cinzel (Symbolique)
    ========================================= */
@@ -18,10 +18,20 @@
     --meta-gold-hover: #9c804f;    
     --meta-olive-hover: #5d6352;   
 
-    /* 2. DÉGRADÉS (Base Pourpre Graphiste & Cartes Kaki Olive) */
+     /* 2. DÉGRADÉS (Base Pourpre Graphiste & Cartes Kaki Olive) 
     --grad-main: radial-gradient(ellipse at top center, #2A1A1E 0%, #0A0A09 75%, #0A0A09 100%);
-    --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.85) 0%, rgba(10, 10, 9, 0.95) 100%);
- 
+    --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.85) 0%, rgba(10, 10, 9, 0.95) 100%);*/
+/* =========================================
+       2. DÉGRADÉS (Base Pourpre Premium & Épurée)
+       ========================================= */
+    --grad-main: linear-gradient(
+        180deg, 
+        #2A1A1E 0%,    /* Le Pourpre riche domine tout le haut du site */
+        #1A1012 50%,   /* Assombrissement très subtil au milieu */
+        #0A0A09 100%   /* Noir profond en bas pour asseoir le design */
+    );
+    /* Le fond de tes cartes (indépendant du body) */
+    --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.90) 0%, rgba(45, 48, 38, 0.95) 100%); 
     /* 3. Typographie */
     --font-title: 'Cormorant Garamond', serif; 
     --font-body: 'Inter', sans-serif;
@@ -34,12 +44,17 @@
 }
 
 /* =========================================
-   BASE DE LA PAGE
+   BASE DE LA PAGE (Toile de fond)
    ========================================= */
 body {
     background-color: var(--meta-black);
     background-image: var(--grad-main);
+    
+    /* On fixe le fond pour que le contenu glisse élégamment par-dessus */
     background-attachment: fixed; 
+    background-size: cover;        
+    background-repeat: no-repeat;  
+    
     color: var(--meta-ivory); 
     font-family: var(--font-body);
     font-weight: 300;
@@ -56,6 +71,35 @@ main {
 /* =========================================
    TYPOGRAPHIE
    ========================================= */
+
+/* =========================================
+   LA TOUCHE OLIVE (Navbar Épurée, Luxueuse & Compacte)
+   ========================================= */
+.navbar {
+    /* Maintien de l'olive opaque pour bloquer le pourpre en fond */
+    background: linear-gradient(180deg, rgba(74, 79, 65, 0.95) 0%, rgba(74, 79, 65, 0.75) 100%) !important;
+    border-bottom: 1px solid rgba(184, 154, 99, 0.3) !important;
+    
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    /* COMPRESSION VERTICALE : On réduit drastiquement les paddings (8px au lieu de 15px) */
+    margin-top: 0 !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    
+    /* Assure un alignement vertical parfait de tous les éléments au centre */
+    display: flex;
+    align-items: center;
+}
+
+/* Ajustement spécifique pour compenser le grand scale du logo sans pousser la navbar */
+.navbar-brand {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: -5px;
+    margin-bottom: -5px;
+}
 .nav-link-premium {
     font-size: 0.75rem; 
     text-transform: uppercase;
@@ -234,6 +278,38 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 .prestation-slider-container { width: 100%; position: relative; padding: 1rem 60px; }
 .prestation-track { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 15px; padding-bottom: 1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
 .prestation-track::-webkit-scrollbar { display: none; }
+
+/* =========================================
+   BLOC GRAPHIQUE KAKI EN ARRIÈRE-PLAN
+   ========================================= */
+
+/* 1. Le conteneur de ton image doit être en position relative */
+.hero-image-wrap {
+    position: relative;
+    display: inline-block; /* Assure que le conteneur colle à la taille de l'image */
+}
+
+/* 2. Création du rectangle vertical Kaki à droite */
+.hero-image-wrap::after {
+    content: "";
+    position: absolute;
+    
+    /* Positionnement : calé tout à fait à droite et débordant légèrement */
+    top: 0;
+    right: -40px;          /* Ajuste cette valeur pour le faire plus ou moins déborder */
+    width: 60px;           /* Largeur du rectangle sélectionné par ta cliente */
+    height: 100%;          /* Prend toute la hauteur de l'image */
+    
+    /* Couleur officielle Olive / Kaki */
+    background-color: var(--meta-olive); 
+    
+    /* Passe derrière l'image pour ne pas cacher la photo */
+    z-index: -1;
+    
+    /* Optionnel : si tu veux adoucir ou accorder le bloc au style des cartes */
+    border-radius: 4px;
+    opacity: 0.85;
+}
 
 /* =========================================
    RECALIBRAGE STRUCTUREL RADICAL (4 Cartes)
