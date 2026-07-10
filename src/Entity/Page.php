@@ -22,7 +22,9 @@ class Page
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
- 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $afficherTitre = true;
+    
 
     /**
      * @var Collection<int, Section>
@@ -138,6 +140,16 @@ class Page
     {
         $this->isPublished = $isPublished;
 
+        return $this;
+    }
+    public function isAfficherTitre(): ?bool
+    {
+        return $this->afficherTitre;
+    }
+
+    public function setAfficherTitre(bool $afficherTitre): static
+    {
+        $this->afficherTitre = $afficherTitre;
         return $this;
     }
 }

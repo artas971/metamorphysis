@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-
 class PageCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -31,6 +30,7 @@ class PageCrudController extends AbstractCrudController
             // La bulle d'aide pour l'image_9682da.png
             ->setHelp('index', 'Créez de nouvelles pages ou modifiez l\'agencement et les textes de vos pages actuelles. Utilisez le Page Builder à l\'intérieur de chaque fiche pour structurer vos blocs de contenu.');
     }
+
     // L'AJOUT EST ICI : La configuration du bouton d'aperçu
     public function configureActions(Actions $actions): Actions
     {
@@ -62,15 +62,20 @@ class PageCrudController extends AbstractCrudController
                 
             TextareaField::new('metaDescription', 'Description SEO (Google)')
                 ->setHelp('Texte de 150 caractères max résumant la page pour les moteurs de recherche.')
-                ->setRequired(false),               
+                ->setRequired(false),              
                 
             BooleanField::new('afficherMenu', 'Afficher dans la barre de navigation')
                 ->setHelp('Cochez cette case pour que le lien apparaisse en haut du site.'),
+
+            // NOUVEAU CHAMP DYNAMIQUE POUR TA CLIENTE
+            BooleanField::new('afficherTitre', 'Afficher le titre sur la page publique')
+                ->setHelp('Si décoché, le grand titre de la page n\'apparaîtra pas en haut de l\'écran (Idéal pour l\'Accueil).'),
             
             // Le CollectionField du Page Builder optimisé
              CollectionField::new('sections', 'Constructeur de blocs (Page Builder)')
                 ->useEntryCrudForm(SectionCrudController::class)
                 ->setHelp('💡 <b>Astuce :</b> Pour modifier l\'ordre d\'affichage sur le site, ouvrez un bloc, modifiez son numéro de "Position" (1, 2, 3...), puis sauvegardez la page.')
+                
         ];
     }
 }

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 use Symfony\Component\HttpFoundation\File\File;
- 
+
 #[ORM\Entity(repositoryClass: SectionRepository::class)]
 #[Vich\Uploadable]
 class Section
@@ -49,7 +49,6 @@ class Section
     #[ORM\Column(length: 50, nullable: true, options: ['default' => 'plum'])]
     private ?string $couleurFond = 'plum';
     
-    // La bonne propriété $etapes, unique et bien configurée
     #[ORM\OneToMany(mappedBy: 'section', targetEntity: Etape::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $etapes;
 
@@ -58,6 +57,33 @@ class Section
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $citation = null;
+    
+    #[ORM\Column(nullable: true)]
+    private ?int $citationPosX = -10; // Décalage horizontal (en %)
+
+    #[ORM\Column(nullable: true)]
+    private ?int $citationPosY = -40; // Décalage vertical (en px)
+
+    #[ORM\Column(nullable: true)]
+    private ?int $citationLargeur = 90; // Largeur de la boîte (en %)
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $citationCouleurFond = 'meta-olive'; // Couleur de fond
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $citationCouleurTexte = 'meta-gold'; // Couleur du text
+    
+    #[ORM\Column(nullable: true)]
+    private ?int $imagePosX = 0; // Décalage horizontal de l'image
+
+    #[ORM\Column(nullable: true)]
+    private ?int $imagePosY = 0; // Décalage vertical de l'image
+
+    #[ORM\Column(nullable: true)]
+    private ?int $citationHauteurMax = null;
 
     /**
      * @var Collection<int, Prestation>
@@ -108,12 +134,14 @@ class Section
         return $this->disposition;
     }
 
-    public function setDisposition(string $disposition): static
-    {
-        $this->disposition = $disposition;
+    public function setDisposition(?string $disposition): static
+        {
+            // Le "?string" autorise le null.
+            // Si EasyAdmin envoie null, on sécurise en forçant le design par défaut
+            $this->disposition = $disposition ?? 'texte_centre';
 
-        return $this;
-    }
+            return $this;
+        }
 
     public function getContenu(): ?string
     {
@@ -172,6 +200,7 @@ class Section
             'banniere' => '✨ Bannière pleine largeur',
             'slider_prestations' => '🎠 Slider des Prestations',
             'info_pratique' => '🌸 Bloc Info Pratique',
+            'presentation_expert' => '👩‍💼 Profil Fondatrice (À Propos)', // <-- NOUVELLE DISPOSITION
         ];
 
         $label = $dispositionLabels[$this->disposition] ?? 'Nouveau bloc';
@@ -293,4 +322,41 @@ class Section
 
         return $this;
     }
+
+    // --- NOUVEAUX GETTER / SETTER POUR LA CITATION ---
+    public function getCitation(): ?string
+    {
+        return $this->citation;
+    }
+
+    public function setCitation(?string $citation): static
+    {
+        $this->citation = $citation;
+
+        return $this;
+    }
+
+    public function getCitationPosX(): ?int { return $this->citationPosX; }
+    public function setCitationPosX(?int $citationPosX): static { $this->citationPosX = $citationPosX; return $this; }
+
+    public function getCitationPosY(): ?int { return $this->citationPosY; }
+    public function setCitationPosY(?int $citationPosY): static { $this->citationPosY = $citationPosY; return $this; }
+
+    public function getCitationLargeur(): ?int { return $this->citationLargeur; }
+    public function setCitationLargeur(?int $citationLargeur): static { $this->citationLargeur = $citationLargeur; return $this; }
+
+    public function getCitationCouleurFond(): ?string { return $this->citationCouleurFond; }
+    public function setCitationCouleurFond(?string $citationCouleurFond): static { $this->citationCouleurFond = $citationCouleurFond; return $this; }
+
+    public function getCitationCouleurTexte(): ?string { return $this->citationCouleurTexte; }
+    public function setCitationCouleurTexte(?string $citationCouleurTexte): static { $this->citationCouleurTexte = $citationCouleurTexte; return $this; }
+    
+    public function getImagePosX(): ?int { return $this->imagePosX; }
+    public function setImagePosX(?int $imagePosX): static { $this->imagePosX = $imagePosX; return $this; }
+
+    public function getImagePosY(): ?int { return $this->imagePosY; }
+    public function setImagePosY(?int $imagePosY): static { $this->imagePosY = $imagePosY; return $this; }
+
+    public function getCitationHauteurMax(): ?int { return $this->citationHauteurMax; }
+    public function setCitationHauteurMax(?int $citationHauteurMax): static { $this->citationHauteurMax = $citationHauteurMax; return $this; }
 }

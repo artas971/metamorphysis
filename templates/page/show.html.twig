@@ -12,8 +12,8 @@
 
 {% block body %}
 
-{# On masque le grand titre H1 UNIQUEMENT si on est sur la page d'accueil #}
-{% if page.slug != 'accueil' and page.slug != 'accueil2' %}
+{# --- AJOUT DYNAMIQUE : Contrôlé à 100% par ta cliente depuis l'administration --- #}
+{% if page.afficherTitre %}
     <div class="container mt-5 pt-5">
         <h1 class="text-center text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
     </div>
@@ -31,7 +31,7 @@
         {# 3. Le conteneur interne centre proprement les textes et composants #}
         <div class="container">
         
-            {% if section.titre is defined and section.titre is not null %}
+            {% if section.titre is defined and section.titre is not null and section.disposition != 'presentation_expert' %}
                 <div class="mb-5">
                     <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">{{ section.titre }}</h2>
                 </div>
@@ -196,6 +196,93 @@
                     {% endfor %}
                     
                 </div>
+
+            {# --- DISPOSITION 8 : PROFIL FONDATRICE / À PROPOS --- #}
+            {% elseif section.disposition == 'presentation_expert' %}
+                <div class="row align-items-stretch g-5 py-4">
+                    
+                    {# Colonne Gauche : Nom, Vision et Approche #}
+                    {# CORRECTION ICI : justify-content-start pt-lg-4 pour aligner vers le haut #}
+                    <div class="col-lg-5 d-flex flex-column justify-content-start pt-lg-4 order-2 order-lg-1">
+                        
+                        {# Nom et Sous-titre #}
+                        <div class="mb-5">
+                            <h1 class="text-gold typo-titre text-uppercase mb-2" style="font-size: 3rem; letter-spacing: 2px; line-height: 1.1;">
+                                {{ section.titre }}
+                            </h1>
+                            <p class="text-gold text-uppercase fw-bold" style="letter-spacing: 3px; font-size: 0.75rem;">
+                                Consultante en relation humaine
+                            </p>
+                        </div>
+                        
+                        {# Le contenu WYSIWYG de l'admin (Ma Vision / Mon Approche) #}
+                        <div class="text-sage small content-premium" style="line-height: 1.8;">
+                            {{ section.contenu|raw }}
+                        </div>
+                        
+                    </div>
+
+                    {# Colonne Droite : Image & Boîte de citation Pourpre #}
+                    <div class="col-lg-6 offset-lg-1 mt-5 mt-lg-0 order-1 order-lg-2 mb-5">
+                        
+                        {# 1. L'IMAGE AVEC SON DÉCALAGE PARAMÉTRABLE #}
+                        <div style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); transition: transform 0.3s ease;">
+                            {% if section.media %}
+                                <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                                     alt="{{ section.titre }}" 
+                                     class="img-fluid shadow-lg" 
+                                     style="width: 100%; border-radius: 4px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        
+                        {# 2. L'ENCART CITATION DYNAMIQUE & SCROLLABLE #}
+                        {% if section.citation %}
+                            
+                            {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
+                            {% set text_color = section.citationCouleurTexte|default('meta-gold') %}
+                            
+                            <div class="position-relative p-4 p-xl-5 d-none d-sm-block" 
+                                 style="
+                                    margin-top: {{ section.citationPosY|default('-150') }}px; 
+                                    left: {{ section.citationPosX|default('-10') }}%; 
+                                    width: {{ section.citationLargeur|default('90') }}%; 
+                                    background-color: var(--{{ bg_color }}); 
+                                    box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
+                                    border-radius: 2px; 
+                                    z-index: 2;">
+                                
+                                <div class="typo-titre" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">
+                                    “
+                                </div>
+                                
+                                {# LE CONTENEUR QUI GÈRE LE SCROLL ET L'EFFET DE FONDU #}
+                                <div class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
+                                     style="
+                                        --scroll-color: var(--{{ text_color }}); 
+                                        color: var(--{{ text_color }}); 
+                                        line-height: 1.6; 
+                                        font-size: 1rem; 
+                                        text-align: justify;
+                                        {% if section.citationHauteurMax %}
+                                            max-height: {{ section.citationHauteurMax }}px; 
+                                            overflow-y: auto;
+                                            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                                            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                                        {% endif %}
+                                     ">
+                                    
+                                    <div style="padding-bottom: 40px;">
+                                        {{ section.citation|raw }}
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});"></div>
+                                
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             {% endif %}
             
         </div>
@@ -213,6 +300,27 @@
         margin-top: 1.5rem;
         margin-bottom: 1.5rem;
         letter-spacing: 2px;
+    }
+
+    /* Scrollbar premium "Caméléon" pour les citations */
+    .citation-scroll-container::-webkit-scrollbar {
+        width: 4px;
+    }
+    .citation-scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .citation-scroll-container::-webkit-scrollbar-thumb {
+        background-color: var(--scroll-color);
+        opacity: 0.5;
+        border-radius: 10px;
+    }
+    .citation-scroll-container:hover::-webkit-scrollbar-thumb {
+        background-color: var(--scroll-color);
+        opacity: 1;
+    }
+    .citation-scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: var(--meta-gold) transparent;
     }
 </style>
 

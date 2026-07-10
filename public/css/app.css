@@ -286,6 +286,34 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     border-top: 1px solid rgba(184, 154, 99, 0.15);
     border-bottom: 1px solid rgba(184, 154, 99, 0.15);
 }
+/* Scrollbar premium "Caméléon" pour les citations */
+    .citation-scroll-container::-webkit-scrollbar {
+        width: 4px; /* Encore plus fine pour l'élégance */
+    }
+    
+    /* Le fond de la barre est totalement transparent */
+    .citation-scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    /* Le curseur prend la couleur du texte avec un effet de transparence */
+    .citation-scroll-container::-webkit-scrollbar-thumb {
+        background-color: var(--scroll-color);
+        opacity: 0.5;
+        border-radius: 10px;
+    }
+    
+    /* Le curseur devient plus visible quand on le survole */
+    .citation-scroll-container:hover::-webkit-scrollbar-thumb {
+        background-color: var(--scroll-color);
+        opacity: 1;
+    }
+    
+    /* Pour Firefox : barre fine et couleurs adaptées */
+    .citation-scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: var(--meta-gold) transparent;
+    }
 
 @keyframes levitation {
     0%, 100% { transform: translateY(0); filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.2)); }
