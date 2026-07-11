@@ -2,6 +2,19 @@
 
 {% block title %}Réserver - {{ prestation.nom }}{% endblock %}
 
+{# On charge la feuille de style et le script de Flatpickr directement pour cette page #}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+{% endblock %}
+
 {% block body %}
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
@@ -52,40 +65,65 @@
 </div>
 
 <style>
-    /* Correction de la couleur du placeholder "Sélectionnez une date..." */
+    /* Style premium de l'input de date */
+    #date-picker {
+        background-color: #11140F !important;
+        color: #D8D0BE !important;
+        border: 1px solid rgba(184, 154, 99, 0.4) !important;
+    }
     #date-picker::placeholder {
-        color: rgba(212, 175, 55, 0.5) !important; /* Or transparent */
+        color: rgba(216, 208, 190, 0.4) !important; 
         font-style: italic;
     }
-    
-    /* Le fond du calendrier Flatpickr */
+
+    /* =========================================
+       FLATPICKR : INTEGRATION METAMORPHYSIS PROPRE
+       ========================================= */
     .flatpickr-calendar {
-        background: #111 !important; 
-        border: 1px solid #D4AF37 !important; 
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15) !important;
+        background: #23291E !important; 
+        border: 1px solid #B89A63 !important; 
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6) !important;
+        border-radius: 8px !important;
     }
-    .flatpickr-month, .flatpickr-weekday {
-        color: #D4AF37 !important;
-        fill: #D4AF37 !important;
-    }
-    .flatpickr-prev-month svg, .flatpickr-next-month svg {
-        fill: #D4AF37 !important;
-    }
-    .flatpickr-day {
-        color: #fff !important; 
-    }
-    .flatpickr-day:hover {
-        background: rgba(212, 175, 55, 0.2) !important;
-        border-color: #D4AF37 !important;
-    }
-    .flatpickr-day.selected {
-        background: #D4AF37 !important;
-        border-color: #D4AF37 !important;
-        color: #000 !important;
+    
+    .flatpickr-months .flatpickr-month, 
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    .flatpickr-current-month input.cur-year {
+        color: #B89A63 !important; 
         font-weight: bold;
     }
-    .flatpickr-day.flatpickr-disabled {
-        color: #555 !important;
+    
+    .flatpickr-prev-month svg, .flatpickr-next-month svg {
+        fill: #B89A63 !important;
+    }
+    
+    span.flatpickr-weekday {
+        color: #D8D0BE !important; 
+        opacity: 0.7;
+    }
+    
+    .flatpickr-day {
+        color: #D8D0BE !important; 
+        border-radius: 6px !important;
+    }
+    
+    .flatpickr-day:hover, .flatpickr-day:focus {
+        background: rgba(184, 154, 99, 0.2) !important; 
+        border-color: #B89A63 !important;
+        color: #FFF !important;
+    }
+    
+    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+        background: #4A1525 !important; 
+        border-color: #B89A63 !important;
+        color: #B89A63 !important;
+        font-weight: bold;
+    }
+    
+    .flatpickr-day.flatpickr-disabled, 
+    .flatpickr-day.flatpickr-disabled:hover {
+        color: rgba(216, 208, 190, 0.15) !important; 
+        background: transparent !important;
     }
 </style>
 
@@ -96,6 +134,7 @@
         const realInput = document.querySelector('[name="reservation[dateRendezVous]"]'); 
         const submitBtn = document.getElementById('submit-btn');
 
+        // On initialise Flatpickr !
         flatpickr(datePickerElement, {
             locale: "fr",
             minDate: "today",
@@ -105,6 +144,7 @@
                 timeSlotsContainer.innerHTML = '<span class="text-gold small"><i class="bi bi-hourglass-split"></i> Analyse des disponibilités...</span>';
                 submitBtn.disabled = true;
 
+                // Appel au serveur (qui ne plantera plus grâce à notre correction de la durée)
                 fetch('/api/disponibilites/{{ prestation.id }}/' + dateStr)
                     .then(response => response.json())
                     .then(creneaux => {

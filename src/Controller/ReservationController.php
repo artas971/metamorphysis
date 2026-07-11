@@ -74,17 +74,20 @@ class ReservationController extends AbstractController
         ]);
     }
     #[Route('/api/disponibilites/{id}/{date}', name: 'api_disponibilites', methods: ['GET'])]
-    public function getDisponibilites(Prestation $prestation, string $date, PlanningService $planningService): JsonResponse
-    {
-        try {
-            $dateRecherchee = new \DateTime($date);
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Format de date invalide'], 400);
+        public function getDisponibilites(Prestation $prestation, string $date, PlanningService $planningService): JsonResponse
+        {
+            try {
+                $dateRecherchee = new \DateTime($date);
+            } catch (\Exception $e) {
+                return new JsonResponse(['error' => 'Format de date invalide'], 400);
+            }
+
+            // CORRECTION ICI : Si la durée est 'null', on fixe 60 minutes par défaut pour le calcul
+            $dureeReelle = $prestation->getDuree() ?? 60; 
+
+            // On envoie la durée sécurisée au service
+            $creneaux = $planningService->getCreneauxDisponibles($dateRecherchee, $dureeReelle);
+
+            return new JsonResponse($creneaux);
         }
-
-        // On envoie la durée exacte de la prestation souhaitée au cerveau
-        $creneaux = $planningService->getCreneauxDisponibles($dateRecherchee, $prestation->getDuree());
-
-        return new JsonResponse($creneaux);
-    }
 }
