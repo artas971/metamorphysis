@@ -1,4 +1,4 @@
- /* =========================================
+/* =========================================
    IMPORTATION DES POLICES (Google Fonts)
    Cormorant Garamond (Titres) | Inter (Textes) | Cinzel (Symbolique)
    ========================================= */
@@ -18,12 +18,7 @@
     --meta-gold-hover: #9c804f;    
     --meta-olive-hover: #5d6352;   
 
-     /* 2. DÉGRADÉS (Base Pourpre Graphiste & Cartes Kaki Olive) 
-    --grad-main: radial-gradient(ellipse at top center, #2A1A1E 0%, #0A0A09 75%, #0A0A09 100%);
-    --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.85) 0%, rgba(10, 10, 9, 0.95) 100%);*/
-/* =========================================
-       2. DÉGRADÉS (Base Pourpre Premium & Épurée)
-       ========================================= */
+    /* 2. DÉGRADÉS (Base Pourpre Premium & Épurée) */
     --grad-main: linear-gradient(
         180deg, 
         #2A1A1E 0%,    /* Le Pourpre riche domine tout le haut du site */
@@ -32,6 +27,7 @@
     );
     /* Le fond de tes cartes (indépendant du body) */
     --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.90) 0%, rgba(45, 48, 38, 0.95) 100%); 
+    
     /* 3. Typographie */
     --font-title: 'Cormorant Garamond', serif; 
     --font-body: 'Inter', sans-serif;
@@ -69,26 +65,19 @@ main {
 }
 
 /* =========================================
-   TYPOGRAPHIE
-   ========================================= */
-
-/* =========================================
    LA TOUCHE OLIVE (Navbar Épurée, Luxueuse & Compacte)
    ========================================= */
 .navbar {
-    /* Maintien de l'olive opaque pour bloquer le pourpre en fond */
     background: linear-gradient(180deg, rgba(74, 79, 65, 0.95) 0%, rgba(74, 79, 65, 0.75) 100%) !important;
     border-bottom: 1px solid rgba(184, 154, 99, 0.3) !important;
     
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     
-    /* COMPRESSION VERTICALE : On réduit drastiquement les paddings (8px au lieu de 15px) */
     margin-top: 0 !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
     
-    /* Assure un alignement vertical parfait de tous les éléments au centre */
     display: flex;
     align-items: center;
 }
@@ -221,10 +210,10 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
    SÉCURISATION TEXTE (Anti-Overflow)
    ========================================= */
 .content-premium {
-    /* Sécurise l'affichage en forçant le retour à la ligne pour les longs mots continus */
     overflow-wrap: break-word;
     word-break: break-word;
 }
+
 /* =========================================
    MESSAGES FLASH
    ========================================= */
@@ -269,51 +258,40 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 #Upper_right_wing, #Upper_right { transform-box: fill-box; transform-origin: 0% 80%; animation: flapRight 0.8s ease-in-out infinite alternate; }
 #Lower_right_wing, #Bottom_right { transform-box: fill-box; transform-origin: 0% 20%; animation: flapRight 0.8s ease-in-out infinite alternate; }
 #body { transform-box: fill-box; transform-origin: center center; animation: respiration 4s ease-in-out infinite; }
+
 /* =========================================
    Fonds Dynamiques des Sections (Admin)
    ========================================= */
-
-/* Le fond Pourpre classique (par défaut) */
 .bg-plum-premium {
-    /* Tu peux utiliser ton dégradé main ou une couleur unie sombre */
-    background-color: transparent; /* Laisse transparaître le fond global du site */
+    background-color: transparent; 
 }
 
-/* Le fond Olive (Kaki) pour mettre en avant un bloc */
 .bg-olive-premium {
-    /* On réutilise le dégradé Kaki de tes cartes */
     background: var(--grad-subtle) !important;
     border-top: 1px solid rgba(184, 154, 99, 0.15);
     border-bottom: 1px solid rgba(184, 154, 99, 0.15);
 }
+
 /* Scrollbar premium "Caméléon" pour les citations */
-    .citation-scroll-container::-webkit-scrollbar {
-        width: 4px; /* Encore plus fine pour l'élégance */
-    }
-    
-    /* Le fond de la barre est totalement transparent */
-    .citation-scroll-container::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    /* Le curseur prend la couleur du texte avec un effet de transparence */
-    .citation-scroll-container::-webkit-scrollbar-thumb {
-        background-color: var(--scroll-color);
-        opacity: 0.5;
-        border-radius: 10px;
-    }
-    
-    /* Le curseur devient plus visible quand on le survole */
-    .citation-scroll-container:hover::-webkit-scrollbar-thumb {
-        background-color: var(--scroll-color);
-        opacity: 1;
-    }
-    
-    /* Pour Firefox : barre fine et couleurs adaptées */
-    .citation-scroll-container {
-        scrollbar-width: thin;
-        scrollbar-color: var(--meta-gold) transparent;
-    }
+.citation-scroll-container::-webkit-scrollbar {
+    width: 4px; 
+}
+.citation-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.citation-scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-color);
+    opacity: 0.5;
+    border-radius: 10px;
+}
+.citation-scroll-container:hover::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-color);
+    opacity: 1;
+}
+.citation-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: var(--meta-gold) transparent;
+}
 
 @keyframes levitation {
     0%, 100% { transform: translateY(0); filter: drop-shadow(0px 5px 15px rgba(184, 154, 99, 0.2)); }
@@ -335,48 +313,44 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 /* =========================================
    BLOC GRAPHIQUE KAKI EN ARRIÈRE-PLAN
    ========================================= */
-
-/* 1. Le conteneur de ton image doit être en position relative */
 .hero-image-wrap {
     position: relative;
-    display: inline-block; /* Assure que le conteneur colle à la taille de l'image */
+    display: inline-block; 
 }
-
-/* 2. Création du rectangle vertical Kaki à droite */
 .hero-image-wrap::after {
     content: "";
     position: absolute;
-    
-    /* Positionnement : calé tout à fait à droite et débordant légèrement */
     top: 0;
-    right: -40px;          /* Ajuste cette valeur pour le faire plus ou moins déborder */
-    width: 60px;           /* Largeur du rectangle sélectionné par ta cliente */
-    height: 100%;          /* Prend toute la hauteur de l'image */
-    
-    /* Couleur officielle Olive / Kaki */
+    right: -40px;          
+    width: 60px;           
+    height: 100%;          
     background-color: var(--meta-olive); 
-    
-    /* Passe derrière l'image pour ne pas cacher la photo */
     z-index: -1;
-    
-    /* Optionnel : si tu veux adoucir ou accorder le bloc au style des cartes */
     border-radius: 4px;
     opacity: 0.85;
 }
 
 /* =========================================
-   RECALIBRAGE STRUCTUREL RADICAL (4 Cartes)
+   RECALIBRAGE STRUCTUREL (5 Cartes sur Desktop)
    ========================================= */
 
-/* Sur grand écran : on force le passage de 5 à 4 cartes par ligne */
-@media (min-width: 992px) {
+/* Sur très grand écran (Desktop classique) : 5 cartes visibles d'un coup */
+@media (min-width: 1200px) {
     .prestation-track .prestation-card-item {
-        width: calc(25% - 16px) !important;
-        flex: 0 0 calc(25% - 16px) !important;
+        width: calc(20% - 12px) !important;
+        flex: 0 0 calc(20% - 12px) !important;
     }
 }
 
-/* Sur tablette : 3 cartes visibles */
+/* Sur écran moyen (Petit PC / Tablette horizontale) : 4 cartes visibles */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .prestation-track .prestation-card-item {
+        width: calc(25% - 12px) !important;
+        flex: 0 0 calc(25% - 12px) !important;
+    }
+}
+
+/* Sur tablette (Verticale) : 3 cartes visibles */
 @media (max-width: 991px) and (min-width: 768px) {
     .prestation-track .prestation-card-item {
         width: calc(33.333% - 12px) !important;

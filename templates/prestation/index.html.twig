@@ -22,54 +22,73 @@
             
             {% for prestation in prestations %}
                 <div class="prestation-card-item">
-                    <div class="card card-premium shadow-lg h-100 overflow-hidden transition-hover text-center d-flex flex-column" style="padding: 0 0 1.5rem 0;">
+                    {# 
+                      1. FOND DE CARTE : Passage en var(--meta-olive) pour correspondre au design 
+                      2. BORDURES : Suppression des bordures avec 'border: none' 
+                    #}
+                    <div class="card shadow-lg h-100 overflow-hidden transition-hover text-center d-flex flex-column" 
+                         style="background-color: var(--meta-olive); border: none; border-radius: 8px; padding: 0 0 1.5rem 0;">
                         
                         {# 1. ZONE SUPÉRIEURE (Image ou Icône minimaliste élégante) #}
                         {% if prestation.imageName %}
-                            <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
-                                 class="card-img-top object-fit-cover" 
-                                 alt="{{ prestation.nom }}" 
-                                 style="height: 220px; border-bottom: 1px solid rgba(184, 154, 99, 0.2);">
+                            <div style="height: 200px; width: 100%;">
+                                <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
+                                     class="w-100 h-100 object-fit-cover" 
+                                     alt="{{ prestation.nom }}">
+                            </div>
                         {% else %}
-                            {# Alternative haut de gamme : Une icône centrée dans un cercle, comme sur l'accueil #}
-                            <div class="card-img-top d-flex flex-column align-items-center justify-content-center" 
-                                 style="height: 220px; background-color: rgba(74, 79, 65, 0.1); border-bottom: 1px solid rgba(184, 154, 99, 0.2);">
-                                <div class="rounded-circle border border-gold d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: rgba(184, 154, 99, 0.02);">
-                                    <i class="bi {{ prestation.icone|default('bi-person') }} text-gold fs-3"></i>
+                            {# Alternative : Cercle doré centré sur fond légèrement assombri #}
+                            <div class="d-flex flex-column align-items-center justify-content-center" 
+                                 style="height: 200px; background-color: rgba(0, 0, 0, 0.1);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 80px; height: 80px; border: 1px solid var(--meta-gold);">
+                                    <i class="bi {{ prestation.icone|default('bi-person') }} text-gold" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         {% endif %}
 
                         {# 2. LE CONTENU DE LA CARTE #}
                         <div class="card-body d-flex flex-column p-4 flex-grow-1">
-                            {# Titre sur une ligne ou deux centré #}
-                            <h3 class="text-gold fs-6 text-uppercase mb-2" style="letter-spacing: 1px; font-family: var(--font-title), serif; min-height: 45px; display: flex; align-items: center; justify-content: center;">
+                            
+                            {# Titre #}
+                            <h3 class="text-gold fs-6 text-uppercase mb-3" style="letter-spacing: 2px; font-family: var(--font-title), serif;">
                                 {{ prestation.nom }}
                             </h3>
                             
-                            {# Le petit trait séparateur de l'accueil #}
-                            <hr class="mx-auto mb-3" style="width: 35px; height: 1px; background-color: var(--meta-gold); border: none; opacity: 0.4;">
+                            {# Le petit trait séparateur doré du design original #}
+                            <div class="mx-auto mb-4" style="width: 30px; height: 1px; background-color: var(--meta-gold); opacity: 0.6;"></div>
                             
-                            <p class="text-sage small mb-3" style="font-size: 0.8rem;">
-                                <i class="bi bi-clock me-1"></i> {{ prestation.duree }} min
-                            </p>
+                            {# Condition pour afficher la durée uniquement si elle est renseignée #}
+                            {% if prestation.duree %}
+                                <p class="text-sage small mb-4" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                    <i class="bi bi-clock me-1"></i> {{ prestation.duree }} min
+                                </p>
+                            {% endif %}
                             
-                            {# Description nettoyée et calibrée #}
+                            {# Description nettoyée #}
                             {% set desc_clean = prestation.description|striptags|replace({'&nbsp;': ' '}) %}
-                            <p class="text-ivory mb-4 flex-grow-1 small" style="line-height: 1.5; font-size: 0.8rem; min-height: 72px;">
+                            <p class="text-ivory mb-4 flex-grow-1 small" style="line-height: 1.6; font-size: 0.85rem;">
                                 {{ desc_clean|length > 90 ? desc_clean|slice(0, 90) ~ '...' : desc_clean }}
                             </p>
                             
-                            <p class="text-gold small mb-4 fw-bold" style="letter-spacing: 1px; font-size: 0.9rem;">
-                                {{ prestation.prix }} €
+                            {# Prix et Unité #}
+                            <p class="text-gold fw-bold mb-4 text-uppercase" style="font-size: 1.1rem; letter-spacing: 1px;">
+                                {{ prestation.prix }} € 
+                                {% if prestation.unitePrix is defined and prestation.unitePrix %}
+                                    / {{ prestation.unitePrix }}
+                                {% endif %}
                             </p>
-                            
-                            {# 3. LES ACTION BOUTONS (Superposés pour plus d'espace et de clarté) #}
-                            <div class="d-flex flex-column gap-2 mt-auto w-100 px-2">
-                                <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}"class="btn w-100 text-gold text-uppercase rounded-0 py-2" style="background-color: #2A1A1E; border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.75rem; letter-spacing: 1px; transition: all 0.3s ease;">
+                                                                                
+                            {# 3. LES ACTIONS BOUTONS #}
+                            <div class="d-flex flex-column gap-2 mt-auto w-100">
+                                <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
+                                   class="btn w-100 text-gold text-uppercase rounded-0 py-2 transition-hover" 
+                                   style="background-color: var(--meta-plum); border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.75rem; letter-spacing: 2px;">
                                     RÉSERVER
                                 </a>
-                                <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="btn w-100 text-gold text-uppercase rounded-0 py-2" style="background-color: #2A1A1E; border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.75rem; letter-spacing: 1px; transition: all 0.3s ease;">
+                                <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" 
+                                   class="btn w-100 text-gold text-uppercase rounded-0 py-2 transition-hover" 
+                                   style="background-color: var(--meta-plum); border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.75rem; letter-spacing: 2px;">
                                     DÉTAILS
                                 </a> 
                             </div>
@@ -101,7 +120,6 @@
             const card = document.querySelector('.prestation-card-item');
             
             if (card) {
-                // Calcule la largeur d'une carte + l'espace (gap)
                 const scrollAmount = card.offsetWidth + 15; 
 
                 btnLeft.addEventListener('click', () => {

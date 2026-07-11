@@ -11,8 +11,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class PrestationCrudController extends AbstractCrudController
 {
@@ -26,7 +28,7 @@ class PrestationCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Prestation')
             ->setEntityLabelInPlural('Prestations')
-            ->setHelp('index', 'Gerez ici votre catalogue de soins. Les modifications sont instantanément répercutées sur votre site public.');
+            ->setHelp('index', 'Gérez ici votre catalogue de soins. Les modifications sont instantanément répercutées sur votre site public.');
     }
 
     public function configureFields(string $pageName): iterable
@@ -46,9 +48,13 @@ class PrestationCrudController extends AbstractCrudController
                 ->setHelp('Exemple : SÉANCE, FORFAIT, ACCOMPAGNEMENT. Par défaut : SÉANCE')
                 ->setRequired(false),
 
+            IntegerField::new('ordre', 'Position (Ordre)')
+                ->setRequired(false)
+                ->setHelp('Ex: 1 pour afficher en premier, 2 en deuxième, etc. Utilisé comme ordre par défaut.'),
+
             IntegerField::new('duree', 'Durée de la séance (en minutes)')
-                ->setRequired(true)
-                ->setHelp('Ex: 60 pour 1 heure.'),
+                ->setRequired(false)
+                ->setHelp('Ex: 45. Laissez vide si la durée n\'est pas fixe ou non applicable.'),
 
             BooleanField::new('estMisEnAvant', 'Mettre en avant cette prestation')
                 ->renderAsSwitch(true)
@@ -59,7 +65,7 @@ class PrestationCrudController extends AbstractCrudController
                 ->onlyOnIndex(),
 
             TextField::new('imageFile', 'Image illustrative du soin')
-                ->setFormType(VichImageType::class)
+                ->setFormType(VichImageType::class) // <-- C'est ici que Vich gère l'upload physique !
                 ->onlyOnForms()
                 ->setHelp('💡 Conseil design : Pour un rendu optimal sur les cartes, privilégiez une photo épurée au format portrait ou carré (ratio 4:5 ou 1:1).'),
                 
@@ -67,16 +73,26 @@ class PrestationCrudController extends AbstractCrudController
                 ->setChoices([
                     '1 personne (Buste)' => 'bi-person',
                     '2 personnes (Couple)' => 'bi-people',
-                    'Famille (Maison avec cœur)' => 'bi-house-heart', // Alternative chaleureuse
+                    'Famille (Maison avec cœur)' => 'bi-house-heart', 
                     'Groupe (Réseau)' => 'bi-diagram-3'
                 ])
                 ->setRequired(false)
                 ->renderExpanded()
                 ->setHelp('Choisissez l\'icône représentant le nombre de personnes pour cette prestation.'),
 
-            TextareaField::new('description', 'Description détaillée')
-                ->setNumOfRows(8)
-                ->setHelp('Présentez le déroulé du soin, ses bienfaits et les objectifs de la séance.'),
+            TextareaField::new('description', 'Description courte (Cartes)')
+                ->setNumOfRows(4)
+                ->setHelp('Présentez brièvement le déroulé du soin pour l\'aperçu général.'),
+ 
+            TextareaField::new('descriptionComplementaire', 'Description complète (Page Détails)')  
+                ->hideOnIndex()
+                ->setNumOfRows(10) // On met une grande zone de texte très confortable
+                ->setHelp('Le texte détaillé du déroulé de la séance. Allez simplement à la ligne pour créer des paragraphes.'),
+ 
+            UrlField::new('lienVideo', 'Lien Vidéo (YouTube, Vimeo, etc.)')
+                ->hideOnIndex()
+                ->setRequired(false)
+                ->setHelp('Collez ici l\'URL complète de la vidéo de présentation.'),
         ];
     }
 }

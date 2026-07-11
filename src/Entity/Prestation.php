@@ -28,7 +28,7 @@ class Prestation
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $duree = null;
     
     // --- CHAMP ICÔNE ---
@@ -41,6 +41,16 @@ class Prestation
 
     #[ORM\Column(type: 'boolean')]
     private bool $estMisEnAvant = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $ordre = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $descriptionComplementaire = null;
+
+    // --- LIEN VIDÉO (Optionnel) ---
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lienVideo = null;
 
     /**
      * @var Collection<int, Reservation>
@@ -111,7 +121,8 @@ class Prestation
         return $this->duree;
     }
 
-    public function setDuree(int $duree): static
+    // Ajoute le "?" devant int pour accepter que ce soit vide
+    public function setDuree(?int $duree): static
     {
         $this->duree = $duree;
 
@@ -213,6 +224,40 @@ class Prestation
     public function setEstMisEnAvant(bool $estMisEnAvant): self
     {
         $this->estMisEnAvant = $estMisEnAvant;
+        return $this;
+    }
+    
+    public function getOrdre(): ?int
+    {
+        return $this->ordre;
+    }
+
+    public function setOrdre(?int $ordre): static
+    {
+        $this->ordre = $ordre;
+
+        return $this;
+    }
+    
+    public function getDescriptionComplementaire(): ?string
+    {
+        return $this->descriptionComplementaire;
+    }
+
+    public function setDescriptionComplementaire(?string $descriptionComplementaire): static
+    {
+        $this->descriptionComplementaire = $descriptionComplementaire;
+        return $this;
+    }
+
+    public function getLienVideo(): ?string
+    {
+        return $this->lienVideo;
+    }
+
+    public function setLienVideo(?string $lienVideo): static
+    {
+        $this->lienVideo = $lienVideo;
         return $this;
     }
 }
