@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Repository\HoraireHebdomadaireRepository;
 use App\Repository\IndisponibiliteRepository;
-use App\Repository\ReservationRepository;
+use App\Repository\SeanceRepository; // MODIFICATION ICI : On utilise SeanceRepository
 use DateTimeInterface;
 
 class PlanningService
@@ -12,7 +12,7 @@ class PlanningService
     public function __construct(
         private HoraireHebdomadaireRepository $horaireRepo,
         private IndisponibiliteRepository $indispoRepo,
-        private ReservationRepository $reservationRepo
+        private SeanceRepository $seanceRepo // MODIFICATION ICI
     ) {}
 
     public function getCreneauxDisponibles(DateTimeInterface $dateRecherchee, int $dureePrestation): array
@@ -42,21 +42,25 @@ class PlanningService
             return [];
         }
 
-        $reservations = $this->reservationRepo->createQueryBuilder('r')
-            ->where('r.dateRendezVous >= :debut')
-            ->andWhere('r.dateRendezVous <= :fin')
+        // MODIFICATION ICI : On exclut les séances annulées pour libérer la place
+        $seancesPrises = $this->seanceRepo->createQueryBuilder('s')
+            ->where('s.dateRendezVous >= :debut')
+            ->andWhere('s.dateRendezVous <= :fin')
+            ->andWhere('s.statut != :annule')
             ->setParameter('debut', $debutJournee)
             ->setParameter('fin', $finJournee)
+            ->setParameter('annule', 'Annulé')
             ->getQuery()
             ->getResult();
 
         $intervallesReserves = [];
-        foreach ($reservations as $resa) {
-            $debutResa = clone $resa->getDateRendezVous();
+        foreach ($seancesPrises as $seance) {
+            $debutResa = clone $seance->getDateRendezVous();
             $finResa = clone $debutResa;
             
-            $duree = $resa->getPrestation()->getDuree();
-            $finResa->modify("+{$duree} minutes");
+            // MODIFICATION ICI : On récupère la durée directement sur l'entité Seance
+            $duree = $seance->getDuree() ?? 60;
+            $finResa->modify("+".($duree + 15)." minutes");
 
             // BYPASS DU BUG JIT
             array_push($intervallesReserves, [
@@ -81,7 +85,8 @@ class PlanningService
     private function genererBlocsFiltres(DateTimeInterface $date, \DateTimeInterface $ouverture, \DateTimeInterface $fermeture, int $dureePrestation, array $intervallesReserves): array
     {
         $blocs = [];
-        $pas = 30;
+        $pas = 15; // Proposition de rendez-vous toutes les 15 minutes
+        $tempsPause = 15; // Temps de battement obligatoire entre deux séances
 
         $actuel = \DateTime::createFromInterface($date);
         $actuel->setTime((int)$ouverture->format('H'), (int)$ouverture->format('i'));
@@ -90,16 +95,23 @@ class PlanningService
         $limite->setTime((int)$fermeture->format('H'), (int)$fermeture->format('i'));
 
         while ($actuel < $limite) {
-            $finCreneauPossible = clone $actuel;
-            $finCreneauPossible->modify("+{$dureePrestation} minutes");
+            // Heure de fin réelle de la séance
+            $finSoin = clone $actuel;
+            $finSoin->modify("+{$dureePrestation} minutes");
 
-            if ($finCreneauPossible > $limite) {
+            // La séance seule (sans la pause) doit se terminer avant la fermeture de l'institut
+            if ($finSoin > $limite) {
                 break;
             }
 
+            // Pour vérifier les disponibilités, on inclut le temps de pause obligatoire après le soin
+            $finAvecPause = clone $finSoin;
+            $finAvecPause->modify("+{$tempsPause} minutes");
+
             $chevauchement = false;
             foreach ($intervallesReserves as $intervalle) {
-                if ($actuel < $intervalle['fin'] && $finCreneauPossible > $intervalle['debut']) {
+                // On croise le créneau potentiel (+ sa pause) avec les réservations existantes (+ leur pause)
+                if ($actuel < $intervalle['fin'] && $finAvecPause > $intervalle['debut']) {
                     $chevauchement = true;
                     break;
                 }
@@ -110,6 +122,7 @@ class PlanningService
                 array_push($blocs, $actuel->format('H:i'));
             }
 
+            // On avance de 15 minutes pour vérifier le créneau suivant
             $actuel->modify("+{$pas} minutes");
         }
 

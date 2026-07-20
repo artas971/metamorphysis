@@ -7,45 +7,47 @@
     
     {# Bouton de retour #}
     <div class="mb-4">
-        <a href="{{ path('app_account') }}" class="text-gold text-decoration-none transition-hover d-inline-block">
+        <a href="{{ path('app_account') }}" class="text-gold text-decoration-none transition-hover d-inline-block small text-uppercase" style="letter-spacing: 1px;">
             <i class="bi bi-arrow-left me-2"></i>Retour à mon espace
         </a>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card-premium shadow-lg overflow-hidden">
+            {# HARMONISATION : Fond translucide vert olive à 55%, flou d'arrière-plan et coins arrondis de la charte #}
+            <div class="card-premium shadow-lg overflow-hidden" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card);">
                 
                 {# En-tête : Nom du soin et Badge de Statut #}
-                <div class="card-header bg-transparent border-bottom border-gold p-4 d-flex justify-content-between align-items-center">
-                    <h2 class="text-gold typo-titre mb-0">{{ reservation.prestation.nom }}</h2>
+                <div class="card-header bg-transparent border-bottom border-gold-subtle p-4 d-flex justify-content-between align-items-center">
+                    <h2 class="text-gold typo-titre mb-0" style="font-size: 1.75rem; letter-spacing: 1px;">{{ reservation.prestation.nom }}</h2>
                     
                     {% if reservation.statut == 'Confirmé' %}
-                        <span class="badge bg-success px-3 py-2 rounded-pill fs-6">Confirmé</span>
+                        <span class="badge bg-success px-3 py-2 rounded-pill fs-6 fw-normal" style="letter-spacing: 1px;">Confirmé</span>
                     {% elseif reservation.statut == 'En attente' %}
-                        <span class="badge px-3 py-2 rounded-pill text-dark fs-6" style="background-color: var(--meta-gold);">En attente</span>
+                        <span class="badge px-3 py-2 rounded-pill text-dark fs-6 fw-bold" style="background-color: var(--meta-gold); letter-spacing: 1px;">En attente</span>
                     {% elseif reservation.statut == 'Annulé' %}
-                        <span class="badge bg-danger px-3 py-2 rounded-pill fs-6">Annulé</span>
+                        <span class="badge bg-danger px-3 py-2 rounded-pill fs-6 fw-normal" style="letter-spacing: 1px;">Annulé</span>
                     {% endif %}
                 </div>
 
                 {# Corps : Les détails personnalisés #}
                 <div class="card-body p-4 p-md-5">
                     
-                    {# Calcul de l'heure de fin avec Twig (Date de début + Durée en minutes) #}
-                    {% set heure_fin = reservation.dateRendezVous|date_modify('+' ~ reservation.prestation.duree ~ ' minutes') %}
+                    {# Sécurité : Calcul de l'heure de fin uniquement si la durée existe, sinon 60 min par défaut #}
+                    {% set duree_soin = reservation.prestation.duree|default(60) %}
+                    {% set heure_fin = reservation.dateRendezVous|date_modify('+' ~ duree_soin ~ ' minutes') %}
 
                     <div class="row g-4">
                         {# Bloc Date et Heure #}
                         <div class="col-md-6">
-                            <div class="p-3 border border-gold-subtle rounded" style="background-color: rgba(33, 20, 28, 0.4);">
-                                <h6 class="text-white-50 text-uppercase fw-bold mb-3" style="letter-spacing: 1px;">Planification</h6>
+                            <div class="p-4 border border-gold-subtle h-100" style="background-color: rgba(10, 10, 9, 0.4); border-radius: var(--radius-input);">
+                                <h6 class="text-gold text-uppercase fw-bold mb-3 small" style="letter-spacing: 2px; font-family: var(--font-accent);">Planification</h6>
                                 
-                                <p class="mb-2 fs-5">
+                                <p class="mb-2 text-ivory">
                                     <i class="bi bi-calendar-event text-gold me-2"></i> 
                                     {{ reservation.dateRendezVous|date('d/m/Y') }}
                                 </p>
-                                <p class="mb-0 fs-5">
+                                <p class="mb-0 text-ivory">
                                     <i class="bi bi-clock text-gold me-2"></i> 
                                     De {{ reservation.dateRendezVous|date('H:i') }} à {{ heure_fin|date('H:i') }}
                                 </p>
@@ -54,16 +56,16 @@
 
                         {# Bloc Infos Tarifaires #}
                         <div class="col-md-6">
-                            <div class="p-3 border border-gold-subtle rounded h-100" style="background-color: rgba(33, 20, 28, 0.4);">
-                                <h6 class="text-white-50 text-uppercase fw-bold mb-3" style="letter-spacing: 1px;">Détails de l'offre</h6>
+                            <div class="p-4 border border-gold-subtle h-100" style="background-color: rgba(10, 10, 9, 0.4); border-radius: var(--radius-input);">
+                                <h6 class="text-gold text-uppercase fw-bold mb-3 small" style="letter-spacing: 2px; font-family: var(--font-accent);">Détails de l'offre</h6>
                                 
-                                <p class="mb-2 fs-5">
+                                <p class="mb-2 text-ivory">
                                     <i class="bi bi-tag text-gold me-2"></i> 
-                                    Tarif : <span class="fw-bold">{{ reservation.prestation.prix }} €</span>
+                                    Tarif : <span class="fw-bold text-gold">{{ reservation.prestation.prix }} €</span>
                                 </p>
-                                <p class="mb-0 fs-5 text-sage">
+                                <p class="mb-0 text-sage">
                                     <i class="bi bi-hourglass-split text-gold me-2"></i> 
-                                    Durée totale : {{ reservation.prestation.duree }} min
+                                    Durée totale : {% if reservation.prestation.duree %}{{ reservation.prestation.duree }} min{% else %}Sur mesure{% endif %}
                                 </p>
                             </div>
                         </div>
@@ -71,8 +73,8 @@
 
                     {# Message administratif si le statut est en attente #}
                     {% if reservation.statut == 'En attente' %}
-                        <div class="mt-4 p-3 rounded" style="background-color: rgba(184, 154, 99, 0.1); border-left: 4px solid var(--meta-gold);">
-                            <p class="mb-0 text-ivory fst-italic">
+                        <div class="mt-4 p-3 border-start border-gold" style="background-color: rgba(184, 154, 99, 0.1); border-radius: 0 var(--radius-input) var(--radius-input) 0;">
+                            <p class="mb-0 text-ivory small fst-italic" style="line-height: 1.6;">
                                 <i class="bi bi-info-circle me-2 text-gold"></i>
                                 Votre demande est actuellement en cours d'examen par notre équipe. Vous recevrez une notification dès sa validation.
                             </p>

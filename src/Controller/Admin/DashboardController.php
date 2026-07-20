@@ -6,8 +6,8 @@ use App\Controller\Admin\HoraireHebdomadaireCrudController;
 use App\Controller\Admin\IndisponibiliteCrudController;
 use App\Controller\Admin\PageCrudController;
 use App\Controller\Admin\PrestationCrudController;
-use App\Controller\Admin\ReservationCrudController;
-use App\Controller\Admin\UserCrudController; 
+use App\Controller\Admin\SeanceCrudController; // Ajout du nouveau contrôleur
+use App\Controller\Admin\UserCrudController;  
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -31,7 +31,8 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         return $this->render('admin/dashboard.html.twig', [
-            'url_reservations' => $this->adminUrlGenerator->setController(ReservationCrudController::class)->setAction('index')->generateUrl(),
+            // CORRECTION : Utilisation du SeanceCrudController pour la page d'accueil du dashboard
+            'url_reservations' => $this->adminUrlGenerator->setController(SeanceCrudController::class)->setAction('index')->generateUrl(),
             'url_pages' => $this->adminUrlGenerator->setController(PageCrudController::class)->setAction('index')->generateUrl(),
             'url_prestations' => $this->adminUrlGenerator->setController(PrestationCrudController::class)->setAction('index')->generateUrl(),
         ]);        
@@ -50,9 +51,10 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Gestion du Cabinet');
         
-        yield MenuItem::linkToUrl('Réservations', 'fa-solid fa-calendar-check', 
-            $this->adminUrlGenerator->setController(ReservationCrudController::class)->setAction('index')->generateUrl());
-            
+        // CORRECTION : Génération dynamique et sécurisée de l'URL pour les Séances
+        yield MenuItem::linkToUrl('Suivi des Séances', 'fas fa-calendar-check', 
+            $this->adminUrlGenerator->setController(SeanceCrudController::class)->setAction('index')->generateUrl());       
+             
         yield MenuItem::linkToUrl('Mes Prestations', 'fa-solid fa-gem', 
             $this->adminUrlGenerator->setController(PrestationCrudController::class)->setAction('index')->generateUrl());
             
@@ -82,7 +84,6 @@ class DashboardController extends AbstractDashboardController
                     --ea-color-primary: #b89a63 !important;
                 }
                 
-                /* Neutralisation totale de Bootstrap 5 pour le bouton d\'action principal */
                 .btn-primary, 
                 a.btn-primary, 
                 button.btn-primary {
@@ -99,7 +100,6 @@ class DashboardController extends AbstractDashboardController
                     --bs-btn-active-bg: #8a998b !important;
                 }
 
-                /* Survol en Vert Sauge */
                 .btn-primary:hover, 
                 a.btn-primary:hover, 
                 button.btn-primary:hover {
@@ -109,17 +109,14 @@ class DashboardController extends AbstractDashboardController
                     color: #ffffff !important;
                 }
 
-                /* Interrupteurs (Switch) */
                 .form-switch .form-check-input:checked {
                     background-color: #b89a63 !important;
                     border-color: #b89a63 !important;
                 }
 
-                /* Badges et liserés */
                 .badge-primary, .badge-success { background-color: #b89a63 !important; color: #fff !important; }
                 .main-header { border-bottom: 2px solid #b89a63 !important; }
 
-                /* RECALAGE UNIVERSEL DES MINIATURES ET ICÔNES DANS LES LISTES */
                 .ea-lightbox-thumbnail, 
                 .field-collection-item-action,
                 [class*="field-collection"] ul li,
@@ -135,7 +132,7 @@ class DashboardController extends AbstractDashboardController
                 td .form-img-container img {
                     object-fit: cover !important;
                     object-position: center !important;
-                    width: 24px !important; /* Calibrage standardisé pour la ligne */
+                    width: 24px !important;
                     height: 24px !important;
                     margin: 0 !important;
                     padding: 0 !important;

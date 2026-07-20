@@ -15,9 +15,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             
-            <div class="card-premium shadow-lg overflow-hidden position-relative" style="background-color: var(--meta-olive); border: none;">
-                
-                <i class="bi {{ prestation.icone|default('bi-star') }} position-absolute text-gold" style="font-size: 25rem; opacity: 0.03; bottom: -50px; right: -20px; z-index: 0; pointer-events: none;"></i>
+    <div class="card-premium shadow-lg overflow-hidden position-relative" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2);">                <i class="bi {{ prestation.icone|default('bi-star') }} position-absolute text-gold" style="font-size: 25rem; opacity: 0.03; bottom: -50px; right: -20px; z-index: 0; pointer-events: none;"></i>
 
                 <div class="row g-0 position-relative z-1"> 
                     
@@ -29,8 +27,9 @@
                                 class="img-fluid w-100" 
                                 style="height: 100%; min-height: 400px; object-fit: cover; border-right: 1px solid rgba(184, 154, 99, 0.2);">
                         {% else %}
-                            <div class="bg-grad-subtle w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
-                                 style="min-height: 400px; border-right: 1px solid rgba(184, 154, 99, 0.2);">
+                            {# Application du dégradé Violet (Plum) / Vert (Olive) #}
+                            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                                 style="background: linear-gradient(135deg, var(--meta-plum) 0%, var(--meta-olive) 100%); min-height: 400px; border-right: 1px solid rgba(184, 154, 99, 0.2);">
                                 <i class="bi {{ prestation.icone|default('bi-star') }} text-gold opacity-50 mb-3" style="font-size: 4rem;"></i>
                                 <span class="text-gold typo-symbolic opacity-50 fs-5 text-uppercase">Metamorphysis</span>
                             </div>

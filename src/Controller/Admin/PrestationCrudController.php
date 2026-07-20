@@ -12,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
@@ -56,6 +55,13 @@ class PrestationCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setHelp('Ex: 45. Laissez vide si la durée n\'est pas fixe ou non applicable.'),
 
+            /* =========================================================================
+               NOUVEAU : Gestion du nombre de séances pour les parcours et forfaits
+               ========================================================================= */
+            IntegerField::new('nombreSeances', 'Nombre de séances incluses')
+                ->setRequired(true)
+                ->setHelp('Indiquez 1 pour un soin unique, ou plus s\'il s\'agit d\'un forfait/parcours (ex: 3, 5, 10).'),
+
             BooleanField::new('estMisEnAvant', 'Mettre en avant cette prestation')
                 ->renderAsSwitch(true)
                 ->setHelp('Activez cette option pour pousser ce soin en priorité sur le site.'),
@@ -65,7 +71,7 @@ class PrestationCrudController extends AbstractCrudController
                 ->onlyOnIndex(),
 
             TextField::new('imageFile', 'Image illustrative du soin')
-                ->setFormType(VichImageType::class) // <-- C'est ici que Vich gère l'upload physique !
+                ->setFormType(VichImageType::class)
                 ->onlyOnForms()
                 ->setHelp('💡 Conseil design : Pour un rendu optimal sur les cartes, privilégiez une photo épurée au format portrait ou carré (ratio 4:5 ou 1:1).'),
                 
@@ -86,7 +92,7 @@ class PrestationCrudController extends AbstractCrudController
  
             TextareaField::new('descriptionComplementaire', 'Description complète (Page Détails)')  
                 ->hideOnIndex()
-                ->setNumOfRows(10) // On met une grande zone de texte très confortable
+                ->setNumOfRows(10)
                 ->setHelp('Le texte détaillé du déroulé de la séance. Allez simplement à la ligne pour créer des paragraphes.'),
  
             UrlField::new('lienVideo', 'Lien Vidéo (YouTube, Vimeo, etc.)')

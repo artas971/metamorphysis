@@ -45,8 +45,6 @@
 body {
     background-color: var(--meta-black);
     background-image: var(--grad-main);
-    
-    /* On fixe le fond pour que le contenu glisse élégamment par-dessus */
     background-attachment: fixed; 
     background-size: cover;        
     background-repeat: no-repeat;  
@@ -58,12 +56,45 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    
+    /* MODIFICATION : Nécessaire pour positionner les halos par rapport au body */
+    position: relative; 
 }
 
+/* =========================================
+   HALOS VERTS LATÉRAUX (Bordures lumineuses fixes)
+   ========================================= */
+/* Version légèrement plus prononcée */
+body::before, body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 400px; /* On élargit un peu la zone (400px au lieu de 350px) */
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.85; /* Intensité augmentée pour que le vert ressorte mieux */
+}
+
+/* Halo côté gauche */
+body::before {
+    left: 0;
+    background: linear-gradient(90deg, rgba(114, 119, 99, 0.35) 0%, rgba(114, 119, 99, 0.1) 30%, transparent 100%);
+}
+
+/* Halo côté droit */
+body::after {
+    right: 0;
+    background: linear-gradient(-90deg, rgba(114, 119, 99, 0.35) 0%, rgba(114, 119, 99, 0.1) 30%, transparent 100%);
+}
+/* =========================================
+   STRUCTURE DE CONTENU (Superposition)
+   ========================================= */
 main {
     flex: 1;
+    position: relative;
+    z-index: 1; /* Assure que le contenu se place au-dessus des halos en arrière-plan */
 }
-
 /* =========================================
    LA TOUCHE OLIVE (Navbar Épurée, Luxueuse & Compacte)
    ========================================= */

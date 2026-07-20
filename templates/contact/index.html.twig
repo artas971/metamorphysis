@@ -7,52 +7,54 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             
+            {# En-tête de la page #}
             <div class="text-center mb-5">
-                <h1 class="text-gold fw-bold text-uppercase">NOUS CONTACTER</h1>
-                <p class="text-white-50 fs-5">Une question ? Un projet ? Écrivez-nous directement.</p>
+                <h1 class="text-gold display-5 fw-bold text-uppercase typo-titre" style="letter-spacing: 2px;">NOUS CONTACTER</h1>
+                <p class="text-ivory lead" style="font-size: 1.1rem;">Une question ? Besoin d'échanger sur votre situation ? Écrivez-nous directement.</p> 
             </div>
 
-            <div class="card-premium shadow-lg">
+            {# HARMONISATION : Fond translucide vert olive à 55%, flou d'arrière-plan et coins arrondis de la charte #}
+            <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card);">
                 <div class="card-body p-5">
                     
                     {{ form_start(form) }}
                         
                         {# Champ Nom #}
                         <div class="mb-4">
-                            {{ form_label(form.nom, 'Votre Nom', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}}) }}
-                            {{ form_widget(form.nom, {'attr': {'class': 'form-control bg-grad-subtle text-white border-gold mt-2'}}) }}
-                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.nom) }}</div>
+                            {{ form_label(form.nom, 'Votre Nom', {'label_attr': {'class': 'form-label text-sage fw-bold text-uppercase small', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control text-white p-3 mt-2', 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input); color: var(--meta-ivory) !important;'}}) }}
+                            <div class="text-danger mt-1 small fw-bold">{{ form_errors(form.nom) }}</div>
                         </div>
 
                         {# Champ Email #}
                         <div class="mb-4">
-                            {{ form_label(form.email, 'Votre Adresse Email', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}}) }}
-                            {{ form_widget(form.email, {'attr': {'class': 'form-control bg-grad-subtle text-white border-gold mt-2'}}) }}
-                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.email) }}</div>
+                            {{ form_label(form.email, 'Votre Adresse Email', {'label_attr': {'class': 'form-label text-sage fw-bold text-uppercase small', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control text-white p-3 mt-2', 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input); color: var(--meta-ivory) !important;'}}) }}
+                            <div class="text-danger mt-1 small fw-bold">{{ form_errors(form.email) }}</div>
                         </div>
 
                         {# Champ Sujet #}
                         <div class="mb-4">
-                            {{ form_label(form.sujet, 'Sujet de votre demande', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}}) }}
-                            {{ form_widget(form.sujet, {'attr': {'class': 'form-control bg-grad-subtle text-white border-gold mt-2'}}) }}
-                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.sujet) }}</div>
+                            {{ form_label(form.sujet, 'Sujet de votre demande', {'label_attr': {'class': 'form-label text-sage fw-bold text-uppercase small', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.sujet, {'attr': {'class': 'form-control text-white p-3 mt-2', 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input); color: var(--meta-ivory) !important;'}}) }}
+                            <div class="text-danger mt-1 small fw-bold">{{ form_errors(form.sujet) }}</div>
                         </div>
 
                         {# Champ Message #}
                         <div class="mb-5">
-                            {{ form_label(form.message, 'Votre Message', {'label_attr': {'class': 'form-label text-white-50 fw-bold text-uppercase'}}) }}
-                            {{ form_widget(form.message, {'attr': {'class': 'form-control bg-grad-subtle text-white border-gold mt-2', 'rows': 5}}) }}
-                            <div class="text-danger mt-1 fw-bold">{{ form_errors(form.message) }}</div>
+                            {{ form_label(form.message, 'Votre Message', {'label_attr': {'class': 'form-label text-sage fw-bold text-uppercase small', 'style': 'letter-spacing: 1px;'}}) }}
+                            {{ form_widget(form.message, {'attr': {'class': 'form-control text-white p-3 mt-2', 'rows': 5, 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input); color: var(--meta-ivory) !important; resize: none;'}}) }}
+                            <div class="text-danger mt-1 small fw-bold">{{ form_errors(form.message) }}</div>
                         </div>
 
-                        <button type="submit" class="btn btn-premium w-100 fw-bold py-3 fs-5 rounded-pill">
+                        {# Bouton de validation premium #}
+                        <button type="submit" class="btn btn-premium w-100 fw-bold py-3 rounded-pill text-uppercase" style="letter-spacing: 1px;">
                             ENVOYER LE MESSAGE
                         </button>
 
                     {{ form_widget(form.fax_number) }}
                     {{ form_end(form) }}
                     
-
                 </div>
             </div>
             

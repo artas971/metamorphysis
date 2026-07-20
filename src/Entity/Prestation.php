@@ -70,9 +70,19 @@ class Prestation
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column]
+    private ?int $nombreSeances = null;
+
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'prestation')]
+    private Collection $seances;
+
     public function __construct()
     {
         $this->Entrée = new ArrayCollection();
+        $this->seances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -258,6 +268,48 @@ class Prestation
     public function setLienVideo(?string $lienVideo): static
     {
         $this->lienVideo = $lienVideo;
+        return $this;
+    }
+
+    public function getNombreSeances(): ?int
+    {
+        return $this->nombreSeances;
+    }
+
+    public function setNombreSeances(int $nombreSeances): static
+    {
+        $this->nombreSeances = $nombreSeances;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeances(): Collection
+    {
+        return $this->seances;
+    }
+
+    public function addSeance(Seance $seance): static
+    {
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setPrestation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): static
+    {
+        if ($this->seances->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getPrestation() === $this) {
+                $seance->setPrestation(null);
+            }
+        }
+
         return $this;
     }
 }

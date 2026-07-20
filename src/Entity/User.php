@@ -50,9 +50,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'user')]
+    private Collection $seances;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->seances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,5 +212,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // Tu peux choisir d'afficher le prénom et l'e-mail entre parenthèses
         return $this->prenom . ' (' . $this->email . ')';
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeances(): Collection
+    {
+        return $this->seances;
+    }
+
+    public function addSeance(Seance $seance): static
+    {
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): static
+    {
+        if ($this->seances->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getUser() === $this) {
+                $seance->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

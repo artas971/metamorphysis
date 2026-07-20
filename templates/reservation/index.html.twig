@@ -19,23 +19,30 @@
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card-premium shadow-lg">
+            {# HARMONISATION : Intégration de la translucidité à 55%, flou de fond (blur) et fine bordure dorée #}
+            <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card);">
                 <div class="card-body p-5">
                     
                     <div class="text-center mb-4">
-                        <h2 class="text-gold fw-bold">RÉSERVER</h2>
-                        <p class="text-white fs-5 mt-2 mb-1">{{ prestation.nom }}</p>
+                        <h2 class="text-gold fw-bold typo-titre" style="letter-spacing: 2px;">RÉSERVER</h2>
+                        <p class="text-white fs-5 mt-2 mb-1" style="font-family: var(--font-title); text-transform: uppercase; letter-spacing: 1px;">
+                            {% if seance is defined and seance.numero > 1 %}
+                                Séance {{ seance.numero }} - {{ prestation.nom }}
+                            {% else %}
+                                {{ prestation.nom }}
+                            {% endif %}
+                        </p>
                         <p class="text-gold fs-4 mb-4">{{ prestation.prix }} €</p>
                     </div>
 
                     {{ form_start(form, {'attr': {'id': 'reservation-form'}}) }}
                         <div class="mb-4 text-start">
-                            <label class="form-label text-sage fw-bold text-uppercase small">1. Choisissez une date</label>
+                            <label class="form-label text-sage fw-bold text-uppercase small" style="letter-spacing: 1px;">1. Choisissez une date</label>
                             
                             {# Le champ texte que Flatpickr va transformer #}
                             <input type="text" id="date-picker" class="form-control input-premium p-3 mb-4" placeholder="Sélectionnez une date..." required>
                             
-                            <label class="form-label text-sage fw-bold text-uppercase small">2. Choisissez une heure</label>
+                            <label class="form-label text-sage fw-bold text-uppercase small" style="letter-spacing: 1px;">2. Choisissez une heure</label>
                             
                             <div id="time-slots-container" class="d-flex flex-wrap gap-2 mb-3">
                                 <span class="text-white-50 small fst-italic">Veuillez d'abord sélectionner une date.</span>
@@ -46,7 +53,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" id="submit-btn" class="btn btn-premium w-100 fw-bold py-2 rounded-pill" disabled>
+                        <button type="submit" id="submit-btn" class="btn btn-premium w-100 fw-bold py-2 rounded-pill text-uppercase" style="letter-spacing: 1px;" disabled>
                             CONFIRMER LA DEMANDE
                         </button>
                     {{ form_end(form) }}
@@ -55,8 +62,8 @@
             </div>
             
             <div class="text-center mt-3">
-                <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="text-secondary text-decoration-none">
-                    <i class="bi bi-arrow-left"></i> Retour aux détails
+                <a href="{{ path('app_account') }}" class="text-gold text-decoration-none transition-hover small text-uppercase" style="letter-spacing: 1px;">
+                    <i class="bi bi-arrow-left me-2"></i>Retour à mon espace
                 </a>
             </div>
             
@@ -67,9 +74,10 @@
 <style>
     /* Style premium de l'input de date */
     #date-picker {
-        background-color: #11140F !important;
-        color: #D8D0BE !important;
+        background-color: rgba(10, 10, 9, 0.6) !important;
+        color: var(--meta-ivory) !important;
         border: 1px solid rgba(184, 154, 99, 0.4) !important;
+        border-radius: var(--radius-input) !important;
     }
     #date-picker::placeholder {
         color: rgba(216, 208, 190, 0.4) !important; 
@@ -77,46 +85,48 @@
     }
 
     /* =========================================
-       FLATPICKR : INTEGRATION METAMORPHYSIS PROPRE
+       FLATPICKR : CONFIGURATION SÉCURISÉE SUR LES VARIABLES DE LA CHARTE
        ========================================= */
     .flatpickr-calendar {
-        background: #23291E !important; 
-        border: 1px solid #B89A63 !important; 
+        background: var(--meta-olive) !important; 
+        border: 1px solid var(--meta-gold) !important; 
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6) !important;
-        border-radius: 8px !important;
+        border-radius: var(--radius-input) !important;
+        font-family: var(--font-body) !important;
     }
     
     .flatpickr-months .flatpickr-month, 
     .flatpickr-current-month .flatpickr-monthDropdown-months,
     .flatpickr-current-month input.cur-year {
-        color: #B89A63 !important; 
+        color: var(--meta-gold) !important; 
+        font-family: var(--font-title) !important;
         font-weight: bold;
     }
     
     .flatpickr-prev-month svg, .flatpickr-next-month svg {
-        fill: #B89A63 !important;
+        fill: var(--meta-gold) !important;
     }
     
     span.flatpickr-weekday {
-        color: #D8D0BE !important; 
+        color: var(--meta-ivory) !important; 
         opacity: 0.7;
     }
     
     .flatpickr-day {
-        color: #D8D0BE !important; 
-        border-radius: 6px !important;
+        color: var(--meta-ivory) !important; 
+        border-radius: 4px !important;
     }
     
     .flatpickr-day:hover, .flatpickr-day:focus {
         background: rgba(184, 154, 99, 0.2) !important; 
-        border-color: #B89A63 !important;
+        border-color: var(--meta-gold) !important;
         color: #FFF !important;
     }
     
     .flatpickr-day.selected, .flatpickr-day.selected:hover {
-        background: #4A1525 !important; 
-        border-color: #B89A63 !important;
-        color: #B89A63 !important;
+        background: var(--meta-plum) !important; 
+        border-color: var(--meta-gold) !important;
+        color: var(--meta-gold) !important;
         font-weight: bold;
     }
     
@@ -134,7 +144,6 @@
         const realInput = document.querySelector('[name="reservation[dateRendezVous]"]'); 
         const submitBtn = document.getElementById('submit-btn');
 
-        // On initialise Flatpickr !
         flatpickr(datePickerElement, {
             locale: "fr",
             minDate: "today",
@@ -144,8 +153,14 @@
                 timeSlotsContainer.innerHTML = '<span class="text-gold small"><i class="bi bi-hourglass-split"></i> Analyse des disponibilités...</span>';
                 submitBtn.disabled = true;
 
-                // Appel au serveur (qui ne plantera plus grâce à notre correction de la durée)
-                fetch('/api/disponibilites/{{ prestation.id }}/' + dateStr)
+                // CORRECTION : Sélection dynamique de l'URL de l'API selon le contexte de la séance
+                {% if seance is defined and seance.id %}
+                    const apiUrl = '/api/disponibilites/seance/{{ seance.id }}/' + dateStr;
+                {% else %}
+                    const apiUrl = '/api/disponibilites/{{ prestation.id }}/' + dateStr;
+                {% endif %}
+
+                fetch(apiUrl)
                     .then(response => response.json())
                     .then(creneaux => {
                         timeSlotsContainer.innerHTML = '';
