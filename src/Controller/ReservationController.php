@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class ReservationController extends AbstractController
 {
@@ -23,9 +25,8 @@ class ReservationController extends AbstractController
     // =====================================================================
     #[Route('/reserver/{id}', name: 'app_reservation_new')]
     #[IsGranted('ROLE_USER')]
-    public function reserver(Prestation $prestation, Request $request): Response
+    public function reserver(Prestation $prestation, Request $request, CacheInterface $cache): Response
     {
-        // Initialisation factice pour le formulaire
         $premiereSeance = new Seance();
         $premiereSeance->setPrestation($prestation);
 
@@ -34,14 +35,25 @@ class ReservationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            // 1. On stocke les informations vitales dans la session de l'utilisateur
+            $dateRendezVous = $premiereSeance->getDateRendezVous();
+            
+            // --- SYSTÈME ANTI-DOUBLE RÉSERVATION (VERROU DE 3 MINUTES) ---
+            // On crée une clé unique de cache basée sur la date et l'heure (ex: lock_2026-07-22_10-00)
+            $lockKey = 'lock_' . $dateRendezVous->format('Y-m-d_H-i');
+            
+            // On verrouille ce créneau pour 3 minutes (180 secondes)
+            $cache->get($lockKey, function (ItemInterface $item) {
+                $item->expiresAfter(180);
+                return true; 
+            });
+            // -------------------------------------------------------------
+
             $session = $request->getSession();
             $session->set('reservation_en_cours', [
                 'prestation_id' => $prestation->getId(),
-                'date_rendez_vous' => $premiereSeance->getDateRendezVous()->format('Y-m-d H:i:s') 
+                'date_rendez_vous' => $dateRendezVous->format('Y-m-d H:i:s') 
             ]);
 
-            // 2. On redirige vers notre contrôleur de paiement Stripe
             return $this->redirectToRoute('app_stripe_checkout'); 
         }
 
@@ -59,7 +71,6 @@ class ReservationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function planifier(Seance $seance, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
-        // SÉCURITÉ : On vérifie que la séance appartient bien à l'utilisateur connecté
         if ($seance->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à planifier cette séance.');
         }
@@ -71,10 +82,9 @@ class ReservationController extends AbstractController
             $seance->setStatut('En attente de validation');
             $entityManager->flush();
 
-            // Envoi du mail de notification à l'administrateur
             $email = (new TemplatedEmail())
                 ->from('noreply@metamorphysis.com')
-                ->to('admin@metamorphysis.com')
+                ->to('Metamorphysisconsulting@gmail.com')
                 ->subject('Nouvelle planification : Séance ' . $seance->getNumero() . ' - ' . $seance->getPrestation()->getNom())
                 ->htmlTemplate('emails/nouvelle_reservation.html.twig')
                 ->context([
@@ -92,7 +102,7 @@ class ReservationController extends AbstractController
         return $this->render('reservation/index.html.twig', [
             'form' => $form->createView(),
             'prestation' => $seance->getPrestation(),
-            'seance' => $seance, // Permet au JavaScript de cibler l'ID de la séance
+            'seance' => $seance,
         ]);
     }
 
@@ -130,9 +140,6 @@ class ReservationController extends AbstractController
         return new JsonResponse($creneaux);
     }
 
-    /**
-     * Route conservée temporairement pour la rétrocompatibilité si un élément pointe encore sur l'ancienne URL API
-     */
     #[Route('/api/disponibilites/{id}/{date}', name: 'api_disponibilites', methods: ['GET'])]
     public function getDisponibilites(Prestation $prestation, string $date, PlanningService $planningService): JsonResponse
     {

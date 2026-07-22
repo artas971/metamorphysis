@@ -4,15 +4,17 @@ namespace App\Service;
 
 use App\Repository\HoraireHebdomadaireRepository;
 use App\Repository\IndisponibiliteRepository;
-use App\Repository\SeanceRepository; // MODIFICATION ICI : On utilise SeanceRepository
+use App\Repository\SeanceRepository;
 use DateTimeInterface;
+use Psr\Cache\CacheItemPoolInterface; // <-- Ajout de l'interface pour lire les verrous
 
 class PlanningService
 {
     public function __construct(
         private HoraireHebdomadaireRepository $horaireRepo,
         private IndisponibiliteRepository $indispoRepo,
-        private SeanceRepository $seanceRepo // MODIFICATION ICI
+        private SeanceRepository $seanceRepo,
+        private CacheItemPoolInterface $cache // <-- Injection du service de cache
     ) {}
 
     public function getCreneauxDisponibles(DateTimeInterface $dateRecherchee, int $dureePrestation): array
@@ -42,7 +44,6 @@ class PlanningService
             return [];
         }
 
-        // MODIFICATION ICI : On exclut les séances annulées pour libérer la place
         $seancesPrises = $this->seanceRepo->createQueryBuilder('s')
             ->where('s.dateRendezVous >= :debut')
             ->andWhere('s.dateRendezVous <= :fin')
@@ -58,11 +59,10 @@ class PlanningService
             $debutResa = clone $seance->getDateRendezVous();
             $finResa = clone $debutResa;
             
-            // MODIFICATION ICI : On récupère la durée directement sur l'entité Seance
             $duree = $seance->getDuree() ?? 60;
-            $finResa->modify("+".($duree + 15)." minutes");
+            // PASSAGE À 20 MINUTES de battement après un rendez-vous existant en base
+            $finResa->modify("+".($duree + 20)." minutes");
 
-            // BYPASS DU BUG JIT
             array_push($intervallesReserves, [
                 'debut' => $debutResa,
                 'fin' => $finResa
@@ -85,8 +85,10 @@ class PlanningService
     private function genererBlocsFiltres(DateTimeInterface $date, \DateTimeInterface $ouverture, \DateTimeInterface $fermeture, int $dureePrestation, array $intervallesReserves): array
     {
         $blocs = [];
-        $pas = 15; // Proposition de rendez-vous toutes les 15 minutes
-        $tempsPause = 15; // Temps de battement obligatoire entre deux séances
+        
+        // MODIFICATIONS : Affichage des créneaux toutes les 20 min et 20 min de battement obligatoire
+        $pas = 20; 
+        $tempsPause = 20; 
 
         $actuel = \DateTime::createFromInterface($date);
         $actuel->setTime((int)$ouverture->format('H'), (int)$ouverture->format('i'));
@@ -99,30 +101,42 @@ class PlanningService
             $finSoin = clone $actuel;
             $finSoin->modify("+{$dureePrestation} minutes");
 
-            // La séance seule (sans la pause) doit se terminer avant la fermeture de l'institut
+            // La séance seule (sans la pause) doit se terminer avant la fermeture
             if ($finSoin > $limite) {
                 break;
             }
 
-            // Pour vérifier les disponibilités, on inclut le temps de pause obligatoire après le soin
+            // On inclut le temps de pause obligatoire après le soin
             $finAvecPause = clone $finSoin;
             $finAvecPause->modify("+{$tempsPause} minutes");
 
             $chevauchement = false;
+            
+            // 1. Vérification avec les réservations déjà enregistrées en base
             foreach ($intervallesReserves as $intervalle) {
-                // On croise le créneau potentiel (+ sa pause) avec les réservations existantes (+ leur pause)
                 if ($actuel < $intervalle['fin'] && $finAvecPause > $intervalle['debut']) {
                     $chevauchement = true;
                     break;
                 }
             }
 
+            // 2. VERROU TEMPORAIRE STRIPE : Vérification du cache
             if (!$chevauchement) {
-                // BYPASS DU BUG JIT
+                // On recrée exactement la même clé que celle du ReservationController
+                $lockKey = 'lock_' . $actuel->format('Y-m-d_H-i');
+                
+                // Si la clé existe dans le cache, c'est que quelqu'un est en train de payer ce créneau
+                if ($this->cache->hasItem($lockKey)) {
+                    $chevauchement = true;
+                }
+            }
+
+            // Si tout est libre, on valide l'horaire
+            if (!$chevauchement) {
                 array_push($blocs, $actuel->format('H:i'));
             }
 
-            // On avance de 15 minutes pour vérifier le créneau suivant
+            // On avance au créneau suivant (dans 20 minutes)
             $actuel->modify("+{$pas} minutes");
         }
 
