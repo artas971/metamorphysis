@@ -15,7 +15,29 @@ class SeanceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Seance::class);
     }
+    // src/Repository/SeanceRepository.php
 
+    /**
+     * Récupère les séances confirmées qui ont lieu dans les prochaines 24 à 25 heures.
+     * (Idéal pour une commande Cron qui tourne toutes les heures).
+     */
+    public function findSeancesIn24Hours(): array
+    {
+        $maintenant = new \DateTime();
+        
+        $debut = (clone $maintenant)->modify('+24 hours');
+        $fin = (clone $maintenant)->modify('+25 hours');
+
+        return $this->createQueryBuilder('s')
+            ->where('s.dateRendezVous >= :debut')
+            ->andWhere('s.dateRendezVous < :fin')
+            ->andWhere('s.statut = :statut') // On ne rappelle que les séances confirmées
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->setParameter('statut', 'Confirmé')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Seance[] Returns an array of Seance objects
     //     */

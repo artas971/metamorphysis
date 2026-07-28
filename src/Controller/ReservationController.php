@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Prestation;
 use App\Entity\Seance;
+use App\Entity\User;
 use App\Form\ReservationType;
 use App\Service\PlanningService;
+use App\Service\DailyCoService;
+use App\Repository\SeanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,33 +23,46 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class ReservationController extends AbstractController
 {
-    // =====================================================================
-    // 1. NOUVELLE RÉSERVATION (Achat du parcours complet avec Stripe)
-    // =====================================================================
+
+
     #[Route('/reserver/{id}', name: 'app_reservation_new')]
     #[IsGranted('ROLE_USER')]
-    public function reserver(Prestation $prestation, Request $request, CacheInterface $cache): Response
+    public function reserver(Prestation $prestation, Request $request, CacheInterface $cache, SeanceRepository $seanceRepository): Response
     {
+        $maintenant = new \DateTime();
+        
+        $seancesEnCours = $seanceRepository->createQueryBuilder('s')
+            ->where('s.user = :user')
+            ->andWhere('s.prestation = :prestation')
+            ->andWhere('(s.dateRendezVous IS NULL OR s.dateRendezVous >= :maintenant)')
+            ->andWhere('(s.statut IS NULL OR s.statut != :annule)')
+            ->setParameter('user', $this->getUser())
+            ->setParameter('prestation', $prestation)
+            ->setParameter('maintenant', $maintenant)
+            ->setParameter('annule', 'Annulé')
+            ->getQuery()
+            ->getResult();
+
+        if (count($seancesEnCours) > 0) {
+            $this->addFlash('warning', 'Vous avez déjà un accompagnement en cours pour la prestation "' . $prestation->getNom() . '". Veuillez terminer vos séances actuelles avant de pouvoir la réserver de nouveau.');
+            return $this->redirectToRoute('app_account');
+        }
+
         $premiereSeance = new Seance();
         $premiereSeance->setPrestation($prestation);
+        $premiereSeance->setDuree($prestation->getDuree() ?? 60); // Sécurité durée
 
         $form = $this->createForm(ReservationType::class, $premiereSeance);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
             $dateRendezVous = $premiereSeance->getDateRendezVous();
             
-            // --- SYSTÈME ANTI-DOUBLE RÉSERVATION (VERROU DE 3 MINUTES) ---
-            // On crée une clé unique de cache basée sur la date et l'heure (ex: lock_2026-07-22_10-00)
             $lockKey = 'lock_' . $dateRendezVous->format('Y-m-d_H-i');
-            
-            // On verrouille ce créneau pour 3 minutes (180 secondes)
             $cache->get($lockKey, function (ItemInterface $item) {
                 $item->expiresAfter(180);
                 return true; 
             });
-            // -------------------------------------------------------------
 
             $session = $request->getSession();
             $session->set('reservation_en_cours', [
@@ -64,13 +80,15 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    // =====================================================================
-    // 2. PLANIFICATION (Placer une date sur une séance déjà achetée)
-    // =====================================================================
     #[Route('/planifier-ma-seance/{id}', name: 'app_seance_planifier')]
     #[IsGranted('ROLE_USER')]
-    public function planifier(Seance $seance, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
-    {
+    public function planifier(
+        Seance $seance, 
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        MailerInterface $mailer,
+        DailyCoService $dailyCoService 
+    ): Response {
         if ($seance->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à planifier cette séance.');
         }
@@ -79,21 +97,76 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nouvelleDate = $seance->getDateRendezVous();
+            
+            if ($nouvelleDate) {
+                $debutJournee = (clone $nouvelleDate)->setTime(0, 0, 0);
+                $finJournee = (clone $nouvelleDate)->setTime(23, 59, 59);
+
+                $seanceExistante = $entityManager->getRepository(Seance::class)->createQueryBuilder('s')
+                    ->where('s.user = :user')
+                    ->andWhere('s.id != :id') 
+                    ->andWhere('s.dateRendezVous >= :debut AND s.dateRendezVous <= :fin')
+                    ->andWhere('s.statut != :statutNonPlanifiee')
+                    ->setParameter('user', $this->getUser())
+                    ->setParameter('id', $seance->getId())
+                    ->setParameter('debut', $debutJournee)
+                    ->setParameter('fin', $finJournee)
+                    ->setParameter('statutNonPlanifiee', 'Non planifiée')
+                    ->getQuery()
+                    ->getResult();
+
+                if (count($seanceExistante) > 0) {
+                    $this->addFlash('warning', 'Vous avez déjà une séance de prévue à cette date. Veuillez choisir un autre jour.');
+                    return $this->redirectToRoute('app_seance_planifier', ['id' => $seance->getId()]);
+                }
+            }
+
             $seance->setStatut('En attente de validation');
+
+            // Sécurité durée
+            if (!$seance->getDuree() && $seance->getPrestation()) {
+                $seance->setDuree($seance->getPrestation()->getDuree() ?? 60);
+            }
+
+            $lienVisio = $dailyCoService->createRoom($seance->getDateRendezVous());
+            if ($lienVisio) {
+                $seance->setLienVisio($lienVisio);
+            }
+
             $entityManager->flush();
 
-            $email = (new TemplatedEmail())
+            /** @var User|null $user */
+            $user = $this->getUser();
+
+            $emailAdmin = (new TemplatedEmail())
                 ->from('noreply@metamorphysis.com')
                 ->to('Metamorphysisconsulting@gmail.com')
-                ->subject('Nouvelle planification : Séance ' . $seance->getNumero() . ' - ' . $seance->getPrestation()->getNom())
+                ->subject('Nouvelle demande : Séance ' . $seance->getNumero() . ' - ' . $seance->getPrestation()->getNom())
                 ->htmlTemplate('emails/nouvelle_reservation.html.twig')
                 ->context([
                     'seance' => $seance,
-                    'client' => $this->getUser(),
+                    'client' => $user,
                     'prestation' => $seance->getPrestation()
                 ]);
 
-            $mailer->send($email);
+            if (!$user || !$user->getEmail()) {
+                throw $this->createAccessDeniedException('Impossible d\'envoyer l\'email de confirmation : utilisateur non connecté ou adresse email manquante.');
+            }
+
+            $emailClient = (new TemplatedEmail())
+                ->from('noreply@metamorphysis.com')
+                ->to($user->getEmail())
+                ->subject('Confirmation de votre séance - ' . $seance->getPrestation()->getNom())
+                ->htmlTemplate('emails/client_confirmation_seance.html.twig')
+                ->context([
+                    'seance' => $seance,
+                    'client' => $user,
+                    'prestation' => $seance->getPrestation()
+                ]);
+
+            $mailer->send($emailAdmin);
+            $mailer->send($emailClient);
 
             $this->addFlash('success', 'Votre séance n°' . $seance->getNumero() . ' a été planifiée avec succès.');
             return $this->redirectToRoute('app_account');
@@ -106,9 +179,71 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    // =====================================================================
-    // 3. AFFICHAGE DES DÉTAILS D'UNE SÉANCE
-    // =====================================================================
+    #[Route('/seance/annuler/{id}', name: 'app_seance_annuler', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function annuler(Seance $seance, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    {
+        if ($seance->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette séance.');
+        }
+
+        if ($seance->getDateRendezVous()) {
+            $maintenant = new \DateTime();
+            $limiteAnnulation = (clone $seance->getDateRendezVous())->modify('-48 hours');
+
+            if ($maintenant > $limiteAnnulation) {
+                $this->addFlash('danger', 'Vous ne pouvez pas annuler ou reporter une séance à moins de 48 heures de celle-ci.');
+                return $this->redirectToRoute('app_account');
+            }
+        }
+
+        // Mémorisation de la date avant de l'effacer pour pouvoir l'afficher dans l'e-mail
+        $ancienneDate = $seance->getDateRendezVous();
+
+        $seance->setDateRendezVous(null);
+        $seance->setLienVisio(null);
+        $seance->setStatut('Non planifiée');
+
+        $entityManager->flush();
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+
+        if ($user && $user->getEmail()) {
+            // Email au client
+            $emailClient = (new TemplatedEmail())
+                ->from('noreply@metamorphysis.com')
+                ->to($user->getEmail())
+                ->subject('Annulation de votre séance - ' . $seance->getPrestation()->getNom())
+                ->htmlTemplate('emails/client_annulation_seance.html.twig')
+                ->context([
+                    'seance' => $seance,
+                    'client' => $user,
+                    'prestation' => $seance->getPrestation(),
+                    'ancienneDate' => $ancienneDate
+                ]);
+
+            // Email à l'Admin
+            $emailAdmin = (new TemplatedEmail())
+                ->from('noreply@metamorphysis.com')
+                ->to('Metamorphysisconsulting@gmail.com')
+                ->subject('⚠️ Annulation Client : Séance ' . $seance->getNumero() . ' - ' . $user->getNom())
+                ->htmlTemplate('emails/admin_annulation_seance.html.twig')
+                ->context([
+                    'seance' => $seance,
+                    'client' => $user,
+                    'prestation' => $seance->getPrestation(),
+                    'ancienneDate' => $ancienneDate
+                ]);
+
+            $mailer->send($emailClient);
+            $mailer->send($emailAdmin);
+        }
+
+        $this->addFlash('success', 'Votre séance a été annulée avec succès. Vous pouvez la replanifier dès maintenant dans votre espace.');
+        return $this->redirectToRoute('app_account');
+    }
+
     #[Route('/reservation/{id}', name: 'app_reservation_show')]
     #[IsGranted('ROLE_USER')]
     public function show(Seance $seance): Response
@@ -122,9 +257,6 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    // =====================================================================
-    // 4. API : GESTION DES DISPONIBILITÉS DU CALENDRIER
-    // =====================================================================
     #[Route('/api/disponibilites/seance/{id}/{date}', name: 'api_disponibilites_seance', methods: ['GET'])]
     public function getDisponibilitesSeance(Seance $seance, string $date, PlanningService $planningService): JsonResponse
     {

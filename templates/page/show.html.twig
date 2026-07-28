@@ -11,284 +11,288 @@
 {% endblock %}
 
 {% block body %}
+{# On englobe tout le contenu dynamique dans une balise MAIN pour la structure globale #}
+<main>
 
-{# --- AJOUT DYNAMIQUE : Contrôlé à 100% par ta cliente depuis l'administration --- #}
-{% if page.afficherTitre %}
-    <div class="container mt-5 pt-5">
-        <h1 class="text-center text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
-    </div>
-{% endif %}
+    {# --- AJOUT DYNAMIQUE : Titre de page H1 --- #}
+    {% if page.afficherTitre %}
+        <header class="container mt-5 pt-5 text-center">
+            <h1 class="text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
+        </header>
+    {% endif %}
 
-{# LA BOUCLE DES BLOCS DYNAMIQUES #}
-{% for section in page.sections|sort((a, b) => a.ordre <=> b.ordre) %}
-    
-    {# 1. Calcul de la classe de fond selon le choix de la cliente en Base de Données #}
-    {% set classe_fond = (section.couleurFond == 'olive') ? 'bg-olive-premium' : 'bg-plum-premium' %}
-    
-    {# 2. La balise structurelle prend la couleur sur 100% de la largeur #}
-    <{{ section.baliseHtml|default('section') }} class="{{ classe_fond }} py-5">
+    {# LA BOUCLE DES BLOCS DYNAMIQUES #}
+    {% for section in page.sections|sort((a, b) => a.ordre <=> b.ordre) %}
         
-        {# 3. Le conteneur interne centre proprement les textes et composants #}
-        <div class="container">
+        {# 1. Calcul de la classe de fond #}
+        {% set classe_fond = (section.couleurFond == 'olive') ? 'bg-olive-premium' : 'bg-plum-premium' %}
         
-            {% if section.titre is defined and section.titre is not null and section.disposition != 'presentation_expert' %}
-                <div class="mb-5">
-                    <h2 class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">{{ section.titre }}</h2>
-                </div>
-            {% endif %}
-
-            {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
-            {% if section.disposition == 'texte_centre' %}
-                <div class="row justify-content-center">
-                    <div class="col-12 text-ivory content-premium text-center">
-                        {{ section.contenu|raw }}
-                    </div>
-                </div>
-
-            {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
-            {% elseif section.disposition == 'img_gauche' %}
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-7 position-relative mt-5 mt-lg-0">
-                        <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;"></div>
-                        
-                        {% if section.media %}
-                            <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
-                                 alt="Illustration" 
-                                 class="img-fluid position-relative z-1 shadow-lg" 
-                                 style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                        {% endif %}
-                    </div>
-                    <div class="col-lg-5 text-ivory content-premium text-start">
-                        {{ section.contenu|raw }}
-                    </div>
-                </div>
-
-            {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
-            {% elseif section.disposition == 'img_droite' %}
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start">
-                        {{ section.contenu|raw }}
-                    </div>
-                    
-                    <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0">
-                        <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;"></div>
-                        
-                        {% if section.media %}
-                            <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
-                                 alt="Illustration" 
-                                 class="img-fluid position-relative z-1 shadow-lg" 
-                                 style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                        {% endif %}
-                    </div>
-                </div>
-
-            {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
-            {% elseif section.disposition == 'banniere' %}
-                <div class="row justify-content-center">
-                    <div class="col-12 text-center mb-4">
-                        {% if section.media %}
-                            <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
-                                 alt="Bannière" 
-                                 class="img-fluid w-100 shadow-lg" 
-                                 style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
-                        {% endif %}
-                    </div>
-                    {% if section.contenu %}
-                        <div class="col-lg-8 text-ivory content-premium text-center">
-                            {{ section.contenu|raw }}
-                        </div>
-                    {% endif %}
-                </div>
-
-            {# --- DISPOSITION 5 : SLIDER DES PRESTATIONS --- #}
-            {% elseif section.disposition == 'slider_prestations' %}
-                
-                {% if section.contenu %}
-                    <div class="mb-4">{{ section.contenu|raw }}</div>
+        {# 2. La balise structurelle avec aria-labelledby pour l'accessibilité #}
+        <{{ section.baliseHtml|default('section') }} 
+            class="{{ classe_fond }} py-5" 
+            {% if section.titre and section.disposition != 'presentation_expert' %}aria-labelledby="section-heading-{{ loop.index }}"{% endif %}>
+            
+            <div class="container">
+            
+                {# TITRE DE SECTION (H2 dynamique) #}
+                {% if section.titre is defined and section.titre is not null and section.disposition != 'presentation_expert' %}
+                    <header class="mb-5 text-center">
+                        <h2 id="section-heading-{{ loop.index }}" class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
+                            {{ section.titre }}
+                        </h2>
+                    </header>
                 {% endif %}
 
-                <div class="prestation-slider-container">
-                    <button class="slider-btn slider-btn-left" id="btn-prev" aria-label="Précédent">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
+                {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
+                {% if section.disposition == 'texte_centre' %}
+                    <div class="row justify-content-center">
+                        <div class="col-12 text-ivory content-premium text-center">
+                            {{ section.contenu|raw }}
+                        </div>
+                    </div>
 
-                    <div class="prestation-track" id="slider-track">
-                        {% for prestation in section.prestations %}
-                            <div class="prestation-card-item">
-                                <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
-                                    <div class="mb-4 mt-2">
-                                        <i class="bi bi-person text-gold fs-3"></i>
+                {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
+                {% elseif section.disposition == 'img_gauche' %}
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-7 position-relative mt-5 mt-lg-0">
+                            <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
+                            
+                            {% if section.media %}
+                                <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                                     alt="Illustration de la section {{ section.titre|default('') }}" 
+                                     loading="lazy"
+                                     class="img-fluid position-relative z-1 shadow-lg" 
+                                     style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-5 text-ivory content-premium text-start">
+                            {{ section.contenu|raw }}
+                        </div>
+                    </div>
+
+                {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
+                {% elseif section.disposition == 'img_droite' %}
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start">
+                            {{ section.contenu|raw }}
+                        </div>
+                        
+                        <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0">
+                            <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
+                            
+                            {% if section.media %}
+                                <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
+                                     alt="Illustration de la section {{ section.titre|default('') }}" 
+                                     loading="lazy"
+                                     class="img-fluid position-relative z-1 shadow-lg" 
+                                     style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
+                {% elseif section.disposition == 'banniere' %}
+                    <div class="row justify-content-center">
+                        <div class="col-12 text-center mb-4">
+                            {% if section.media %}
+                                <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                                     alt="Bannière illustrative" 
+                                     loading="lazy"
+                                     class="img-fluid w-100 shadow-lg" 
+                                     style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
+                            {% endif %}
+                        </div>
+                        {% if section.contenu %}
+                            <div class="col-lg-8 text-ivory content-premium text-center">
+                                {{ section.contenu|raw }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                {# --- DISPOSITION 5 : SLIDER DES PRESTATIONS --- #}
+                {% elseif section.disposition == 'slider_prestations' %}
+                    
+                    {% if section.contenu %}
+                        <div class="mb-4">{{ section.contenu|raw }}</div>
+                    {% endif %}
+
+                    <div class="prestation-slider-container">
+                        <button class="slider-btn slider-btn-left" id="btn-prev-{{ loop.index }}" aria-label="Prestation précédente">
+                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                        </button>
+
+                        <div class="prestation-track" id="slider-track-{{ loop.index }}" role="region" aria-label="Carrousel des prestations">
+                            {% for prestation in section.prestations %}
+                                {# Article au lieu de Div pour chaque carte sémantique #}
+                                <article class="prestation-card-item">
+                                    <div class="card-premium h-100 p-4 d-flex flex-column transition-hover text-center">
+                                        <div class="mb-4 mt-2">
+                                            <i class="bi bi-person text-gold fs-3" aria-hidden="true"></i>
+                                        </div>
+                                        {# H3 pour respecter la hiérarchie sous le H2 de la section #}
+                                        <h3 class="text-gold typo-symbolic fs-6 text-uppercase mb-3">{{ prestation.nom }}</h3>
+                                        <p class="text-sage small flex-grow-1 px-2 mb-4">
+                                            {{ prestation.description|striptags|length > 90 ? prestation.description|striptags|slice(0, 90) ~ '...' : prestation.description|striptags }}
+                                        </p>
+                                        <hr class="border-sage w-50 mx-auto mb-4" aria-hidden="true">
+                                        <p class="text-gold small mb-4" style="letter-spacing: 1px;">
+                                            {{ prestation.prix }} € / SÉANCE
+                                        </p>
+                                        <div class="mt-auto">
+                                            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" title="Découvrir la prestation {{ prestation.nom }}" class="text-gold small text-decoration-none text-uppercase fw-bold" style="letter-spacing: 1px;">
+                                                DÉCOUVRIR <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <h3 class="text-gold typo-symbolic fs-6 text-uppercase mb-3">{{ prestation.nom }}</h3>
-                                    <p class="text-sage small flex-grow-1 px-2 mb-4">
-                                        {{ prestation.description|striptags|length > 90 ? prestation.description|striptags|slice(0, 90) ~ '...' : prestation.description|striptags }}
-                                    </p>
-                                    <hr class="border-sage w-50 mx-auto mb-4">
-                                    <p class="text-gold small mb-4" style="letter-spacing: 1px;">
-                                        {{ prestation.prix }} € / SÉANCE
-                                    </p>
-                                    <div class="mt-auto">
-                                        <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" class="text-gold small text-decoration-none text-uppercase fw-bold" style="letter-spacing: 1px;">
-                                            DÉCOUVRIR <i class="bi bi-arrow-right ms-1"></i>
-                                        </a>
+                                </article>
+                            {% else %}
+                                <div class="text-sage fst-italic w-100 text-center">Aucune prestation sélectionnée pour ce bloc.</div>
+                            {% endfor %}
+                        </div>
+
+                        <button class="slider-btn slider-btn-right" id="btn-next-{{ loop.index }}" aria-label="Prestation suivante">
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                {# --- DISPOSITION 6 : INFO PRATIQUE --- #}
+                {% elseif section.disposition == 'info_pratique' %}
+                    
+                    {# Utilisation de la balise Aside pour du contenu annexe/pratique #}
+                    <aside class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
+                        <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
+                            <i class="bi bi-flower1 text-gold fs-4" aria-hidden="true"></i>
+                        </div>
+                        
+                        <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
+                            {{ section.contenu|raw }}
+                        </div>
+                    </aside>
+                    
+                    {% if section.titre %}
+                    <div class="text-center mt-5">
+                        <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
+                    </div>
+                    {% endif %}
+
+                {# --- DISPOSITION 7 : CHEMINEMENT --- #}
+                {% elseif section.disposition == 'cheminement' %}
+                    
+                    {% set nb_etapes = section.etapes|length %}
+                    
+                    {% if nb_etapes == 4 %}
+                        {% set col_class = 'col-lg-3' %}
+                        {% set line_left = '12.5%' %}
+                        {% set line_width = '75%' %}
+                    {% else %}
+                        {% set col_class = 'col-lg-4' %}
+                        {% set line_left = '16.66%' %}
+                        {% set line_width = '66.66%' %}
+                    {% endif %}
+
+                    <div class="row g-4 justify-content-center position-relative pt-4">
+                        <div class="d-none d-lg-block position-absolute" style="top: 59px; left: {{ line_left }}; width: {{ line_width }}; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;" aria-hidden="true"></div>
+                        
+                        {% for etape in section.etapes %}
+                            {# Article pour structurer chaque étape indépendamment #}
+                            <article class="col-12 col-md-6 {{ col_class }} text-center position-relative z-1">
+                                <div class="mb-3">
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
+                                        <i class="bi {{ etape.icone }} text-gold fs-3" aria-hidden="true"></i>
                                     </div>
                                 </div>
-                            </div>
-                        {% else %}
-                            <div class="text-sage fst-italic">Aucune prestation sélectionnée pour ce bloc.</div>
+                                <span class="text-gold typo-symbolic mb-1 d-block" aria-hidden="true">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</span>
+                                {# Changement H4 vers H3 pour respecter la logique H2 -> H3 #}
+                                <h3 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h3>
+                                <p class="text-sage small px-2">{{ etape.texte }}</p>
+                            </article>
                         {% endfor %}
                     </div>
 
-                    <button class="slider-btn slider-btn-right" id="btn-next" aria-label="Suivant">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
-                </div>
-
-            {# --- DISPOSITION 6 : INFO PRATIQUE --- #}
-            {% elseif section.disposition == 'info_pratique' %}
-                
-                <div class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
-                    <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
-                        <i class="bi bi-flower1 text-gold fs-4"></i>
-                    </div>
-                    
-                    <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
-                        {{ section.contenu|raw }}
-                    </div>
-                </div>
-                
-                {% if section.titre %}
-                <div class="text-center mt-5">
-                    <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
-                </div>
-                {% endif %}
-
-            {# --- DISPOSITION 7 : CHEMINEMENT (DYNAMIQUE 3 OU 4 ÉTAPES) --- #}
-            {% elseif section.disposition == 'cheminement' %}
-                
-                {% set nb_etapes = section.etapes|length %}
-                
-                {% if nb_etapes == 4 %}
-                    {% set col_class = 'col-lg-3' %}
-                    {% set line_left = '12.5%' %}
-                    {% set line_width = '75%' %}
-                {% else %}
-                    {% set col_class = 'col-lg-4' %}
-                    {% set line_left = '16.66%' %}
-                    {% set line_width = '66.66%' %}
-                {% endif %}
-
-                <div class="row g-4 justify-content-center position-relative pt-4">
-                    
-                    <div class="d-none d-lg-block position-absolute" style="top: 59px; left: {{ line_left }}; width: {{ line_width }}; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;"></div>
-                    
-                    {% for etape in section.etapes %}
-                        <div class="col-12 col-md-6 {{ col_class }} text-center position-relative z-1">
-                            <div class="mb-3">
-                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
-                                    <i class="bi {{ etape.icone }} text-gold fs-3"></i>
-                                </div>
+                {# --- DISPOSITION 8 : PROFIL FONDATRICE / À PROPOS --- #}
+                {% elseif section.disposition == 'presentation_expert' %}
+                    <div class="row align-items-stretch g-5 py-4">
+                        
+                        <div class="col-lg-5 d-flex flex-column justify-content-start pt-lg-4 order-2 order-lg-1">
+                            <header class="mb-5">
+                                {# Utilisation de H2 pour ne pas concurrencer le H1 global de la page s'il est activé #}
+                                <h2 class="text-gold typo-titre text-uppercase mb-2" style="font-size: 3rem; letter-spacing: 2px; line-height: 1.1;">
+                                    {{ section.titre }}
+                                </h2>
+                                <p class="text-gold text-uppercase fw-bold" style="letter-spacing: 3px; font-size: 0.75rem;">
+                                    Consultante en relation humaine
+                                </p>
+                            </header>
+                            
+                            <div class="text-sage small content-premium" style="line-height: 1.8;">
+                                {{ section.contenu|raw }}
                             </div>
-                            <div class="text-gold typo-symbolic mb-1">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</div>
-                            <h4 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h4>
-                            <p class="text-sage small px-2">{{ etape.texte }}</p>
                         </div>
-                    {% endfor %}
-                    
-                </div>
 
-            {# --- DISPOSITION 8 : PROFIL FONDATRICE / À PROPOS --- #}
-            {% elseif section.disposition == 'presentation_expert' %}
-                <div class="row align-items-stretch g-5 py-4">
-                    
-                    {# Colonne Gauche : Nom, Vision et Approche #}
-                    {# CORRECTION ICI : justify-content-start pt-lg-4 pour aligner vers le haut #}
-                    <div class="col-lg-5 d-flex flex-column justify-content-start pt-lg-4 order-2 order-lg-1">
-                        
-                        {# Nom et Sous-titre #}
-                        <div class="mb-5">
-                            <h1 class="text-gold typo-titre text-uppercase mb-2" style="font-size: 3rem; letter-spacing: 2px; line-height: 1.1;">
-                                {{ section.titre }}
-                            </h1>
-                            <p class="text-gold text-uppercase fw-bold" style="letter-spacing: 3px; font-size: 0.75rem;">
-                                Consultante en relation humaine
-                            </p>
-                        </div>
-                        
-                        {# Le contenu WYSIWYG de l'admin (Ma Vision / Mon Approche) #}
-                        <div class="text-sage small content-premium" style="line-height: 1.8;">
-                            {{ section.contenu|raw }}
-                        </div>
-                        
-                    </div>
-
-                    {# Colonne Droite : Image & Boîte de citation Pourpre #}
-                    <div class="col-lg-6 offset-lg-1 mt-5 mt-lg-0 order-1 order-lg-2 mb-5">
-                        
-                        {# 1. L'IMAGE AVEC SON DÉCALAGE PARAMÉTRABLE #}
-                        <div style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); transition: transform 0.3s ease;">
-                            {% if section.media %}
-                                <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
-                                     alt="{{ section.titre }}" 
-                                     class="img-fluid shadow-lg" 
-                                     style="width: 100%; border-radius: 4px; object-fit: cover;">
-                            {% endif %}
-                        </div>
-                        
-                        {# 2. L'ENCART CITATION DYNAMIQUE & SCROLLABLE #}
-                        {% if section.citation %}
+                        <div class="col-lg-6 offset-lg-1 mt-5 mt-lg-0 order-1 order-lg-2 mb-5">
                             
-                            {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
-                            {% set text_color = section.citationCouleurTexte|default('meta-gold') %}
+                            <div style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); transition: transform 0.3s ease;">
+                                {% if section.media %}
+                                    <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
+                                         alt="Portrait de {{ section.titre }}" 
+                                         loading="lazy"
+                                         class="img-fluid shadow-lg" 
+                                         style="width: 100%; border-radius: 4px; object-fit: cover;">
+                                {% endif %}
+                            </div>
                             
-                            <div class="position-relative p-4 p-xl-5 d-none d-sm-block" 
-                                 style="
-                                    margin-top: {{ section.citationPosY|default('-150') }}px; 
-                                    left: {{ section.citationPosX|default('-10') }}%; 
-                                    width: {{ section.citationLargeur|default('90') }}%; 
-                                    background-color: var(--{{ bg_color }}); 
-                                    box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
-                                    border-radius: 2px; 
-                                    z-index: 2;">
+                            {% if section.citation %}
+                                {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
+                                {% set text_color = section.citationCouleurTexte|default('meta-gold') %}
                                 
-                                <div class="typo-titre" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">
-                                    “
-                                </div>
-                                
-                                {# LE CONTENEUR QUI GÈRE LE SCROLL ET L'EFFET DE FONDU #}
-                                <div class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
+                                {# Modification sémantique : <div> devient <aside> et le contenu texte devient <blockquote> #}
+                                <aside class="position-relative p-4 p-xl-5 d-none d-sm-block" 
                                      style="
-                                        --scroll-color: var(--{{ text_color }}); 
-                                        color: var(--{{ text_color }}); 
-                                        line-height: 1.6; 
-                                        font-size: 1rem; 
-                                        text-align: justify;
-                                        {% if section.citationHauteurMax %}
-                                            max-height: {{ section.citationHauteurMax }}px; 
-                                            overflow-y: auto;
-                                            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                        {% endif %}
-                                     ">
+                                        margin-top: {{ section.citationPosY|default('-150') }}px; 
+                                        left: {{ section.citationPosX|default('-10') }}%; 
+                                        width: {{ section.citationLargeur|default('90') }}%; 
+                                        background-color: var(--{{ bg_color }}); 
+                                        box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
+                                        border-radius: 2px; 
+                                        z-index: 2;">
                                     
-                                    <div style="padding-bottom: 40px;">
-                                        {{ section.citation|raw }}
+                                    <div class="typo-titre" aria-hidden="true" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">
+                                        “
                                     </div>
                                     
-                                </div>
-                                
-                                <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});"></div>
-                                
-                            </div>
-                        {% endif %}
+                                    <blockquote class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
+                                         style="
+                                            --scroll-color: var(--{{ text_color }}); 
+                                            color: var(--{{ text_color }}); 
+                                            line-height: 1.6; 
+                                            font-size: 1rem; 
+                                            text-align: justify;
+                                            margin: 0;
+                                            {% if section.citationHauteurMax %}
+                                                max-height: {{ section.citationHauteurMax }}px; 
+                                                overflow-y: auto;
+                                                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                                                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                                            {% endif %}
+                                         ">
+                                        <div style="padding-bottom: 40px;">
+                                            {{ section.citation|raw }}
+                                        </div>
+                                    </blockquote>
+                                    
+                                    <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});" aria-hidden="true"></div>
+                                </aside>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-            
-        </div>
-    </{{ section.baliseHtml|default('section') }}>
-    
-{% endfor %}
+                {% endif %}
+                
+            </div>
+        </{{ section.baliseHtml|default('section') }}>
+        
+    {% endfor %}
+
+</main>
 
 {# SÉCURISATION CSS POUR LE CONTENU DYNAMIQUE #}
 <style>
@@ -302,7 +306,6 @@
         letter-spacing: 2px;
     }
 
-    /* Scrollbar premium "Caméléon" pour les citations */
     .citation-scroll-container::-webkit-scrollbar {
         width: 4px;
     }
@@ -328,19 +331,28 @@
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const track = document.getElementById('slider-track');
-            const btnPrev = document.getElementById('btn-prev');
-            const btnNext = document.getElementById('btn-next');
+            // Pour supporter plusieurs sliders sur la même page (ex: section.id)
+            const tracks = document.querySelectorAll('.prestation-track');
+            
+            tracks.forEach((track) => {
+                // On récupère l'ID spécifique de ce slider pour isoler les clics
+                const trackId = track.getAttribute('id');
+                if (!trackId) return;
+                
+                const index = trackId.split('-')[2]; // slider-track-1 => 1
+                const btnPrev = document.getElementById(`btn-prev-${index}`);
+                const btnNext = document.getElementById(`btn-next-${index}`);
 
-            if (track && btnPrev && btnNext) {
-                const scrollAmount = 412; 
-                btnNext.addEventListener('click', () => {
-                    track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                });
-                btnPrev.addEventListener('click', () => {
-                    track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                });
-            }
+                if (btnPrev && btnNext) {
+                    const scrollAmount = 412; 
+                    btnNext.addEventListener('click', () => {
+                        track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    });
+                    btnPrev.addEventListener('click', () => {
+                        track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                    });
+                }
+            });
         });
     </script>
 {% endblock %}

@@ -1,0 +1,25 @@
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0A0A09; padding: 40px 20px; margin: 0; text-align: center;">
+    
+    <div style="background-color: #1a1a1a; max-width: 600px; margin: 0 auto; border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 8px; overflow: hidden; text-align: left;">
+        
+        <div style="background-color: #0A0A09; padding: 30px; text-align: center; border-bottom: 1px solid rgba(184, 154, 99, 0.2);">
+            <h1 style="color: #B89A63; margin: 0; font-size: 24px; letter-spacing: 3px; text-transform: uppercase; font-weight: 400;">METAMORPHYSIS</h1>
+        </div>
+        
+        <div style="padding: 40px 30px; color: #D8D0BE;">
+            <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid #4A4F41; padding-bottom: 15px;">Annulation de rendez-vous</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6; color: #FFFFF0;">Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }}</strong>,</p>
+            <p style="font-size: 16px; line-height: 1.6;">Nous vous confirmons l'annulation de votre séance depuis votre espace personnel.</p>
+            
+            <div style="background-color: rgba(220, 53, 69, 0.05); padding: 25px; border-radius: 6px; margin: 30px 0; border-left: 4px solid #dc3545;">
+                <p style="margin: 0 0 10px 0; font-size: 15px;"><strong style="color: #727763; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Soin concerné</strong><br><span style="color: #FFFFF0;">{{ prestation.nom }} (Séance {{ seance.numero }})</span></p>
+                <p style="margin: 0; font-size: 15px;"><strong style="color: #727763; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Ancienne Date</strong><br><strong style="color: #dc3545; text-decoration: line-through; font-size: 16px;">{% if ancienneDate %}{{ ancienneDate|date('d/m/Y à H:i') }}{% else %}Non renseignée{% endif %}</strong></p>
+            </div>
+            
+            <p style="font-size: 15px; line-height: 1.6; text-align: center; margin-top: 30px;">
+                Votre séance a bien été créditée sur votre parcours. Vous pouvez choisir une nouvelle date qui vous convient dès à présent.
+            </p>
+        </div>
+    </div>
+</div>

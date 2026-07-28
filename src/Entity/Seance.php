@@ -33,6 +33,19 @@ class Seance
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lienVisio = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $dateCreation = null;
+
+    public function __construct()
+    {
+        $this->dateCreation = new \DateTimeImmutable();
+        $this->duree = 60; // <-- Force la durée à 60 par défaut dès qu'une séance est instanciée
+        $this->statut = 'Non planifiée';
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +119,30 @@ class Seance
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeImmutable
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(?\DateTimeImmutable $dateCreation): static
+    {
+        $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getLienVisio(): ?string
+    {
+        return $this->lienVisio;
+    }
+
+    public function setLienVisio(?string $lienVisio): static
+    {
+        $this->lienVisio = $lienVisio;
 
         return $this;
     }

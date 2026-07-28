@@ -1,0 +1,22 @@
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0A0A09; padding: 40px 20px; margin: 0; text-align: center;">
+    
+    <div style="background-color: #1a1a1a; max-width: 600px; margin: 0 auto; border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 8px; overflow: hidden; text-align: left;">
+        
+        <div style="background-color: #0A0A09; padding: 30px; text-align: center; border-bottom: 1px solid rgba(220, 53, 69, 0.2);">
+            <h1 style="color: #dc3545; margin: 0; font-size: 20px; letter-spacing: 3px; text-transform: uppercase; font-weight: 400;">⚠️ ALERTE ANNULATION</h1>
+        </div>
+        
+        <div style="padding: 40px 30px; color: #D8D0BE;">
+            <p style="font-size: 16px; line-height: 1.6;">Le client <strong style="color: #FFFFF0;">{{ client.prenom|capitalize }} {{ client.nom|upper }}</strong> vient d'annuler sa séance prévue.</p>
+            
+            <div style="background-color: #2A1A1E; padding: 25px; border-radius: 6px; margin: 30px 0; border: 1px solid rgba(220, 53, 69, 0.2);">
+                <p style="margin: 0 0 10px 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Prestation</strong><br><span style="color: #FFFFF0;">{{ prestation.nom }} (Séance n°{{ seance.numero }})</span></p>
+                <p style="margin: 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Date libérée dans l'agenda</strong><br><strong style="color: #dc3545; font-size: 16px;">{% if ancienneDate %}{{ ancienneDate|date('d/m/Y à H:i') }}{% else %}Non renseignée{% endif %}</strong></p>
+            </div>
+            
+            <p style="font-size: 14px; color: #727763; line-height: 1.6; text-align: center; margin-top: 40px;">
+                Cet horaire est désormais à nouveau disponible pour d'autres clients. L'ancienne salle Daily.co a été désactivée.
+            </p>
+        </div>
+    </div>
+</div>

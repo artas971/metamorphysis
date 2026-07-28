@@ -1,0 +1,7 @@
+{% if field.value %}
+    <a href="{{ field.value }}" target="_blank" class="btn btn-sm text-dark fw-bold" style="background-color: #B89A63; border-radius: 20px;">
+        <i class="fa fa-video me-1"></i> Lancer la visio
+    </a>
+{% else %}
+    <span class="badge bg-secondary">Non généré</span>
+{% endif %}

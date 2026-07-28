@@ -17,35 +17,50 @@
 
 {% block body %}
 <div class="container mt-5 mb-5">
+    
+    {# REPOSITIONNEMENT : Bouton retour placé au-dessus de la carte, aligné à gauche #}
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-8 col-lg-6">
+            <a href="{{ path('app_account') }}" class="text-decoration-none transition-hover small text-uppercase" style="color: #B89A63; letter-spacing: 1px;">
+                <i class="bi bi-arrow-left me-2"></i>Retour à mon espace
+            </a>
+        </div>
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             {# HARMONISATION : Intégration de la translucidité à 55%, flou de fond (blur) et fine bordure dorée #}
             <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card);">
                 <div class="card-body p-5">
                     
-                    <div class="text-center mb-4">
-                        <h2 class="text-gold fw-bold typo-titre" style="letter-spacing: 2px;">RÉSERVER</h2>
-                        <p class="text-white fs-5 mt-2 mb-1" style="font-family: var(--font-title); text-transform: uppercase; letter-spacing: 1px;">
+                    <div class="text-center mb-4 border-bottom pb-4" style="border-color: rgba(184, 154, 99, 0.2) !important;">
+                        {# Titre et Prestation en OR #}
+                        <h2 class="fw-bold typo-titre" style="color: #B89A63; letter-spacing: 2px;">RÉSERVER</h2>
+                        <p class="fs-5 mt-2 mb-1" style="color: #B89A63; font-family: var(--font-title); text-transform: uppercase; letter-spacing: 1px;">
                             {% if seance is defined and seance.numero > 1 %}
                                 Séance {{ seance.numero }} - {{ prestation.nom }}
                             {% else %}
                                 {{ prestation.nom }}
                             {% endif %}
                         </p>
-                        <p class="text-gold fs-4 mb-4">{{ prestation.prix }} €</p>
+                        {# Prix en IVOIRE #}
+                        <p class="fs-4 mb-0" style="color: #FFFFF0; opacity: 0.95;">{{ prestation.prix }} €</p>
                     </div>
 
                     {{ form_start(form, {'attr': {'id': 'reservation-form'}}) }}
                         <div class="mb-4 text-start">
-                            <label class="form-label text-sage fw-bold text-uppercase small" style="letter-spacing: 1px;">1. Choisissez une date</label>
+                            
+                            {# Label 1 en IVOIRE #}
+                            <label class="form-label fw-bold text-uppercase small" style="color: #FFFFF0; letter-spacing: 1px;">1. Choisissez une date</label>
                             
                             {# Le champ texte que Flatpickr va transformer #}
                             <input type="text" id="date-picker" class="form-control input-premium p-3 mb-4" placeholder="Sélectionnez une date..." required>
                             
-                            <label class="form-label text-sage fw-bold text-uppercase small" style="letter-spacing: 1px;">2. Choisissez une heure</label>
+                            {# Label 2 en IVOIRE #}
+                            <label class="form-label fw-bold text-uppercase small" style="color: #FFFFF0; letter-spacing: 1px;">2. Choisissez une heure</label>
                             
                             <div id="time-slots-container" class="d-flex flex-wrap gap-2 mb-3">
-                                <span class="text-white-50 small fst-italic">Veuillez d'abord sélectionner une date.</span>
+                                <span class="small fst-italic" style="color: #FFFFF0; opacity: 0.6;">Veuillez d'abord sélectionner une date.</span>
                             </div>
 
                             <div class="d-none">
@@ -53,18 +68,12 @@
                             </div>
                         </div>
 
-                        <button type="submit" id="submit-btn" class="btn btn-premium w-100 fw-bold py-2 rounded-pill text-uppercase" style="letter-spacing: 1px;" disabled>
+                        <button type="submit" id="submit-btn" class="btn btn-premium w-100 fw-bold py-3 rounded-pill text-uppercase" style="letter-spacing: 1px;" disabled>
                             CONFIRMER LA DEMANDE
                         </button>
                     {{ form_end(form) }}
 
                 </div>
-            </div>
-            
-            <div class="text-center mt-3">
-                <a href="{{ path('app_account') }}" class="text-gold text-decoration-none transition-hover small text-uppercase" style="letter-spacing: 1px;">
-                    <i class="bi bi-arrow-left me-2"></i>Retour à mon espace
-                </a>
             </div>
             
         </div>
@@ -75,12 +84,12 @@
     /* Style premium de l'input de date */
     #date-picker {
         background-color: rgba(10, 10, 9, 0.6) !important;
-        color: var(--meta-ivory) !important;
+        color: #FFFFF0 !important;
         border: 1px solid rgba(184, 154, 99, 0.4) !important;
         border-radius: var(--radius-input) !important;
     }
     #date-picker::placeholder {
-        color: rgba(216, 208, 190, 0.4) !important; 
+        color: rgba(255, 255, 240, 0.4) !important; 
         font-style: italic;
     }
 
@@ -108,12 +117,12 @@
     }
     
     span.flatpickr-weekday {
-        color: var(--meta-ivory) !important; 
+        color: #FFFFF0 !important; 
         opacity: 0.7;
     }
     
     .flatpickr-day {
-        color: var(--meta-ivory) !important; 
+        color: #FFFFF0 !important; 
         border-radius: 4px !important;
     }
     
@@ -132,7 +141,7 @@
     
     .flatpickr-day.flatpickr-disabled, 
     .flatpickr-day.flatpickr-disabled:hover {
-        color: rgba(216, 208, 190, 0.15) !important; 
+        color: rgba(255, 255, 240, 0.15) !important; 
         background: transparent !important;
     }
 </style>
@@ -144,16 +153,21 @@
         const realInput = document.querySelector('[name="reservation[dateRendezVous]"]'); 
         const submitBtn = document.getElementById('submit-btn');
 
+        // Calcul de la date limite : Aujourd'hui + 12 mois
+        const dateLimite = new Date();
+        dateLimite.setMonth(dateLimite.getMonth() + 12);
+
         flatpickr(datePickerElement, {
             locale: "fr",
             minDate: "today",
+            maxDate: dateLimite, // <-- LA LIMITE EST APPLIQUÉE ICI
             disableMobile: true,
             onChange: function(selectedDates, dateStr, instance) {
                 
-                timeSlotsContainer.innerHTML = '<span class="text-gold small"><i class="bi bi-hourglass-split"></i> Analyse des disponibilités...</span>';
+                timeSlotsContainer.innerHTML = '<span class="small" style="color: #B89A63;"><i class="bi bi-hourglass-split"></i> Analyse des disponibilités...</span>';
                 submitBtn.disabled = true;
 
-                // CORRECTION : Sélection dynamique de l'URL de l'API selon le contexte de la séance
+                // Sélection dynamique de l'URL de l'API selon le contexte de la séance
                 {% if seance is defined and seance.id %}
                     const apiUrl = '/api/disponibilites/seance/{{ seance.id }}/' + dateStr;
                 {% else %}
@@ -166,25 +180,31 @@
                         timeSlotsContainer.innerHTML = '';
 
                         if (creneaux.length === 0) {
-                            timeSlotsContainer.innerHTML = '<span class="text-white-50 small fst-italic"><i class="bi bi-calendar-x text-gold me-1"></i> Toutes nos disponibilités sont réservées pour cette date.</span>';
+                            timeSlotsContainer.innerHTML = '<span class="small fst-italic" style="color: rgba(255, 255, 240, 0.6);"><i class="bi bi-calendar-x me-1" style="color: #B89A63;"></i> Toutes nos disponibilités sont réservées pour cette date.</span>';
                             return;
                         }
 
                         creneaux.forEach(heure => {
                             const btn = document.createElement('button');
                             btn.type = 'button';
-                            btn.className = 'btn rounded-pill px-4 py-2 text-gold border border-gold';
+                            btn.className = 'btn rounded-pill px-4 py-2 border border-gold';
                             btn.style.transition = 'all 0.3s ease';
+                            
+                            // Le texte par défaut en Ivoire
+                            btn.style.color = '#FFFFF0'; 
                             btn.textContent = heure;
 
                             btn.addEventListener('click', function() {
                                 document.querySelectorAll('#time-slots-container button').forEach(b => {
-                                    b.className = 'btn rounded-pill px-4 py-2 text-gold border border-gold';
+                                    b.className = 'btn rounded-pill px-4 py-2 border border-gold';
                                     b.style.backgroundColor = 'transparent';
+                                    b.style.color = '#FFFFF0'; // Retour à l'Ivoire
+                                    b.style.fontWeight = 'normal';
                                 });
                                 
-                                this.className = 'btn rounded-pill px-4 py-2 text-dark border border-gold fw-bold';
-                                this.style.backgroundColor = '#D4AF37';
+                                this.className = 'btn rounded-pill px-4 py-2 border border-gold fw-bold';
+                                this.style.backgroundColor = '#B89A63';
+                                this.style.color = '#111'; // Texte sombre sur fond or
 
                                 realInput.value = dateStr + 'T' + heure;
                                 submitBtn.disabled = false;
@@ -192,7 +212,7 @@
 
                             btn.addEventListener('mouseenter', function() {
                                 if (!this.classList.contains('fw-bold')) {
-                                    this.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                                    this.style.backgroundColor = 'rgba(184, 154, 99, 0.1)';
                                 }
                             });
                             btn.addEventListener('mouseleave', function() {
@@ -205,7 +225,7 @@
                         });
                     })
                     .catch(error => {
-                        timeSlotsContainer.innerHTML = '<span class="text-white-50 small"><i class="bi bi-exclamation-circle text-gold me-1"></i> Une erreur est survenue lors de la recherche des créneaux.</span>';
+                        timeSlotsContainer.innerHTML = '<span class="small fst-italic" style="color: rgba(255, 255, 240, 0.6);"><i class="bi bi-exclamation-circle me-1" style="color: #B89A63;"></i> Une erreur est survenue lors de la recherche des créneaux.</span>';
                     });
             }
         });

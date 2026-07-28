@@ -5,31 +5,32 @@
 {% block body %}
 <div class="container mt-5 mb-5" style="max-width: 800px;">
     
-    <a href="{{ path('app_account') }}" class="text-decoration-none mb-4 d-inline-block" style="color: #b89a63; opacity: 0.8; letter-spacing: 1px; font-size: 0.85rem;">
+    <a href="{{ path('app_account') }}" class="text-decoration-none mb-4 d-inline-block transition-hover" style="color: var(--meta-gold); opacity: 0.8; letter-spacing: 1px; font-size: 0.85rem;">
         &larr; RETOUR À MON ESPACE
     </a>
 
-    <div class="card p-4 p-md-5" style="background-color: #2c2f28; border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 8px;">
+    {# CARTE PRINCIPALE : Ajout du dégradé Olive -> Sombre respectant ta charte #}
+    <div class="card p-4 p-md-5 shadow-lg overflow-hidden" style="background: linear-gradient(to bottom, rgba(74, 79, 65, 0.7), rgba(10, 10, 9, 0.9)); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: var(--radius-card, 8px); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
         
         {# EN-TÊTE : TITRE, STATUT ET NUMÉRO #}
         <div class="border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.2) !important;">
             <div class="d-flex justify-content-between align-items-md-center flex-column flex-md-row gap-3">
-                <h2 class="h4 mb-0 text-uppercase" style="color: #b89a63; letter-spacing: 2px;">
+                <h2 class="h4 mb-0 text-uppercase typo-titre" style="color: var(--meta-gold); letter-spacing: 2px;">
                     {{ reservation.prestation.nom }}
                 </h2>
                 
                 <div class="d-flex align-items-center gap-3">
-                    <span style="color: #FFFFF0; font-size: 0.9rem; opacity: 0.7;">
-                        Séance {{ reservation.numero }} / {{ reservation.prestation.nombreSeances ?? 1 }}
+                    <span class="fw-bold" style="color: var(--meta-sage); font-size: 0.9rem; letter-spacing: 1px;">
+                        SÉANCE {{ reservation.numero }} / {{ reservation.prestation.nombreSeances ?? 1 }}
                     </span>
                     
                     {# Badge dynamique #}
                     {% if reservation.statut == 'Confirmé' %}
-                        <span class="badge" style="background-color: rgba(76, 175, 80, 0.2); border: 1px solid #4CAF50; color: #4CAF50; padding: 0.5em 1em;">{{ reservation.statut }}</span>
+                        <span class="badge" style="background-color: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.5); color: #4CAF50; padding: 0.5em 1em; letter-spacing: 0.5px;">{{ reservation.statut }}</span>
                     {% elseif reservation.statut == 'Annulé' %}
-                        <span class="badge" style="background-color: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #dc3545; padding: 0.5em 1em;">{{ reservation.statut }}</span>
+                        <span class="badge" style="background-color: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.5); color: #dc3545; padding: 0.5em 1em; letter-spacing: 0.5px;">{{ reservation.statut }}</span>
                     {% else %}
-                        <span class="badge" style="background-color: transparent; border: 1px solid #b89a63; color: #b89a63; padding: 0.5em 1em;">{{ reservation.statut }}</span>
+                        <span class="badge" style="background-color: rgba(184, 154, 99, 0.1); border: 1px solid rgba(184, 154, 99, 0.5); color: var(--meta-gold); padding: 0.5em 1em; letter-spacing: 0.5px;">{{ reservation.statut }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -40,53 +41,51 @@
             
             <!-- PLANIFICATION -->
             <div class="col-md-6">
-                <div class="p-4 h-100" style="border: 1px solid rgba(184, 154, 99, 0.2); border-radius: 4px;">
-                    <h5 class="text-uppercase mb-4" style="color: #b89a63; font-size: 0.85rem; letter-spacing: 1.5px;">Planification</h5>
+                <div class="p-4 h-100" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.15); border-radius: var(--radius-card, 8px);">
+                    <h5 class="text-uppercase mb-4 fw-bold" style="color: var(--meta-gold); font-size: 0.85rem; letter-spacing: 1.5px;">Planification</h5>
                     
                     {% if reservation.dateRendezVous %}
                         <div class="d-flex align-items-center mb-3">
-                            <i class="fa-regular fa-calendar me-3" style="color: #b89a63; opacity: 0.9;"></i>
-                            <span style="color: #FFFFF0; opacity: 0.85;">{{ reservation.dateRendezVous|date('d/m/Y') }}</span>
+                            <i class="fa-regular fa-calendar me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                            <span style="color: var(--meta-ivory); opacity: 0.9;">{{ reservation.dateRendezVous|date('d/m/Y') }}</span>
                         </div>
                         <div class="d-flex align-items-center">
-                            <i class="fa-regular fa-clock me-3" style="color: #b89a63; opacity: 0.9;"></i>
-                            <span style="color: #FFFFF0; opacity: 0.85;">De {{ reservation.dateRendezVous|date('H:i') }} à {{ reservation.dateRendezVous|date_modify('+' ~ reservation.duree ~ ' minutes')|date('H:i') }}</span>
+                            <i class="fa-regular fa-clock me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                            <span style="color: var(--meta-ivory); opacity: 0.9;">De {{ reservation.dateRendezVous|date('H:i') }} à {{ reservation.dateRendezVous|date_modify('+' ~ reservation.duree ~ ' minutes')|date('H:i') }}</span>
                         </div>
                     {% else %}
-                        <p class="fst-italic m-0" style="color: #FFFFF0; opacity: 0.5;">Date non planifiée</p>
+                        <p class="fst-italic m-0" style="color: var(--meta-sage); opacity: 0.8;">Date non planifiée</p>
                     {% endif %}
                 </div>
             </div>
 
             <!-- DÉTAILS DE L'OFFRE -->
             <div class="col-md-6">
-                <div class="p-4 h-100" style="border: 1px solid rgba(184, 154, 99, 0.2); border-radius: 4px;">
-                    <h5 class="text-uppercase mb-4" style="color: #b89a63; font-size: 0.85rem; letter-spacing: 1.5px;">Détails de l'offre</h5>
+                <div class="p-4 h-100" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.15); border-radius: var(--radius-card, 8px);">
+                    <h5 class="text-uppercase mb-4 fw-bold" style="color: var(--meta-gold); font-size: 0.85rem; letter-spacing: 1.5px;">Détails de l'offre</h5>
                     
                     <div class="d-flex align-items-center mb-3">
-                        <i class="fa-solid fa-tag me-3" style="color: #b89a63; opacity: 0.9;"></i>
-                        <span style="color: #FFFFF0; opacity: 0.85;">Tarif : <strong>{{ reservation.prestation.prix }} €</strong></span>
+                        <i class="fa-solid fa-tag me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                        <span style="color: var(--meta-ivory); opacity: 0.9;">Tarif : <strong>{{ reservation.prestation.prix }} €</strong></span>
                     </div>
                     <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-hourglass-half me-3" style="color: #b89a63; opacity: 0.9;"></i>
-                        <span style="color: #FFFFF0; opacity: 0.85;">Durée : {{ reservation.duree }} minutes</span>
+                        <i class="fa-solid fa-hourglass-half me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                        <span style="color: var(--meta-ivory); opacity: 0.9;">Durée : {{ reservation.duree }} minutes</span>
                     </div>
                 </div>
             </div>
             
         </div>
         
-        {# BOUTON D'ACTION (Optionnel) #}
-        {% if reservation.dateRendezVous and reservation.statut != 'Annulé' %}
-            <div class="mt-5 pt-4 border-top text-center" style="border-color: rgba(184, 154, 99, 0.2) !important;">
-                <p class="mb-3" style="color: #FFFFF0; font-size: 0.85rem; opacity: 0.6;">
-                    Pour toute modification ou annulation, veuillez me contacter au moins 48h à l'avance.
-                </p>
-                <a href="mailto:Metamorphysisconsulting@gmail.com" class="btn btn-outline-primary" style="color: #b89a63; border-color: #b89a63; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; padding: 10px 20px;">
-                    Me contacter
-                </a>
-            </div>
-        {% endif %}
+        {# BOUTON D'ACTION VERS LE FORMULAIRE DE CONTACT #}
+        <div class="mt-5 pt-4 border-top text-center" style="border-color: rgba(184, 154, 99, 0.2) !important;">
+            <p class="mb-4" style="color: var(--meta-ivory); font-size: 0.9rem; opacity: 0.8;">
+                Une question concernant cette séance ou votre parcours ? N'hésitez pas à me contacter.
+            </p>
+            <a href="{{ path('app_contact') }}" class="btn btn-outline-gold rounded-pill transition-hover fw-bold" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; padding: 12px 30px;">
+                <i class="bi bi-envelope me-2"></i> Me contacter
+            </a>
+        </div>
 
     </div>
 </div>

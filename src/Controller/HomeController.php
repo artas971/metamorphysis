@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\PageRepository;
 use App\Repository\PrestationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,25 +10,41 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
+    // ======================================================
+    // PAGE 1 : L'introduction avec le logo animé (Splash Screen)
+    // ======================================================
     #[Route('/', name: 'app_home')]
-    public function index(PrestationRepository $prestationRepository): Response
+    public function index(): Response
     {
-        // On va chercher toutes les prestations dans la base de données
-        $prestations = $prestationRepository->findAll();
+        // On affiche juste la vue avec le logo animé
+        // (Remplace 'home/splash.html.twig' par le vrai nom de ton fichier Twig avec le logo)
+        return $this->render('home/index.html.twig');
+    }
 
-        // On les envoie à notre fichier Twig sous le nom 'prestations'
-        return $this->render('home/index.html.twig', [
+    // ======================================================
+    // PAGE 2 : La vraie page d'accueil (Bascule Dynamique / Native)
+    // ======================================================
+    #[Route('/accueil', name: 'app_accueil')]
+    public function accueil(PageRepository $pageRepository, PrestationRepository $prestationRepository): Response
+    {
+        // 1. On cherche la page personnalisée avec le slug 'accueil'
+        $pageCustom = $pageRepository->findOneBy(['slug' => 'accueil']);
+
+        // 2. On vérifie qu'elle existe ET qu'elle est publiée
+        // (Vérifie toujours si c'est bien isPublished(), isPubliee(), etc. dans ton Entity/Page.php)
+        if ($pageCustom && $pageCustom->isPublished()) {
+            
+            // On renvoie la vue de ton constructeur de page (Page Builder)
+            return $this->render('page/show.html.twig', [
+                'page' => $pageCustom,
+            ]);
+        }
+
+        // 3. Fallback : Si le bouton est DÉCOCHÉ, on affiche ta page native optimisée
+        $prestations = $prestationRepository->findAll();
+        
+        return $this->render('home/accueil.html.twig', [
             'prestations' => $prestations,
         ]);
     }
-    #[Route('/accueil', name: 'app_accueil')]
-        public function accueil(PrestationRepository $prestationRepository): Response
-        {
-            // On récupère toutes les prestations actives dans la base de données
-            $prestations = $prestationRepository->findAll();
-
-            return $this->render('home/accueil.html.twig', [
-                'prestations' => $prestations, // On envoie les données à la page
-            ]);
-        }
 }

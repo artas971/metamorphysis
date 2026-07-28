@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Séances - Admin Metamorphysis{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5 text-white">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="text-gold fw-bold text-uppercase typo-titre m-0" style="letter-spacing: 2px;">
+            Planning des Visioconférences
+        </h1>
+        <span class="badge rounded-pill px-3 py-2 text-uppercase" style="background-color: rgba(184, 154, 99, 0.2); color: #B89A63; border: 1px solid rgba(184, 154, 99, 0.4);">
+            Espace Praticienne
+        </span>
+    </div>
+
+    <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card, 8px);">
+        <div class="card-body p-4 p-md-5">
+
+            {% if seances is empty %}
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-x fs-1 text-gold opacity-50 mb-3 d-block"></i>
+                    <p class="text-ivory fs-5 mb-0">Aucun rendez-vous à venir pour le moment.</p>
+                </div>
+            {% else %}
+                <div class="d-flex flex-column gap-3">
+                    {% for seance in seances %}
+                        <div class="d-flex flex-column flex-md-row align-items-md-center p-3 rounded shadow-sm gap-3" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.15);">
+                            
+                            {# 1. Infos Client #}
+                            <div style="min-width: 200px;">
+                                <span class="d-block fw-bold text-ivory">
+                                    <i class="bi bi-person text-gold me-2"></i>{{ seance.user.prenom|capitalize }} {{ seance.user.nom|upper }}
+                                </span>
+                                <span class="small text-uppercase opacity-75" style="color: #FFFFF0; letter-spacing: 1px;">
+                                    {{ seance.prestation.nom }} (Séance {{ seance.numero }})
+                                </span>
+                            </div>
+
+                            {# 2. Date et Heure #}
+                            <div class="flex-grow-1">
+                                <span class="fs-6 text-ivory fw-bold">
+                                    <i class="bi bi-calendar-check text-gold me-2"></i>
+                                    {{ seance.dateRendezVous|date('d/m/Y à H:i') }}
+                                </span>
+                            </div>
+
+                            {# 3. Statut #}
+                            <div>
+                                <span class="badge rounded-pill px-3 py-2 text-uppercase" style="background-color: rgba(184, 154, 99, 0.1); color: #B89A63; border: 1px solid rgba(184, 154, 99, 0.3);">
+                                    {{ seance.statut|default('Planifié') }}
+                                </span>
+                            </div>
+
+                            {# 4. Action Visio #}
+                            <div class="text-md-end" style="min-width: 180px;">
+                                {% if seance.lienVisio %}
+                                    <a href="{{ seance.lienVisio }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-premium rounded-pill px-3 fw-bold text-uppercase w-100" style="letter-spacing: 1px; color: #111 !important;">
+                                        <i class="bi bi-camera-video me-1"></i> Lancer la visio
+                                    </a>
+                                {% else %}
+                                    <span class="small fst-italic text-muted">Pas de lien visio</span>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

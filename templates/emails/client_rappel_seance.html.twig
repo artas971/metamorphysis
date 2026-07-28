@@ -1,0 +1,43 @@
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0A0A09; padding: 40px 20px; margin: 0; text-align: center;">
+    
+    <div style="background-color: #1a1a1a; max-width: 600px; margin: 0 auto; border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 8px; overflow: hidden; text-align: left;">
+        
+        {# En-tête #}
+        <div style="background-color: #0A0A09; padding: 30px; text-align: center; border-bottom: 1px solid rgba(184, 154, 99, 0.2);">
+            <h1 style="color: #B89A63; margin: 0; font-size: 24px; letter-spacing: 3px; text-transform: uppercase; font-weight: 400;">METAMORPHYSIS</h1>
+        </div>
+        
+        {# Corps #}
+        <div style="padding: 40px 30px; color: #D8D0BE;">
+            <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid #4A4F41; padding-bottom: 15px;">Votre séance approche</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6; color: #FFFFF0;">Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }}</strong>,</p>
+            <p style="font-size: 16px; line-height: 1.6;">Ce petit message pour vous rappeler que votre prochain rendez-vous a lieu <strong>demain</strong>.</p>
+            
+            {# Bloc Récapitulatif avec fond Olive foncé #}
+            <div style="background-color: #171814; padding: 25px; border-radius: 6px; margin: 30px 0; border-left: 4px solid #B89A63;">
+                <p style="margin: 0 0 10px 0; font-size: 15px;"><strong style="color: #727763; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Soin prévu</strong><br><span style="color: #FFFFF0;">{{ prestation.nom }} (Séance {{ seance.numero }})</span></p>
+                <p style="margin: 0; font-size: 15px;"><strong style="color: #727763; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Date & Heure</strong><br><strong style="color: #B89A63; font-size: 16px;">{{ seance.dateRendezVous|date('d/m/Y à H:i') }}</strong></p>
+            </div>
+
+            {# Bloc Visio : L'élément le plus important ici #}
+            {% if seance.lienVisio %}
+                <div style="text-align: center; margin: 40px 0; padding: 30px; background-color: #2A1A1E; border: 1px solid rgba(184, 154, 99, 0.2); border-radius: 6px;">
+                    <h3 style="color: #B89A63; margin: 0 0 15px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Votre Salle de Soin en Ligne</h3>
+                    <p style="color: #D8D0BE; font-size: 14px; margin-bottom: 25px;">Préparez-vous dans un endroit calme. Vous pourrez rejoindre la séance à l'heure convenue via ce lien unique :</p>
+                    <a href="{{ seance.lienVisio }}" target="_blank" style="display: inline-block; padding: 14px 30px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
+                        Rejoindre la visio
+                    </a>
+                </div>
+            {% else %}
+                <p style="font-size: 14px; color: #727763; line-height: 1.6; text-align: center; font-style: italic;">
+                    Le lien de visioconférence vous sera communiqué très prochainement.
+                </p>
+            {% endif %}
+            
+            <p style="font-size: 14px; color: #727763; line-height: 1.6; text-align: center; margin-top: 40px;">
+                Si vous avez un empêchement de dernière minute, veuillez nous prévenir le plus rapidement possible.
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,31 +1,35 @@
-<div style="font-family: Arial, sans-serif; background-color: #0A0A09; color: #D8D0BE; padding: 40px; border: 1px solid #B89A63; border-radius: 8px; max-width: 600px; margin: 0 auto;">
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0A0A09; padding: 40px 20px; margin: 0; text-align: center;">
     
-    {# En-tête avec le logo textuel #}
-    <h1 style="color: #B89A63; text-align: center; font-weight: normal; letter-spacing: 3px; margin-bottom: 30px;">METAMORPHYSIS</h1>
-    
-    <h2 style="color: #ffffff; border-bottom: 1px solid #4A4F41; padding-bottom: 10px; font-weight: 300;">Nouvelle demande de rendez-vous</h2>
-    
-    <p style="font-size: 16px; line-height: 1.5;">Bonjour,</p>
-    <p style="font-size: 16px; line-height: 1.5;">Vous venez de recevoir une nouvelle demande de réservation sur Metamorphysis.</p>
-    
-    {# Bloc récapitulatif avec fond Prune foncé #}
-    <div style="background-color: #21141C; padding: 25px; border-radius: 8px; margin: 30px 0; border: 1px solid rgba(184, 154, 99, 0.2);">
-        <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 16px; line-height: 1.8;">
-            <li style="margin-bottom: 10px;">
-                <strong style="color: #727763;">Client :</strong> <span style="color: #B89A63;">{{ client.prenom }}</span> ({{ client.email }})
-            </li>
-            <li style="margin-bottom: 10px;">
-                <strong style="color: #727763;">Prestation :</strong> {{ prestation.nom }}
-            </li>
-            <li style="margin-bottom: 10px;">
-                <strong style="color: #727763;">Prix :</strong> {{ prestation.prix }} €
-            </li>
-            <li style="margin-bottom: 0;">
-                {# MODIFICATION ICI : On utilise seance à la place de reservation #}
-                <strong style="color: #727763;">Date souhaitée :</strong> <span style="color: #ffffff;">{{ seance.dateRendezVous|date('d/m/Y à H:i') }}</span>
-            </li>
-        </ul>
+    <div style="background-color: #1a1a1a; max-width: 600px; margin: 0 auto; border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 8px; overflow: hidden; text-align: left;">
+        
+        <div style="background-color: #0A0A09; padding: 30px; text-align: center; border-bottom: 1px solid rgba(184, 154, 99, 0.2);">
+            <h1 style="color: #B89A63; margin: 0; font-size: 24px; letter-spacing: 3px; text-transform: uppercase; font-weight: 400;">METAMORPHYSIS</h1>
+        </div>
+        
+        <div style="padding: 40px 30px; color: #D8D0BE;">
+            <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid #4A4F41; padding-bottom: 15px;">Nouvelle séance planifiée</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6;">Une nouvelle demande de réservation a été effectuée sur le site.</p>
+            
+            <div style="background-color: #2A1A1E; padding: 25px; border-radius: 6px; margin: 30px 0; border: 1px solid rgba(184, 154, 99, 0.2);">
+                <p style="margin: 0 0 10px 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Client</strong><br><span style="color: #FFFFF0;">{{ client.prenom|capitalize }} {{ client.nom|upper }}</span> ({{ client.email }})</p>
+                <p style="margin: 0 0 10px 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Prestation</strong><br><span style="color: #FFFFF0;">{{ prestation.nom }} (Séance n°{{ seance.numero }})</span></p>
+                <p style="margin: 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Date fixée</strong><br><strong style="color: #B89A63; font-size: 16px;">{{ seance.dateRendezVous|date('d/m/Y à H:i') }}</strong></p>
+            </div>
+
+            {% if seance.lienVisio %}
+                <div style="text-align: center; margin: 40px 0; padding: 30px; background-color: rgba(184, 154, 99, 0.05); border: 1px solid rgba(184, 154, 99, 0.2); border-radius: 6px;">
+                    <h3 style="color: #B89A63; margin: 0 0 15px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Salle de Visioconférence</h3>
+                    <p style="color: #D8D0BE; font-size: 14px; margin-bottom: 25px;">Le lien unique Daily.co pour cette consultation :</p>
+                    <a href="{{ seance.lienVisio }}" target="_blank" style="display: inline-block; padding: 14px 28px; background-color: transparent; border: 1px solid #B89A63; color: #B89A63; text-decoration: none; font-weight: bold; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
+                        Lancer la visio Admin
+                    </a>
+                </div>
+            {% endif %}
+            
+            <p style="font-size: 14px; color: #727763; line-height: 1.6; text-align: center; margin-top: 40px;">
+                Connectez-vous à votre espace EasyAdmin pour suivre ou ajuster vos rendez-vous.
+            </p>
+        </div>
     </div>
-    
-    <p style="font-size: 15px; color: #999999; line-height: 1.5;">Connectez-vous à votre espace administrateur pour confirmer ou annuler ce rendez-vous.</p>
 </div>

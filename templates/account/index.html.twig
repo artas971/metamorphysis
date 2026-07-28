@@ -1,133 +1,165 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Compte - Metamorphysis{% endblock %}
+{% block title %}Mon Espace Personnel - Suivi de vos Séances | Metamorphysis{% endblock %}
 
 {% block body %}
-<div class="container mt-5 mb-5 text-white">
-    <h1 class="text-gold fw-bold mb-5 text-uppercase typo-titre" style="letter-spacing: 2px;">Mon Espace Personnel</h1>
+<main class="container mt-5 mb-5 text-white">
+    
+    <header class="mb-5">
+        <h1 class="fw-bold text-uppercase typo-titre h2" style="color: var(--meta-gold); letter-spacing: 2px;">
+            Mon Espace Personnel
+        </h1>
+    </header>
     
     <div class="row g-4">
-        {# COLONNE GAUCHE : Informations personnelles #}
-        <div class="col-md-4">
-            {# HARMONISATION TRANSLUCIDE #}
-            <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card);">
+        
+        {# COLONNE GAUCHE : Informations personnelles (Contenu Secondaire = ASIDE) #}
+        <aside class="col-md-4">
+            <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card, 12px);">
                 <div class="card-body p-4">
-                    <h4 class="text-gold fw-bold mb-4 text-uppercase small" style="letter-spacing: 1px;">Mes Informations</h4>
+                    <h2 class="fw-bold mb-4 text-uppercase small h6" style="color: var(--meta-gold); letter-spacing: 1px;">
+                        Mes Informations
+                    </h2>
                     
                     <div class="d-flex flex-column gap-4">
                         <div>
-                            <small class="text-sage text-uppercase fw-bold" style="letter-spacing: 1px;">Identité</small>
-                            <div class="fs-5 mt-1 text-ivory">
-                                <i class="bi bi-person text-gold me-2"></i> 
-                                {{ app.user.prenom|capitalize }} {{ app.user.nom|upper }}
+                            <span class="d-block text-uppercase fw-bold small" style="color: var(--meta-sage); letter-spacing: 1px;">Identité</span>
+                            <div class="fs-5 mt-1" style="color: var(--meta-ivory);">
+                                <i class="bi bi-person me-2" aria-hidden="true" style="color: var(--meta-gold);"></i> 
+                                <span>{{ app.user.prenom|capitalize }} {{ app.user.nom|upper }}</span>
                             </div>
                         </div>
                         
                         <div>
-                            <small class="text-sage text-uppercase fw-bold" style="letter-spacing: 1px;">Email de contact</small>
-                            <div class="fs-6 mt-1 text-ivory"><i class="bi bi-envelope text-gold me-2"></i> {{ app.user.email }}</div>
+                            <span class="d-block text-uppercase fw-bold small" style="color: var(--meta-sage); letter-spacing: 1px;">Email de contact</span>
+                            <div class="fs-6 mt-1" style="color: var(--meta-ivory);">
+                                <i class="bi bi-envelope me-2" aria-hidden="true" style="color: var(--meta-gold);"></i> 
+                                <span>{{ app.user.email }}</span>
+                            </div>
                         </div>
 
                         <div>
-                            <small class="text-sage text-uppercase fw-bold" style="letter-spacing: 1px;">Téléphone</small>
-                            <div class="fs-6 mt-1 text-ivory">
-                                <i class="bi bi-telephone text-gold me-2"></i> 
+                            <span class="d-block text-uppercase fw-bold small" style="color: var(--meta-sage); letter-spacing: 1px;">Téléphone</span>
+                            <div class="fs-6 mt-1" style="color: var(--meta-ivory);">
+                                <i class="bi bi-telephone me-2" aria-hidden="true" style="color: var(--meta-gold);"></i> 
                                 {% if app.user.telephone is defined and app.user.telephone %}
-                                    {{ app.user.telephone }}
+                                    <span>{{ app.user.telephone }}</span>
                                 {% else %}
-                                    <span class="text-muted fst-italic">Non renseigné</span>
+                                    <span class="opacity-50 fst-italic">Non renseigné</span>
                                 {% endif %}
                             </div>
                         </div>
 
                         <div>
-                            <small class="text-sage text-uppercase fw-bold" style="letter-spacing: 1px;">Statut</small>
-                            <div class="fs-6 mt-1 text-ivory"><i class="bi bi-check-circle-fill text-gold me-2"></i> Compte Actif</div>
+                            <span class="d-block text-uppercase fw-bold small" style="color: var(--meta-sage); letter-spacing: 1px;">Statut du compte</span>
+                            <div class="fs-6 mt-1" style="color: var(--meta-ivory);">
+                                <i class="bi bi-check-circle-fill me-2" aria-hidden="true" style="color: var(--meta-gold);"></i> 
+                                <span>Compte Actif</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <hr class="border-gold-subtle my-4">
+                    <hr class="my-4" style="border-color: rgba(184, 154, 99, 0.25);">
                     
-                    <a href="{{ path('app_account_edit') }}" class="btn btn-outline-gold w-100 fw-bold mb-3 rounded-pill text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">
-                        <i class="bi bi-pencil-square me-2"></i> Modifier mon profil
-                    </a>
-                    
-                    <a href="{{ path('app_logout') }}" class="btn btn-link text-sage text-decoration-none w-100 fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">
-                        <i class="bi bi-box-arrow-right me-2"></i> Se déconnecter
-                    </a>
+                    <nav class="d-flex flex-column gap-2" aria-label="Gestion du compte">
+                        <a href="{{ path('app_account_edit') }}" title="Modifier mes informations personnelles" class="btn w-100 fw-bold rounded-pill text-uppercase transition-hover" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); letter-spacing: 1px; font-size: 0.85rem;">
+                            <i class="bi bi-pencil-square me-2" aria-hidden="true"></i> Modifier mon profil
+                        </a>
+                        
+                        <a href="{{ path('app_logout') }}" title="Se déconnecter de la plateforme" class="btn btn-link text-decoration-none w-100 fw-bold text-uppercase transition-hover" style="color: var(--meta-sage); letter-spacing: 1px; font-size: 0.8rem;">
+                            <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Se déconnecter
+                        </a>
+                    </nav>
                 </div>
             </div>
-        </div>
+        </aside>
         
-        {# COLONNE DROITE : Historique des Parcours / Séances #}
-        <div class="col-md-8">
-            <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card);">
+        {# COLONNE DROITE : Historique (Contenu Principal = SECTION) #}
+        <section class="col-md-8" aria-labelledby="parcours-heading">
+            <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card, 12px);">
                 <div class="card-body p-4 p-md-5">
-                    <h4 class="text-gold fw-bold mb-5 text-uppercase typo-titre" style="letter-spacing: 2px;">Mes Parcours d'Accompagnement</h4>
+                    
+                    <h2 id="parcours-heading" class="fw-bold mb-5 text-uppercase typo-titre h3" style="color: var(--meta-gold); letter-spacing: 2px;">
+                        Mes Parcours d'Accompagnement
+                    </h2>
                     
                     {% if parcoursList is not empty %}
                         
                         <div class="d-flex flex-column gap-5">
                             {% for parcours in parcoursList %}
-                                <div class="parcours-block">
-                                    {# En-tête du parcours avec la progression #}
-                                    <div class="d-flex justify-content-between align-items-end mb-3 border-bottom border-gold-subtle pb-2">
-                                        <h5 class="text-ivory fw-bold mb-0" style="font-family: var(--font-title); letter-spacing: 1px;">{{ parcours.prestation.nom }}</h5>
-                                        <span class="text-gold small fw-bold text-uppercase" style="letter-spacing: 1px;">
-                                            {{ parcours.planifiees }} / {{ parcours.total }} séance(s) planifiée(s)
+                                <article class="parcours-block">
+                                    
+                                    {# En-tête du parcours #}
+                                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom pb-3" style="border-color: rgba(184, 154, 99, 0.3) !important;">
+                                        <h3 class="fw-bold mb-2 mb-md-0 text-uppercase h5" style="color: var(--meta-ivory); font-family: var(--font-title, inherit); letter-spacing: 1px;">
+                                            {{ parcours.prestation.nom }}
+                                        </h3>
+                                        <span class="small fw-bold text-uppercase px-3 py-1 rounded-pill" style="background-color: rgba(184, 154, 99, 0.12); color: var(--meta-gold); letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.3);">
+                                            {{ parcours.planifiees }} / {{ parcours.total }} planifiée(s)
                                         </span>
                                     </div>
 
-                                    {# Liste des séances pour ce parcours #}
-                                    <div class="table-responsive">
-                                        <table class="table table-borderless align-middle text-white mb-0">
-                                            <tbody>
-                                                {% for seance in parcours.seances %}
-                                                    <tr class="border-bottom" style="border-color: rgba(184, 154, 99, 0.1) !important;">
-                                                        <td class="fw-bold bg-transparent text-sage w-25">Séance {{ seance.numero }}</td>
+                                    {# Liste des séances du parcours #}
+                                    <div class="d-flex flex-column gap-3">
+                                        {% for seance in parcours.seances %}
+                                            <div class="d-flex flex-column flex-md-row align-items-md-center p-3 rounded shadow-sm" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.2);">
+                                                
+                                                {# Bloc 1 : Numéro de séance #}
+                                                <div class="mb-2 mb-md-0 fw-bold text-uppercase small" style="color: var(--meta-sage); min-width: 110px; letter-spacing: 1px;">
+                                                    Séance {{ seance.numero }}
+                                                </div>
+                                                
+                                                {# Bloc 2 : Date / Statut #}
+                                                <div class="flex-grow-1 mb-3 mb-md-0">
+                                                    {% if seance.dateRendezVous %}
+                                                        <span class="fs-6" style="color: var(--meta-ivory);"><i class="bi bi-calendar-check me-2" aria-hidden="true" style="color: var(--meta-gold);"></i><time datetime="{{ seance.dateRendezVous|date('Y-m-d\\TH:i') }}">{{ seance.dateRendezVous|date('d/m/Y à H:i') }}</time></span>
+                                                    {% else %}
+                                                        <span class="opacity-75 fst-italic" style="color: var(--meta-ivory);"><i class="bi bi-calendar-plus me-2" aria-hidden="true" style="color: var(--meta-gold);"></i>Non planifiée</span>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                {# Bloc 3 : Actions #}
+                                                <div class="d-flex flex-column gap-2 text-md-end" style="min-width: 150px;">
+                                                    {% if seance.dateRendezVous %}
+                                                        <a href="{{ path('app_reservation_show', {'id': seance.id}) }}" title="Consulter les détails du rendez-vous" class="btn btn-sm rounded-pill w-100 transition-hover py-1" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.8rem; letter-spacing: 0.5px;">
+                                                            Détails
+                                                        </a>
                                                         
-                                                        <td class="bg-transparent w-50">
-                                                            {% if seance.dateRendezVous %}
-                                                                <span class="text-ivory"><i class="bi bi-calendar-event me-2 text-gold"></i>{{ seance.dateRendezVous|date('d/m/Y à H:i') }}</span>
-                                                            {% else %}
-                                                                <span class="text-white-50 fst-italic"><i class="bi bi-calendar-x me-2"></i>Non planifiée</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        
-                                                        <td class="text-end bg-transparent w-25">
-                                                            {% if seance.dateRendezVous %}
-                                                                {# La séance a une date : on affiche le bouton détails #}
-                                                                <a href="{{ path('app_reservation_show', {'id': seance.id}) }}" class="btn btn-sm btn-outline-gold rounded-pill px-3 transition-hover">
-                                                                    Détails
-                                                                </a>
-                                                            {% else %}
-                                                                {# La séance est en réserve : on affiche le bouton pour la planifier #}
-                                                                 <a href="{{ path('app_seance_planifier', {'id': seance.id}) }}" class="btn btn-sm btn-premium rounded-pill px-3 fw-bold transition-hover" style="letter-spacing: 1px; font-size: 0.75rem;">
-                                                                    PLANIFIER
-                                                                </a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
+                                                        <form method="post" action="{{ path('app_seance_annuler', {'id': seance.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ou reporter cette séance ?');">
+                                                            <button type="submit" aria-label="Annuler ou reporter la séance {{ seance.numero }}" class="btn btn-sm rounded-pill w-100 transition-hover py-1" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(216, 208, 190, 0.3); color: var(--meta-ivory); font-size: 0.75rem; letter-spacing: 0.5px;">
+                                                                Annuler / Reporter
+                                                            </button>
+                                                        </form>
+                                                    {% else %}
+                                                        <a href="{{ path('app_seance_planifier', {'id': seance.id}) }}" title="Planifier la séance {{ seance.numero }} du parcours {{ parcours.prestation.nom }}" class="btn btn-sm rounded-pill w-100 fw-bold transition-hover py-2 text-uppercase" style="background-color: var(--meta-gold); color: var(--meta-black) !important; letter-spacing: 1px; font-size: 0.8rem;">
+                                                            PLANIFIER
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+
+                                            </div>
+                                        {% endfor %}
                                     </div>
-                                </div>
+
+                                </article>
                             {% endfor %}
                         </div>
 
                     {% else %}
+                        {# Aucun parcours #}
                         <div class="text-center py-5">
-                            <i class="bi bi-journal-x text-gold opacity-50 mb-3" style="font-size: 3rem;"></i>
-                            <p class="text-ivory fs-5 mb-4">Vous n'avez pas encore initié de parcours d'accompagnement.</p>
-                            <a href="{{ path('app_prestation_index') }}" class="btn btn-premium fw-bold py-2 px-4 rounded-pill text-uppercase" style="letter-spacing: 1px;">
+                            <i class="bi bi-journal-x opacity-50 mb-3" aria-hidden="true" style="font-size: 3rem; color: var(--meta-gold);"></i>
+                            <p class="fs-5 mb-4" style="color: var(--meta-ivory);">Vous n'avez pas encore initié de parcours d'accompagnement.</p>
+                            <a href="{{ path('app_prestation_index') }}" title="Découvrir l'ensemble des accompagnements Metamorphysis" class="btn fw-bold py-2 px-4 rounded-pill text-uppercase" style="background-color: var(--meta-gold); color: var(--meta-black) !important; letter-spacing: 1px;">
                                 DÉCOUVRIR NOS PRESTATIONS
                             </a>
                         </div>
                     {% endif %}
+
                 </div>
             </div>
-        </div>
+        </section>
+        
     </div>
-</div>
+</main>
 {% endblock %}

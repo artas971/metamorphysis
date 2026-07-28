@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Seance;
 use App\Repository\PrestationRepository;
 use App\Repository\UserRepository;
+use App\Service\DailyCoService; // <-- IMPORT DU SERVICE VISIO
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Webhook;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -17,14 +18,21 @@ use Symfony\Component\Routing\Attribute\Route;
 class StripeWebhookController extends AbstractController
 {
     #[Route('/webhook/stripe', name: 'app_stripe_webhook', methods: ['POST'])]
-    public function index(Request $request, UserRepository $userRepository, PrestationRepository $prestationRepository, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function index(
+        Request $request, 
+        UserRepository $userRepository, 
+        PrestationRepository $prestationRepository, 
+        EntityManagerInterface $entityManager, 
+        MailerInterface $mailer,
+        DailyCoService $dailyCoService // <-- INJECTION DU SERVICE DANS LE WEBHOOK
+    ): Response
     {
         $endpointSecret = $_ENV['STRIPE_WEBHOOK_SECRET'];
         $payload = $request->getContent();
         $sigHeader = $request->headers->get('stripe-signature');
         $event = null;
 
-        // 1. Vérification de la sécurité (Est-ce que c'est bien Stripe qui nous parle ?)
+        // 1. Vérification de la sécurité Stripe
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
         } catch (\UnexpectedValueException $e) {
@@ -33,11 +41,10 @@ class StripeWebhookController extends AbstractController
             return new Response('Invalid signature', 400);
         }
 
-        // 2. Si le paiement est réussi, on exécute notre logique
+        // 2. Traitement du paiement validé
         if ($event->type === 'checkout.session.completed') {
             $sessionStripe = $event->data->object;
             
-            // On récupère les metadata qu'on a accrochées dans StripeController
             $userId = $sessionStripe->metadata->user_id ?? null;
             $prestationId = $sessionStripe->metadata->prestation_id ?? null;
             $dateRendezVousStr = $sessionStripe->metadata->date_rendez_vous ?? null;
@@ -49,7 +56,7 @@ class StripeWebhookController extends AbstractController
                 if ($user && $prestation) {
                     $dateRendezVous = new \DateTime($dateRendezVousStr);
                     
-                    // Sauvegarde : Première séance
+                    // --- 1ÈRE SÉANCE : CRÉATION & VISIO ---
                     $premiereSeance = new Seance();
                     $premiereSeance->setUser($user);
                     $premiereSeance->setPrestation($prestation);
@@ -57,10 +64,16 @@ class StripeWebhookController extends AbstractController
                     $premiereSeance->setDuree($prestation->getDuree() ?? 60);
                     $premiereSeance->setDateRendezVous($dateRendezVous);
                     $premiereSeance->setStatut('En attente de validation');
+
+                    // GÉNÉRATION ET ENREGISTREMENT DU LIEN DAILY.CO
+                    $lienVisio = $dailyCoService->createRoom($dateRendezVous);
+                    if ($lienVisio) {
+                        $premiereSeance->setLienVisio($lienVisio);
+                    }
                     
                     $entityManager->persist($premiereSeance);
 
-                    // Sauvegarde : Séances suivantes
+                    // --- SÉANCES SUIVANTES ---
                     $nombreTotalSeances = $prestation->getNombreSeances() ?? 1;
                     for ($i = 2; $i <= $nombreTotalSeances; $i++) {
                         $seanceSuivante = new Seance();
@@ -76,7 +89,7 @@ class StripeWebhookController extends AbstractController
 
                     $entityManager->flush();
 
-                    // Envoi du mail
+                    // --- ENVOI DU MAIL ---
                     $email = (new TemplatedEmail())
                         ->from('noreply@metamorphysis.com')
                         ->to('Metamorphysisconsulting@gmail.com')
@@ -93,7 +106,6 @@ class StripeWebhookController extends AbstractController
             }
         }
 
-        // On répond un code 200 à Stripe pour dire "C'est bon, j'ai bien reçu le message !"
         return new Response('Webhook traité avec succès', 200);
     }
 }
