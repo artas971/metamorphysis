@@ -227,3 +227,9 @@
         height: 80vh;
     }
 }
+
+/* Style des listes déroulantes de couleur */
+.form-select option {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}

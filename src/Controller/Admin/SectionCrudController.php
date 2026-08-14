@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
@@ -53,10 +54,10 @@ class SectionCrudController extends AbstractCrudController
             ChoiceField::new('couleurFond', 'Couleur de fond du bloc')
                 ->setColumns(12)
                 ->setChoices([
-                    '🟣 Pourpre Sombre (#2A1A1E - Fond standard du site)'  => 'plum',
-                    '🫒 Vert Olive (#4A4F41 - Fond vert pour mise en avant)' => 'olive',
+                    '🟣 Pourpre Sombre (Fond: #2A1A1E - Fond standard du site)'  => 'plum',
+                    '🫒 Vert Olive (Fond: #4A4F41 - Fond vert de mise en avant)' => 'olive',
                 ])
-                ->setHelp('L\'Olive crée une très belle transition visuelle entre deux blocs.')
+                ->setHelp('💡 Sélection de la teinte de fond du bloc dans la charte graphique.')
                 ->renderExpanded(false),
 
             // ======================================================
@@ -78,10 +79,10 @@ class SectionCrudController extends AbstractCrudController
                 ])
                 ->setRequired(false)->setEmptyData('h2')->hideOnIndex(),
             
-            TextareaField::new('contenu', 'Texte & Paragraphes')
+            TextEditorField::new('contenu', 'Texte & Paragraphes')
                 ->setColumns(12)
-                ->setNumOfRows(6)->setRequired(false)
-                ->setHelp('Rédigez ici la présentation ou le contenu explicatif de la section.'),
+                ->setRequired(false)
+                ->setHelp('Rédigez ici votre contenu. Vous pouvez surligner n\'importe quel mot et cliquer sur l\'icône 🔗 <b>Lien</b> pour le rendre cliquable.'),
 
             // ======================================================
             // 2.B BOUTON D'ACTION & LIEN DE REDIRECTION (CTA)
@@ -98,14 +99,15 @@ class SectionCrudController extends AbstractCrudController
                 ->setHelp('Ex: <code>/reserver/1</code>, <code>/a-propos</code>, ou une adresse complète <code>https://...</code>.')
                 ->setRequired(false),
 
-            ChoiceField::new('boutonStyle', 'Style du bouton')
+            ChoiceField::new('boutonStyle', 'Style & Couleurs du Bouton')
                 ->setColumns(12)
                 ->setChoices([
-                    '🔱 Doré Premium (Gold)'   => 'gold',
-                    '🔲 Contour Épuré (Outline)' => 'outline',
-                    '🌿 Vert Sauge'             => 'sage',
-                    '🟣 Pourpre'                => 'plum',
+                    '🔱 Doré Premium (Fond: Or #B89A63 | Texte: Noir #0A0A09 | Survol: Or Foncé #9C804F)' => 'gold',
+                    '🔲 Contour Épuré (Fond: Transparent | Bordure: Or #B89A63 | Survol: Plein Or #B89A63)' => 'outline',
+                    '🌿 Vert Sauge (Fond: Sauge #727763 | Texte: Ivoire #D8D0BE | Survol: Olive #4A4F41)' => 'sage',
+                    '🟣 Pourpre Sombre (Fond: Pourpre #2A1A1E | Texte: Or #B89A63 | Survol: Plein Or #B89A63)' => 'plum',
                 ])
+                ->setHelp('💡 Définit la palette du bouton : couleur de fond, couleur du texte et l\'effet visuel au survol (Hover).')
                 ->setRequired(false)->setEmptyData('gold')->hideOnIndex(),
 
             ChoiceField::new('boutonCible', 'Ouverture du lien')
@@ -125,6 +127,11 @@ class SectionCrudController extends AbstractCrudController
                 ->setColumns(12)
                 ->setFormType(VichImageType::class)->setRequired(false)->hideOnIndex()
                 ->setHelp('💡 <b>Format recommandé :</b> Photo paysage ou portrait (1200x800 px max), format JPG ou WebP, poids idéal < 1 Mo.'),
+
+            TextField::new('imageLien', '🔗 Lien de redirection au clic sur l\'image (URL ou Page)')
+                ->setColumns(12)
+                ->setHelp('Optionnel : Renseignez une adresse (ex: <code>/reserver/1</code>, <code>/a-propos</code> ou <code>https://...</code>) pour rendre cette photo cliquable.')
+                ->setRequired(false),
                 
             IntegerField::new('imagePosX', 'Décalage Horizontal Image (%)')
                 ->setColumns(12)
@@ -198,23 +205,23 @@ class SectionCrudController extends AbstractCrudController
             ChoiceField::new('citationCouleurFond', 'Couleur de Fond de la Citation')
                 ->setColumns(12)
                 ->setChoices([
-                    '🟣 Pourpre Sombre (#2A1A1E)' => 'meta-plum', 
-                    '🫒 Vert Olive (#4A4F41)'    => 'meta-olive',
-                    '⬛ Noir Profond (#0A0A09)'  => 'meta-black', 
-                    '🌿 Vert Sauge (#727763)'    => 'meta-sage', 
-                    '🔱 Or Antique (#B89A63)'    => 'meta-gold', 
-                    '📜 Ivoire Délicat (#D8D0BE)' => 'meta-ivory',
+                    '🟣 Pourpre Sombre (#2A1A1E - Couleur officielle)' => 'meta-plum', 
+                    '🫒 Vert Olive (#4A4F41 - Fond vert)'             => 'meta-olive',
+                    '⬛ Noir Profond (#0A0A09 - Fond sombre)'          => 'meta-black', 
+                    '🌿 Vert Sauge (#727763 - Teinte sauge)'            => 'meta-sage', 
+                    '🔱 Or Antique (#B89A63 - Fond doré)'              => 'meta-gold', 
+                    '📜 Ivoire Délicat (#D8D0BE - Encart clair)'        => 'meta-ivory',
                 ])->hideOnIndex(),
 
             ChoiceField::new('citationCouleurTexte', 'Couleur du Texte de la Citation')
                 ->setColumns(12)
                 ->setChoices([
-                    '📜 Ivoire Délicat (#D8D0BE)' => 'meta-ivory',
-                    '🔱 Or Antique (#B89A63)'    => 'meta-gold',
-                    '⬛ Noir Profond (#0A0A09)'  => 'meta-black', 
-                    '🟣 Pourpre Sombre (#2A1A1E)' => 'meta-plum', 
-                    '🫒 Vert Olive (#4A4F41)'    => 'meta-olive',
-                    '🌿 Vert Sauge (#727763)'    => 'meta-sage',
+                    '📜 Ivoire Délicat (#D8D0BE - Texte clair recommandé)' => 'meta-ivory',
+                    '🔱 Or Antique (#B89A63 - Écriture dorée)'            => 'meta-gold',
+                    '⬛ Noir Profond (#0A0A09 - Texte sombre)'             => 'meta-black', 
+                    '🟣 Pourpre Sombre (#2A1A1E - Écriture pourpre)'       => 'meta-plum', 
+                    '🫒 Vert Olive (#4A4F41 - Écriture olive)'             => 'meta-olive',
+                    '🌿 Vert Sauge (#727763 - Écriture sauge)'             => 'meta-sage',
                 ])->hideOnIndex(),
 
             // ======================================================

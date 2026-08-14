@@ -2,13 +2,11 @@
 
 {% block title %}{{ page.titre }} - Metamorphysis{% endblock %}
 
-{% block meta %}
-    {% if page.metaDescription %}
-        <meta name="description" content="{{ page.metaDescription }}">
-    {% else %}
-        <meta name="description" content="Découvrez nos prestations premium et notre univers exclusif sur Metamorphysis.">
-    {% endif %}
-{% endblock %}
+{% block meta_description %}{{ page.metaDescription|default('Metamorphysis vous accompagne dans votre cheminement personnel et la libération de vos schémas limitants. Séances et consultations sur-mesure.') }}{% endblock %}
+{% block og_title %}{{ page.titre }} | Metamorphysis{% endblock %}
+{% block og_description %}{{ page.metaDescription|default('Un parcours d\'accompagnement d\'exception pour vous libérer des schémas limitants.') }}{% endblock %}
+{% block twitter_title %}{{ page.titre }} | Metamorphysis{% endblock %}
+{% block twitter_description %}{{ page.metaDescription|default('Découvrez nos parcours d\'accompagnement sur-mesure.') }}{% endblock %}
 
 {% block body %}
 {# On englobe tout le contenu dynamique dans une balise MAIN pour la structure globale #}
@@ -64,11 +62,17 @@
                             <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
                             
                             {% if section.media %}
+                                {% if section.imageLien %}
+                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
+                                {% endif %}
                                 <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
                                      alt="Illustration de la section {{ section.titre|default('') }}" 
                                      loading="lazy"
                                      class="img-fluid position-relative shadow-lg" 
                                      style="object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                                {% if section.imageLien %}
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </div>
                         <div class="col-lg-5 text-ivory content-premium text-start" style="z-index: {{ z_txt }};">
@@ -93,11 +97,17 @@
                             <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
                             
                             {% if section.media %}
+                                {% if section.imageLien %}
+                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
+                                {% endif %}
                                 <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
                                      alt="Illustration de la section {{ section.titre|default('') }}" 
                                      loading="lazy"
                                      class="img-fluid position-relative shadow-lg" 
                                      style="object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                                {% if section.imageLien %}
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -149,11 +159,17 @@
                     <div class="row justify-content-center">
                         <div class="col-12 text-center mb-4">
                             {% if section.media %}
+                                {% if section.imageLien %}
+                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
+                                {% endif %}
                                 <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
                                      alt="Bannière illustrative" 
                                      loading="lazy"
                                      class="img-fluid w-100 shadow-lg" 
                                      style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
+                                {% if section.imageLien %}
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </div>
                         {% if section.contenu %}
@@ -287,11 +303,17 @@
                             
                             <div style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); transition: transform 0.3s ease;">
                                 {% if section.media %}
+                                    {% if section.imageLien %}
+                                        <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
+                                    {% endif %}
                                     <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
                                          alt="Portrait de {{ section.titre }}" 
                                          loading="lazy"
                                          class="img-fluid shadow-lg" 
                                          style="width: 100%; border-radius: 4px; object-fit: cover;">
+                                    {% if section.imageLien %}
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             

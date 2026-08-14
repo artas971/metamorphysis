@@ -118,6 +118,9 @@ class Section
     #[ORM\Column(nullable: true, options: ['default' => 0])]
     private ?int $cropDroite = 0;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageLien = null;
+
     /**
      * @var Collection<int, Prestation>
      */
@@ -425,4 +428,7 @@ class Section
 
     public function getCropDroite(): ?int { return $this->cropDroite; }
     public function setCropDroite(?int $cropDroite): static { $this->cropDroite = $cropDroite; return $this; }
+
+    public function getImageLien(): ?string { return $this->imageLien; }
+    public function setImageLien(?string $imageLien): static { $this->imageLien = $imageLien; return $this; }
 }
