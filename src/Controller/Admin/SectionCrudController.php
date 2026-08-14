@@ -79,10 +79,11 @@ class SectionCrudController extends AbstractCrudController
                 ])
                 ->setRequired(false)->setEmptyData('h2')->hideOnIndex(),
             
-            TextEditorField::new('contenu', 'Texte & Paragraphes')
+            TextareaField::new('contenu', 'Texte & Paragraphes')
                 ->setColumns(12)
+                ->setNumOfRows(6)
                 ->setRequired(false)
-                ->setHelp('Rédigez ici votre contenu. Vous pouvez surligner n\'importe quel mot et cliquer sur l\'icône 🔗 <b>Lien</b> pour le rendre cliquable.'),
+                ->setHelp('Rédigez ici le contenu explicatif de cette section.'),
 
             // ======================================================
             // 2.B BOUTON D'ACTION & LIEN DE REDIRECTION (CTA)
