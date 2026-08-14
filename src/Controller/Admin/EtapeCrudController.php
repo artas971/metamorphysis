@@ -19,24 +19,28 @@ class EtapeCrudController extends AbstractCrudController implements ServiceSubsc
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('titre', 'Titre de l\'étape')
+            TextField::new('titre', 'Titre de la Colonne ou Étape')
                 ->setColumns(12)
-                ->setHelp('Ex: OBSERVER, COMPRENDRE... (Sera affiché en majuscule et en ivoire)'),
+                ->setHelp('Ex: <code>CETTE DÉMARCHE PEUT VOUS CORRESPONDRE SI...</code>'),
                 
-            TextareaField::new('texte', 'Description')
+            TextareaField::new('texte', 'Texte & Description de la Colonne')
                 ->setColumns(12)
-                ->setNumOfRows(3)
-                ->setHelp('Une phrase courte explicative (Couleur sauge).'),
+                ->setNumOfRows(5)
+                ->setHelp('Rédigez ici le contenu de cette colonne (vous pouvez mettre des flèches → ou puces).'),
                 
-            ChoiceField::new('icone', 'Symbole visuel (Icône)')
+            ChoiceField::new('icone', 'Symbole visuel (Icône dorée)')
                 ->setColumns(12)
                 ->setChoices([
-                    '👁️ Œil (Idéal pour l\'observation)' => 'bi-eye',
-                    '🔍 Loupe (Idéal pour la compréhension)' => 'bi-search',
-                    '🔄 Flèches (Idéal pour la transformation)' => 'bi-arrow-repeat',
-                    '✨ Étoiles (Idéal pour l\'alignement)' => 'bi-stars',
+                    '🚫 Aucune icône (Texte brut pur)' => '',
+                    '👁️ Œil (Observation)' => 'bi-eye',
+                    '🔍 Loupe (Compréhension)' => 'bi-search',
+                    '🔄 Flèches (Transformation)' => 'bi-arrow-repeat',
+                    '✨ Étoiles (Alignement)' => 'bi-stars',
+                    '💎 Diamant' => 'bi-gem',
+                    '🌱 Feuille / Nature' => 'bi-flower1',
                 ])
-                ->setHelp('Sélectionnez l\'icône dorée qui apparaîtra dans le cercle noir.'),
+                ->setRequired(false)
+                ->setHelp('Optionnel : Choisissez une icône si vous souhaitez afficher un cercle doré au-dessus du titre.'),
         ];
     }
 }

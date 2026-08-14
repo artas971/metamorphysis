@@ -226,19 +226,19 @@ class SectionCrudController extends AbstractCrudController
                 ])->hideOnIndex(),
 
             // ======================================================
-            // 5. MODULES SPÉCIAUX (PRESTATIONS / ÉTAPES)
+            // 5. MODULES SPÉCIAUX (COLONNES CÔTE À CÔTE & CARROUSEL)
             // ======================================================
-            FormField::addFieldset('🔧 Modules Avancés (Carrousel de Soins & Parcours en Étapes)')->setIcon('fas fa-layer-group'),
+            FormField::addFieldset('📊 Colonnes Côte à Côte & Carrousel de Soins')->setIcon('fas fa-columns'),
+
+            CollectionField::new('etapes', '📊 Colonnes Côte à Côte (Pour Grille de Colonnes ou Cheminement)')
+                ->setColumns(12)
+                ->setHelp('💡 <b>Pour ajouter vos colonnes (ex: Colonne 1 & Colonne 2) :</b> Cliquez sur "Ajouter un nouvel élément" ci-dessous pour créer chaque colonne de votre tableau comparatif.')
+                ->useEntryCrudForm(EtapeCrudController::class)->hideOnIndex(),
 
             AssociationField::new('prestations', 'Prestations à afficher dans le Carrousel')
                 ->setColumns(12)
                 ->setHelp('Sélectionnez les prestations à mettre en valeur si vous avez choisi la disposition "Carrousel des Prestations".')
-                ->setFormTypeOptions(['by_reference' => false])->hideOnIndex(),   
-
-            CollectionField::new('etapes', 'Étapes du Parcours (1, 2, 3...)')
-                ->setColumns(12)
-                ->setHelp('Ajoutez et décrivez ici les étapes de votre méthode d\'accompagnement si la disposition est "Cheminement".')
-                ->useEntryCrudForm(EtapeCrudController::class)->hideOnIndex(),
+                ->setFormTypeOptions(['by_reference' => false])->hideOnIndex(),
         ];
     }
 }
