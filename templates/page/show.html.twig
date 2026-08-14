@@ -33,7 +33,7 @@
             <div class="container">
             
                 {# TITRE DE SECTION (H2 dynamique) #}
-                {% if section.titre is defined and section.titre is not null and section.disposition != 'presentation_expert' %}
+                {% if section.titre is defined and section.titre is not null and section.disposition not in ['presentation_expert', 'img_gauche', 'img_droite'] %}
                     <header class="mb-5 text-center">
                         <h2 id="section-heading-{{ loop.index }}" class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
                             {{ section.titre }}
@@ -76,6 +76,10 @@
                             {% endif %}
                         </div>
                         <div class="col-lg-5 text-ivory content-premium text-start" style="z-index: {{ z_txt }};">
+                            {% if section.titre %}
+                                <h2 class="text-ivory typo-titre fw-light mb-3" style="font-size: 2.8rem; line-height: 1.2; letter-spacing: 2px;">{{ section.titre }}</h2>
+                                <div class="mb-4" style="width: 60px; height: 2px; background-color: var(--meta-gold);"></div>
+                            {% endif %}
                             {{ section.contenu|raw }}
                         </div>
                     </div>
@@ -90,6 +94,10 @@
                     {% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
                     <div class="row align-items-center g-5">
                         <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start" style="z-index: {{ z_txt }};">
+                            {% if section.titre %}
+                                <h2 class="text-ivory typo-titre fw-light mb-3" style="font-size: 2.8rem; line-height: 1.2; letter-spacing: 2px;">{{ section.titre }}</h2>
+                                <div class="mb-4" style="width: 60px; height: 2px; background-color: var(--meta-gold);"></div>
+                            {% endif %}
                             {{ section.contenu|raw }}
                         </div>
                         
