@@ -162,6 +162,34 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
 .bg-grad-main { background: var(--grad-main); }
 .bg-grad-subtle { background: var(--grad-subtle); }
 
+/* Classes de fond du Constructeur de Pages (Page Builder) */
+.bg-olive-premium {
+    background-color: #727763 !important; /* Vert Sauge / Olive exact #727763 */
+    background-image: linear-gradient(135deg, #727763 0%, #4A4F41 100%) !important;
+    color: #D8D0BE !important;
+}
+
+.bg-plum-premium {
+    background-color: #2A1A1E !important; /* Pourpre Sombre officiel #2A1A1E */
+    background-image: radial-gradient(ellipse at 50% 40%, #2A1A1E 0%, #211417 75%, #0A0A09 100%) !important;
+    color: #D8D0BE !important;
+}
+
+/* Couleurs de fond et de texte pour les encarts de citation */
+.bg-meta-plum { background-color: #2A1A1E !important; }
+.bg-meta-olive { background-color: #727763 !important; }
+.bg-meta-black { background-color: #0A0A09 !important; }
+.bg-meta-sage { background-color: #727763 !important; }
+.bg-meta-gold { background-color: #B89A63 !important; }
+.bg-meta-ivory { background-color: #D8D0BE !important; }
+
+.text-meta-plum { color: #2A1A1E !important; }
+.text-meta-olive { color: #727763 !important; }
+.text-meta-black { color: #0A0A09 !important; }
+.text-meta-sage { color: #727763 !important; }
+.text-meta-gold { color: #B89A63 !important; }
+.text-meta-ivory { color: #D8D0BE !important; }
+
 /* =========================================
    COMPOSANTS UI (Cartes, Boutons, Inputs)
    ========================================= */

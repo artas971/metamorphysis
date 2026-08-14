@@ -54,8 +54,8 @@ class SectionCrudController extends AbstractCrudController
             ChoiceField::new('couleurFond', 'Couleur de fond du bloc')
                 ->setColumns(12)
                 ->setChoices([
-                    '🟣 Pourpre Sombre (Fond: #2A1A1E - Fond standard du site)'  => 'plum',
-                    '🫒 Vert Olive (Fond: #4A4F41 - Fond vert de mise en avant)' => 'olive',
+                    '🍷 Pourpre Sombre (Fond: #2A1A1E - Fond standard du site)'       => 'plum',
+                    '🌿 Vert Sauge / Olive (Fond: #727763 - Fond vert de mise en avant)' => 'olive',
                 ])
                 ->setHelp('💡 Sélection de la teinte de fond du bloc dans la charte graphique.')
                 ->renderExpanded(false),
@@ -105,7 +105,7 @@ class SectionCrudController extends AbstractCrudController
                     '🔱 Doré Premium (Fond: Or #B89A63 | Texte: Noir #0A0A09 | Survol: Or Foncé #9C804F)' => 'gold',
                     '🔲 Contour Épuré (Fond: Transparent | Bordure: Or #B89A63 | Survol: Plein Or #B89A63)' => 'outline',
                     '🌿 Vert Sauge (Fond: Sauge #727763 | Texte: Ivoire #D8D0BE | Survol: Olive #4A4F41)' => 'sage',
-                    '🟣 Pourpre Sombre (Fond: Pourpre #2A1A1E | Texte: Or #B89A63 | Survol: Plein Or #B89A63)' => 'plum',
+                    '🍷 Pourpre Sombre (Fond: Pourpre #2A1A1E | Texte: Or #B89A63 | Survol: Plein Or #B89A63)' => 'plum',
                 ])
                 ->setHelp('💡 Définit la palette du bouton : couleur de fond, couleur du texte et l\'effet visuel au survol (Hover).')
                 ->setRequired(false)->setEmptyData('gold')->hideOnIndex(),
@@ -205,12 +205,12 @@ class SectionCrudController extends AbstractCrudController
             ChoiceField::new('citationCouleurFond', 'Couleur de Fond de la Citation')
                 ->setColumns(12)
                 ->setChoices([
-                    '🟣 Pourpre Sombre (#2A1A1E - Couleur officielle)' => 'meta-plum', 
-                    '🫒 Vert Olive (#4A4F41 - Fond vert)'             => 'meta-olive',
-                    '⬛ Noir Profond (#0A0A09 - Fond sombre)'          => 'meta-black', 
-                    '🌿 Vert Sauge (#727763 - Teinte sauge)'            => 'meta-sage', 
-                    '🔱 Or Antique (#B89A63 - Fond doré)'              => 'meta-gold', 
-                    '📜 Ivoire Délicat (#D8D0BE - Encart clair)'        => 'meta-ivory',
+                    '🍷 Pourpre Sombre (#2A1A1E - Pourpre officiel)'     => 'meta-plum', 
+                    '🌿 Vert Sauge / Olive (#727763 - Fond vert sauge)'  => 'meta-olive',
+                    '⬛ Noir Profond (#0A0A09 - Fond sombre)'            => 'meta-black', 
+                    '🌿 Vert Sauge (#727763 - Teinte sauge)'              => 'meta-sage', 
+                    '🔱 Or Antique (#B89A63 - Fond doré)'                => 'meta-gold', 
+                    '📜 Ivoire Délicat (#D8D0BE - Encart clair)'          => 'meta-ivory',
                 ])->hideOnIndex(),
 
             ChoiceField::new('citationCouleurTexte', 'Couleur du Texte de la Citation')
@@ -219,8 +219,8 @@ class SectionCrudController extends AbstractCrudController
                     '📜 Ivoire Délicat (#D8D0BE - Texte clair recommandé)' => 'meta-ivory',
                     '🔱 Or Antique (#B89A63 - Écriture dorée)'            => 'meta-gold',
                     '⬛ Noir Profond (#0A0A09 - Texte sombre)'             => 'meta-black', 
-                    '🟣 Pourpre Sombre (#2A1A1E - Écriture pourpre)'       => 'meta-plum', 
-                    '🫒 Vert Olive (#4A4F41 - Écriture olive)'             => 'meta-olive',
+                    '🍷 Pourpre Sombre (#2A1A1E - Écriture pourpre)'       => 'meta-plum', 
+                    '🌿 Vert Sauge / Olive (#727763 - Écriture sauge)'     => 'meta-olive',
                     '🌿 Vert Sauge (#727763 - Écriture sauge)'             => 'meta-sage',
                 ])->hideOnIndex(),
 
