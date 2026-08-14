@@ -41,9 +41,9 @@ class SeanceCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         // Création d'une action personnalisée "Marquer comme effectuée"
-        $marquerEffectuee = Action::new('marquerEffectuee', 'Effectuée', 'fas fa-check-circle')
+        $marquerEffectuee = Action::new('marquerEffectuee', 'Marquer comme effectuée', 'fa fa-check-circle text-success')
             ->linkToCrudAction('changerStatutEffectuee')
-            ->addCssClass('btn btn-sm btn-success text-white')
+            ->addCssClass('text-success')
             ->displayIf(static function ($entity) {
                 // On affiche le bouton seulement si la séance a une date et n'est pas déjà annulée ou effectuée
                 return $entity->getDateRendezVous() !== null && $entity->getStatut() !== 'Effectuée';

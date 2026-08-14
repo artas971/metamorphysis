@@ -1,29 +1,83 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - Metamorphysis{% endblock %}
+{% block title %}Metamorphysis - Consulting en Relation Humaines{% endblock %}
 
 {% block body %}
-{# On a retiré "bg-black" pour laisser apparaître le sublime dégradé organique défini dans app.css #}
-<div class="d-flex justify-content-center align-items-center vh-100 overflow-hidden">    
-    <a href="{{ path('app_accueil') }}" class="logo-link">
-        {# On inclut le fichier contenant le logo SVG #}
-    {{ include('partials/logo2.html.twig' ) }}
+<main class="d-flex flex-column justify-content-center align-items-center min-vh-100 py-5 text-center overflow-hidden position-relative z-1">
+    
+    {# Le grand Logo animé connecté à la navigation #}
+    <a href="{{ path('app_accueil') }}" class="logo-link mb-3" title="Accéder au site Metamorphysis">
+        {{ include('partials/logo2.html.twig') }}
     </a>
- </div>
+
+    {# Textes d'ouverture conformes à la capture V1 client #}
+    <header class="intro-text-container px-4" style="max-width: 650px;">
+        
+        {# Sous-titre officiel #}
+        <div class="text-gold text-uppercase fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 3px;">
+            ◆ CONSULTING EN RELATION HUMAINES ◆
+        </div>
+
+        {# Séparateur vertical #}
+        <div class="d-flex justify-content-center my-3" aria-hidden="true">
+            <div style="width: 1px; height: 20px; background-color: var(--meta-gold); opacity: 0.5;"></div>
+        </div>
+        
+        {# Citation grecque #}
+        <div class="typo-symbolic text-gold fs-5 mb-1" style="letter-spacing: 3px;">
+            - γνῶθι σεαυτόν -
+        </div>
+        
+        <div class="text-gold text-uppercase fw-bold mb-3" style="font-size: 0.75rem; letter-spacing: 3px;">
+            CONNAIS-TOI TOI-MÊME
+        </div>
+
+        {# Ornement vertical et diamant étincelant #}
+        <div class="d-flex flex-column align-items-center my-3" aria-hidden="true">
+            <div style="width: 1px; height: 16px; background-color: var(--meta-gold); opacity: 0.5;"></div>
+            <div class="text-gold" style="font-size: 0.55rem; margin: -2px 0;">◆</div>
+            <div style="width: 1px; height: 16px; background-color: var(--meta-gold); opacity: 0.5;"></div>
+        </div>
+
+        {# Phrase d'impact officielle V1 #}
+        <p class="text-ivory typo-titre fst-italic h5 fw-light mb-4" style="font-size: 1.25rem; line-height: 1.7; letter-spacing: 1px;">
+            Certains schémas ne disparaissent pas.<br>
+            Ils se répètent jusqu'à être compris.
+        </p>
+
+        {# Flèche vers le bas #}
+        <div class="mt-2">
+            <a href="{{ path('app_accueil') }}" class="text-gold text-decoration-none fs-4 opacity-75 d-inline-block" style="transition: transform 0.3s ease;" title="Découvrir la suite">
+                ↓
+            </a>
+        </div>
+
+    </header>
+
+</main>
 
 <style>
     .logo-link {
         display: block; 
         width: 100%; 
+        max-width: 480px;
         text-decoration: none;
         transition: transform 0.5s ease-in-out, filter 0.5s ease-in-out;
         cursor: pointer;
     }
 
     .logo-link:hover {
-        transform: scale(1.03); /* Un léger zoom plus doux (0.5s) pour le côté organique */
-        /* On remplace le vieux jaune par l'Or Antique Premium avec tes valeurs RGB exactes */
-        filter: drop-shadow(0 0 30px rgba(184, 154, 99, 0.3)); 
+        transform: scale(1.03);
+        filter: drop-shadow(0 0 30px rgba(184, 154, 99, 0.4)); 
+    }
+
+    .intro-text-container {
+        animation: fadeInText 1.5s ease-in-out;
+    }
+
+    @keyframes fadeInText {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 {% endblock %}

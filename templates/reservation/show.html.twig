@@ -46,11 +46,11 @@
                     
                     {% if reservation.dateRendezVous %}
                         <div class="d-flex align-items-center mb-3">
-                            <i class="fa-regular fa-calendar me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                            <i class="bi bi-calendar3 me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
                             <span style="color: var(--meta-ivory); opacity: 0.9;">{{ reservation.dateRendezVous|date('d/m/Y') }}</span>
                         </div>
                         <div class="d-flex align-items-center">
-                            <i class="fa-regular fa-clock me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                            <i class="bi bi-clock me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
                             <span style="color: var(--meta-ivory); opacity: 0.9;">De {{ reservation.dateRendezVous|date('H:i') }} à {{ reservation.dateRendezVous|date_modify('+' ~ reservation.duree ~ ' minutes')|date('H:i') }}</span>
                         </div>
                     {% else %}
@@ -65,11 +65,11 @@
                     <h5 class="text-uppercase mb-4 fw-bold" style="color: var(--meta-gold); font-size: 0.85rem; letter-spacing: 1.5px;">Détails de l'offre</h5>
                     
                     <div class="d-flex align-items-center mb-3">
-                        <i class="fa-solid fa-tag me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                        <i class="bi bi-tag me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
                         <span style="color: var(--meta-ivory); opacity: 0.9;">Tarif : <strong>{{ reservation.prestation.prix }} €</strong></span>
                     </div>
                     <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-hourglass-half me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
+                        <i class="bi bi-hourglass-split me-3" style="color: var(--meta-gold); opacity: 0.9;"></i>
                         <span style="color: var(--meta-ivory); opacity: 0.9;">Durée : {{ reservation.duree }} minutes</span>
                     </div>
                 </div>

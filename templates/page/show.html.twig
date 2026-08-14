@@ -53,41 +53,95 @@
 
                 {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
                 {% elseif section.disposition == 'img_gauche' %}
+                    {% set crop_style = '' %}
+                    {% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
+                        {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
+                    {% endif %}
+                    {% set z_img = (section.imageSuperposition == 'image_sur_texte') ? 10 : (section.imageZIndex|default(1)) %}
+                    {% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
                     <div class="row align-items-center g-5">
-                        <div class="col-lg-7 position-relative mt-5 mt-lg-0">
+                        <div class="col-lg-7 position-relative mt-5 mt-lg-0" style="z-index: {{ z_img }};">
                             <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
                             
                             {% if section.media %}
                                 <img src="{{ vich_uploader_asset(section, 'imageFile') }}" 
                                      alt="Illustration de la section {{ section.titre|default('') }}" 
                                      loading="lazy"
-                                     class="img-fluid position-relative z-1 shadow-lg" 
-                                     style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                                     class="img-fluid position-relative shadow-lg" 
+                                     style="object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
                             {% endif %}
                         </div>
-                        <div class="col-lg-5 text-ivory content-premium text-start">
+                        <div class="col-lg-5 text-ivory content-premium text-start" style="z-index: {{ z_txt }};">
                             {{ section.contenu|raw }}
                         </div>
                     </div>
 
                 {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
                 {% elseif section.disposition == 'img_droite' %}
+                    {% set crop_style = '' %}
+                    {% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
+                        {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
+                    {% endif %}
+                    {% set z_img = (section.imageSuperposition == 'image_sur_texte') ? 10 : (section.imageZIndex|default(1)) %}
+                    {% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
                     <div class="row align-items-center g-5">
-                        <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start">
+                        <div class="col-lg-5 order-2 order-lg-1 text-ivory content-premium text-start" style="z-index: {{ z_txt }};">
                             {{ section.contenu|raw }}
                         </div>
                         
-                        <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0">
+                        <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0" style="z-index: {{ z_img }};">
                             <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
                             
                             {% if section.media %}
                                 <img src="{{ vich_uploader_asset(section, 'imageFile') }}"
                                      alt="Illustration de la section {{ section.titre|default('') }}" 
                                      loading="lazy"
-                                     class="img-fluid position-relative z-1 shadow-lg" 
-                                     style="object-fit: cover; width: 100%; border-radius: 2px; {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
+                                     class="img-fluid position-relative shadow-lg" 
+                                     style="object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
                             {% endif %}
                         </div>
+                    </div>
+
+                {# --- DISPOSITION 9 : GRILLE DE COLONNES CÔTE À CÔTE --- #}
+                {% elseif section.disposition == 'grille_colonnes' %}
+                    {% if section.contenu %}
+                        <div class="col-12 text-ivory content-premium text-center mb-5">
+                            {{ section.contenu|raw }}
+                        </div>
+                    {% endif %}
+
+                    {% set nb_cols = section.etapes|length %}
+                    {% set grid_col_class = 'col-lg-4' %}
+                    {% if nb_cols == 2 %}
+                        {% set grid_col_class = 'col-lg-6' %}
+                    {% elseif nb_cols == 3 %}
+                        {% set grid_col_class = 'col-lg-4' %}
+                    {% elseif nb_cols == 4 %}
+                        {% set grid_col_class = 'col-lg-3' %}
+                    {% elseif nb_cols >= 5 %}
+                        {% set grid_col_class = 'col-lg-2 col-md-4' %}
+                    {% endif %}
+
+                    <div class="row g-4 justify-content-center">
+                        {% for col in section.etapes %}
+                            <article class="col-12 col-md-6 {{ grid_col_class }}">
+                                <div class="card-premium h-100 p-4 d-flex flex-column text-start" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 8px;">
+                                    {% if col.icone %}
+                                        <div class="mb-3">
+                                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 50px; height: 50px; background-color: var(--meta-black);">
+                                                <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if col.titre %}
+                                        <h3 class="text-gold typo-titre h5 text-uppercase mb-3">{{ col.titre }}</h3>
+                                    {% endif %}
+                                    {% if col.texte %}
+                                        <p class="text-sage small mb-0" style="line-height: 1.7;">{{ col.texte }}</p>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        {% endfor %}
                     </div>
 
                 {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
@@ -284,6 +338,27 @@
                                 </aside>
                             {% endif %}
                         </div>
+                    </div>
+                {% endif %}
+
+                {# --- RENDU DU BOUTON D'ACTION (CTA) DE SECTION --- #}
+                {% if section.boutonTexte and section.boutonLien %}
+                    {% set btn_class = 'btn-gold-premium' %}
+                    {% if section.boutonStyle == 'outline' %}
+                        {% set btn_class = 'btn-outline-gold' %}
+                    {% elseif section.boutonStyle == 'sage' %}
+                        {% set btn_class = 'btn-sage-premium' %}
+                    {% elseif section.boutonStyle == 'plum' %}
+                        {% set btn_class = 'btn-plum-premium' %}
+                    {% endif %}
+
+                    <div class="mt-4 pt-2 text-center">
+                        <a href="{{ section.boutonLien }}" 
+                           target="{{ section.boutonCible|default('_self') }}" 
+                           class="btn {{ btn_class }} px-4 py-2 rounded-pill fw-bold text-uppercase transition-hover" 
+                           style="letter-spacing: 1.5px; font-size: 0.85rem;">
+                            {{ section.boutonTexte }} <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                        </a>
                     </div>
                 {% endif %}
                 

@@ -9,9 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 
 class PageCrudController extends AbstractCrudController
 {
@@ -24,58 +27,72 @@ class PageCrudController extends AbstractCrudController
     {
         return $crud
             ->setEntityLabelInSingular('Page')
-            ->setEntityLabelInPlural('Pages')
-            ->setPageTitle('index', 'Contenu des Pages')
-            
-            // La bulle d'aide pour l'image_9682da.png
-            ->setHelp('index', 'Créez de nouvelles pages ou modifiez l\'agencement et les textes de vos pages actuelles. Utilisez le Page Builder à l\'intérieur de chaque fiche pour structurer vos blocs de contenu.');
+            ->setEntityLabelInPlural('Pages du Site')
+            ->setPageTitle('index', 'Gestion du Contenu des Pages')
+            ->setHelp('index', '📑 <b>Bienvenue dans le gestionnaire de pages !</b> Vous pouvez ajouter de nouvelles pages ou éditer les textes et la disposition des pages existantes. Cliquez sur "Ajouter un élément" dans le Constructeur de blocs pour composer le design de votre page.')
+            ->overrideTemplate('crud/edit', 'admin/page/edit.html.twig')
+            ->overrideTemplate('crud/new', 'admin/page/new.html.twig');
     }
 
-    // L'AJOUT EST ICI : La configuration du bouton d'aperçu
+    public function configureAssets(Assets $assets): Assets
+    {
+        return $assets
+            ->addCssFile('css/admin_builder.css')
+            ->addJsFile('js/admin_builder.js');
+    }
+
     public function configureActions(Actions $actions): Actions
     {
-        // On crée une action personnalisée
-        $previewAction = Action::new('preview', 'Voir l\'aperçu', 'fa fa-eye')
+        $previewAction = Action::new('preview', 'Voir l\'aperçu direct', 'fa fa-eye')
             ->linkToRoute('app_page_preview', function (Page $page) {
                 return ['slug' => $page->getSlug()];
             })
-            ->setHtmlAttributes(['target' => '_blank']); // Ouvre dans un nouvel onglet
+            ->setHtmlAttributes(['target' => '_blank'])
+            ->addCssClass('btn btn-outline-info');
 
         return $actions
-            // On ajoute le bouton sur la liste des pages
             ->add(Crud::PAGE_INDEX, $previewAction)
-            // On ajoute le bouton sur la page de modification
             ->add(Crud::PAGE_EDIT, $previewAction);
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('titre', 'Titre de la page'),
-            
-            BooleanField::new('isPublished', 'Publier la page (En ligne)')
-                ->setHelp('Si décoché, la page restera en mode Brouillon (invisible pour le public).'),
+            FormField::addFieldset('📌 Informations de la Page')->setIcon('fas fa-info-circle'),
+
+            TextField::new('titre', 'Titre de la page')
+                ->setColumns('col-12 col-md-6')
+                ->setHelp('Ex: À propos, Nos Prestations, Informations...'),
             
             SlugField::new('slug', 'URL de la page (Slug)')
                 ->setTargetFieldName('titre')
-                ->setHelp('Se remplit automatiquement d\'après le titre.'),
-                
-            TextareaField::new('metaDescription', 'Description SEO (Google)')
-                ->setHelp('Texte de 150 caractères max résumant la page pour les moteurs de recherche.')
-                ->setRequired(false),              
-                
-            BooleanField::new('afficherMenu', 'Afficher dans la barre de navigation')
-                ->setHelp('Cochez cette case pour que le lien apparaisse en haut du site.'),
+                ->setColumns('col-12 col-md-6')
+                ->setHelp('L\'adresse web (ex: <code>metamorphysis.com/a-propos</code>). Se génère tout seul.'),
 
-            // NOUVEAU CHAMP DYNAMIQUE POUR TA CLIENTE
-            BooleanField::new('afficherTitre', 'Afficher le titre sur la page publique')
-                ->setHelp('Si décoché, le grand titre de la page n\'apparaîtra pas en haut de l\'écran (Idéal pour l\'Accueil).'),
-            
-            // Le CollectionField du Page Builder optimisé
-             CollectionField::new('sections', 'Constructeur de blocs (Page Builder)')
+            FormField::addFieldset('👁️ Affichage & Publication')->setIcon('fas fa-eye'),
+
+            BooleanField::new('isPublished', 'Publier la page (Mettre en ligne)')
+                ->setColumns('col-12 col-md-4')
+                ->setHelp('<b>Coché = En ligne pour le public</b>. <b>Décoché = Mode Brouillon</b>.'),
+
+            BooleanField::new('afficherMenu', 'Afficher dans le menu du haut')
+                ->setColumns('col-12 col-md-4')
+                ->setHelp('<b>Coché = Ajouter le lien dans la barre de navigation du haut (Navbar)</b>.'),
+
+            BooleanField::new('afficherTitre', 'Afficher le titre en haut de page')
+                ->setColumns('col-12 col-md-4')
+                ->setHelp('Décochez pour la page d\'Accueil.'),
+
+            TextareaField::new('metaDescription', 'Description pour Google (SEO)')
+                ->setColumns(12)
+                ->setHelp('💡 <b>Astuce référencement :</b> Rédigez 1 à 2 phrases courtes (max 150 caractères) décrivant le contenu de cette page. C\'est ce résumé qui s\'affichera sur Google !')
+                ->setRequired(false),
+
+            FormField::addFieldset('🧱 Constructeur de Blocs de Contenu (Page Builder)')->setIcon('fas fa-layer-group'),
+
+            CollectionField::new('sections', 'Blocs de la page')
                 ->useEntryCrudForm(SectionCrudController::class)
-                ->setHelp('💡 <b>Astuce :</b> Pour modifier l\'ordre d\'affichage sur le site, ouvrez un bloc, modifiez son numéro de "Position" (1, 2, 3...), puis sauvegardez la page.')
-                
+                ->setHelp('💡 <b>Comment composer votre page ?</b> Cliquez sur "Ajouter un élément" ci-dessous. Chaque bloc peut être un texte centré, une photo avec texte, un carrousel de prestations ou un parcours d\'étapes. Renseignez la "Position" (1, 2, 3...) dans chaque bloc pour choisir quel bloc passe en haut ou en bas.')
         ];
     }
 }

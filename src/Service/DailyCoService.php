@@ -2,13 +2,15 @@
 
 namespace App\Service;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class DailyCoService
 {
     public function __construct(
         private HttpClientInterface $client,
-        private string $dailyApiKey
+        private string $dailyApiKey,
+        private ?LoggerInterface $logger = null
     ) {}
 
     public function createRoom(\DateTimeInterface $dateRendezVous): ?string
@@ -36,23 +38,24 @@ class DailyCoService
             // Si succès (200 OK)
             if ($statusCode === 200) {
                 $data = $response->toArray();
-                return $data['url'];
+                return $data['url'] ?? null;
             }
 
-            // Capture d'erreur API si code HTTP !== 200
-            dd([
-                'erreur_api' => "L'API Daily.co a refusé la création",
-                'code_erreur' => $statusCode,
-                'message_daily' => $response->getContent(false),
-                'cle_api_recue_par_le_service' => $this->dailyApiKey
-            ]);
+            // Log d'erreur API si code HTTP !== 200
+            if ($this->logger) {
+                $this->logger->error("L'API Daily.co a refusé la création", [
+                    'code_erreur' => $statusCode,
+                    'message_daily' => $response->getContent(false)
+                ]);
+            }
 
         } catch (\Exception $e) {
-            // Capture d'erreur réseau / SSL WAMP
-            dd([
-                'erreur_interne' => 'Impossible de joindre le serveur Daily.co depuis WAMP',
-                'message' => $e->getMessage()
-            ]);
+            // Log d'erreur réseau
+            if ($this->logger) {
+                $this->logger->error('Impossible de joindre le serveur Daily.co', [
+                    'message' => $e->getMessage()
+                ]);
+            }
         }
 
         return null;

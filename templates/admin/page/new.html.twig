@@ -1,0 +1,26 @@
+{% extends '@EasyAdmin/crud/new.html.twig' %}
+
+{% block main %}
+<div class="builder-split-wrapper">
+    {# Colonne Formulaire EasyAdmin (Gauche 60%) #}
+    <div class="builder-form-area">
+        {{ parent() }}
+    </div>
+
+    {# Colonne Panneau d'Aperçu Collant (Droite 40%) #}
+    <div class="builder-preview-area" id="builderPreviewArea">
+        <div class="builder-preview-header">
+            <h4 class="builder-preview-title">
+                <i class="fa fa-eye"></i> Aperçu en Direct
+            </h4>
+        </div>
+
+        <div class="builder-preview-body">
+            <div class="builder-preview-placeholder">
+                <i class="fa fa-lightbulb text-gold fs-3 mb-3 d-block" style="color: #B89A63;"></i>
+                <p><b>Création de page :</b> Enregistrez une première fois la page pour activer l'aperçu en direct et la simulation smartphone/tablette.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,8 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Seance;
 use App\Repository\PrestationRepository;
+use App\Repository\SeanceRepository;
 use App\Repository\UserRepository;
-use App\Service\DailyCoService; // <-- IMPORT DU SERVICE VISIO
+use App\Service\DailyCoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Webhook;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -22,12 +23,13 @@ class StripeWebhookController extends AbstractController
         Request $request, 
         UserRepository $userRepository, 
         PrestationRepository $prestationRepository, 
+        SeanceRepository $seanceRepository,
         EntityManagerInterface $entityManager, 
         MailerInterface $mailer,
-        DailyCoService $dailyCoService // <-- INJECTION DU SERVICE DANS LE WEBHOOK
+        DailyCoService $dailyCoService
     ): Response
     {
-        $endpointSecret = $_ENV['STRIPE_WEBHOOK_SECRET'];
+        $endpointSecret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? '';
         $payload = $request->getContent();
         $sigHeader = $request->headers->get('stripe-signature');
         $event = null;
@@ -54,8 +56,21 @@ class StripeWebhookController extends AbstractController
                 $prestation = $prestationRepository->find($prestationId);
                 
                 if ($user && $prestation) {
-                    $dateRendezVous = new \DateTime($dateRendezVousStr);
-                    
+                    $dateRendezVous = $dateRendezVousStr ? new \DateTime($dateRendezVousStr) : null;
+
+                    // Idempotence : Vérifier si la séance existe déjà
+                    if ($dateRendezVous) {
+                        $seanceExistante = $seanceRepository->findOneBy([
+                            'user' => $user,
+                            'prestation' => $prestation,
+                            'dateRendezVous' => $dateRendezVous
+                        ]);
+
+                        if ($seanceExistante) {
+                            return new Response('Webhook déjà traité', 200);
+                        }
+                    }
+
                     // --- 1ÈRE SÉANCE : CRÉATION & VISIO ---
                     $premiereSeance = new Seance();
                     $premiereSeance->setUser($user);
@@ -66,9 +81,11 @@ class StripeWebhookController extends AbstractController
                     $premiereSeance->setStatut('En attente de validation');
 
                     // GÉNÉRATION ET ENREGISTREMENT DU LIEN DAILY.CO
-                    $lienVisio = $dailyCoService->createRoom($dateRendezVous);
-                    if ($lienVisio) {
-                        $premiereSeance->setLienVisio($lienVisio);
+                    if ($dateRendezVous) {
+                        $lienVisio = $dailyCoService->createRoom($dateRendezVous);
+                        if ($lienVisio) {
+                            $premiereSeance->setLienVisio($lienVisio);
+                        }
                     }
                     
                     $entityManager->persist($premiereSeance);
@@ -90,18 +107,22 @@ class StripeWebhookController extends AbstractController
                     $entityManager->flush();
 
                     // --- ENVOI DU MAIL ---
-                    $email = (new TemplatedEmail())
-                        ->from('noreply@metamorphysis.com')
-                        ->to('Metamorphysisconsulting@gmail.com')
-                        ->subject('Nouvelle réservation payée : ' . $prestation->getNom())
-                        ->htmlTemplate('emails/nouvelle_reservation.html.twig')
-                        ->context([
-                            'seance' => $premiereSeance,
-                            'client' => $user,
-                            'prestation' => $prestation
-                        ]);
+                    try {
+                        $email = (new TemplatedEmail())
+                            ->from('noreply@metamorphysis.com')
+                            ->to('Metamorphysisconsulting@gmail.com')
+                            ->subject('Nouvelle réservation payée : ' . $prestation->getNom())
+                            ->htmlTemplate('emails/nouvelle_reservation.html.twig')
+                            ->context([
+                                'seance' => $premiereSeance,
+                                'client' => $user,
+                                'prestation' => $prestation
+                            ]);
 
-                    $mailer->send($email);
+                        $mailer->send($email);
+                    } catch (\Exception $e) {
+                        // En cas de problème SMTP, ne pas faire échouer le webhook
+                    }
                 }
             }
         }

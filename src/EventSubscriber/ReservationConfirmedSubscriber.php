@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Reservation;
+use App\Entity\Seance;
 use App\Service\PdfService;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -34,45 +35,45 @@ class ReservationConfirmedSubscriber implements EventSubscriberInterface
     {
         $entity = $event->getEntityInstance();
 
-        // 1. On vérifie que c'est une Réservation qui passe en "Confirmé"
-        if (!($entity instanceof Reservation) || $entity->getStatut() !== 'Confirmé') {
+        // 1. On vérifie que c'est une Séance ou une Réservation qui passe en "Confirmé"
+        if (!($entity instanceof Reservation || $entity instanceof Seance) || $entity->getStatut() !== 'Confirmé') {
             return; 
         }
 
-        // 2. On génère le HTML du PDF
-        $htmlPdf = $this->twig->render('pdf/facture.html.twig', [
-            'reservation' => $entity
-        ]);
+        if (!$entity->getUser() || !$entity->getUser()->getEmail()) {
+            return;
+        }
 
-        // 3. On transforme le HTML en PDF binaire
-        $pdfContent = $this->pdfService->generateBinaryPdf($htmlPdf);
+        try {
+            // 2. On génère le HTML du PDF
+            $htmlPdf = $this->twig->render('pdf/facture.html.twig', [
+                'reservation' => $entity
+            ]);
 
-        // 4. On génère le corps visuel de l'email (Le design Noir & Or)
-        $emailBody = $this->twig->render('emails/reservation_confirm.html.twig', [
-            'reservation' => $entity
-        ]);
+            // 3. On transforme le HTML en PDF binaire
+            $pdfContent = $this->pdfService->generateBinaryPdf($htmlPdf);
 
-        // --- NOUVEAUTÉ : GÉNÉRATION DU NOM DE FICHIER DYNAMIQUE ---
-        
-        // On génère le numéro de facture (ex: FAC-20260619-2)
-        $numeroFacture = 'FAC-' . date('Ymd') . '-' . $entity->getId();
-        
-        // On nettoie le nom du client pour éviter les espaces ou caractères spéciaux dans le nom du fichier
-        $nomClient = preg_replace('/[^A-Za-z0-9\-]/', '_', $entity->getUser()->getNom());
-        
-        // Nom final : Facture_Metamorphysis_FAC-20260619-2_NOM.pdf
-        $nomFichierPdf = 'Facture_Metamorphysis_' . $numeroFacture . '_' . strtoupper($nomClient) . '.pdf';
+            // 4. On génère le corps visuel de l'email (Le design Noir & Or)
+            $emailBody = $this->twig->render('emails/reservation_confirm.html.twig', [
+                'reservation' => $entity
+            ]);
 
-        // ----------------------------------------------------------
+            // 5. Génération du nom de fichier dynamique
+            $numeroFacture = 'FAC-' . date('Ymd') . '-' . $entity->getId();
+            $nomClient = preg_replace('/[^A-Za-z0-9\-]/', '_', $entity->getUser()->getNom() ?? 'Client');
+            $nomFichierPdf = 'Facture_Metamorphysis_' . $numeroFacture . '_' . strtoupper($nomClient) . '.pdf';
 
-        // 5. On assemble et on envoie l'email final avec la pièce jointe correctement nommée
-        $email = (new Email())
-            ->from('contact@metamorphysis.com')
-            ->to($entity->getUser()->getEmail())
-            ->subject('METAMORPHYSIS - Confirmation de votre rendez-vous')
-            ->html($emailBody) 
-            ->attach($pdfContent, $nomFichierPdf, 'application/pdf');
+            // 6. Assemblage et envoi de l'email final avec la pièce jointe
+            $email = (new Email())
+                ->from('contact@metamorphysis.com')
+                ->to($entity->getUser()->getEmail())
+                ->subject('METAMORPHYSIS - Confirmation de votre rendez-vous')
+                ->html($emailBody) 
+                ->attach($pdfContent, $nomFichierPdf, 'application/pdf');
 
-        $this->mailer->send($email);
+            $this->mailer->send($email);
+        } catch (\Exception $e) {
+            // Empêche un crash d'administration si le serveur SMTP est indisponible
+        }
     }
 }

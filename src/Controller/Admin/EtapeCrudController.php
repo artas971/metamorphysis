@@ -20,13 +20,16 @@ class EtapeCrudController extends AbstractCrudController implements ServiceSubsc
     {
         return [
             TextField::new('titre', 'Titre de l\'étape')
+                ->setColumns(12)
                 ->setHelp('Ex: OBSERVER, COMPRENDRE... (Sera affiché en majuscule et en ivoire)'),
                 
             TextareaField::new('texte', 'Description')
+                ->setColumns(12)
                 ->setNumOfRows(3)
                 ->setHelp('Une phrase courte explicative (Couleur sauge).'),
                 
             ChoiceField::new('icone', 'Symbole visuel (Icône)')
+                ->setColumns(12)
                 ->setChoices([
                     '👁️ Œil (Idéal pour l\'observation)' => 'bi-eye',
                     '🔍 Loupe (Idéal pour la compréhension)' => 'bi-search',

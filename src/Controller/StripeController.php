@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Seance;
 use App\Entity\User;
 use App\Repository\PrestationRepository;
+use App\Repository\SeanceRepository;
+use App\Repository\UserRepository;
 use App\Service\DailyCoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
@@ -70,83 +72,68 @@ class StripeController extends AbstractController
 
     #[Route('/commande/succes', name: 'app_stripe_success')]
     public function success(
-        Request $request, 
-        EntityManagerInterface $em, 
+        Request $request,
         PrestationRepository $prestationRepository,
+        SeanceRepository $seanceRepository,
+        EntityManagerInterface $entityManager,
         DailyCoService $dailyCoService
     ): Response {
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-        
         $sessionSymfony = $request->getSession();
         $reservationData = $sessionSymfony->get('reservation_en_cours');
-        $stripeSessionId = $request->query->get('session_id');
 
-        $prestationId = null;
-        $dateRendezVousStr = null;
+        /** @var User|null $user */
+        $user = $this->getUser();
 
-        if ($reservationData) {
-            $prestationId = $reservationData['prestation_id'] ?? null;
+        if ($reservationData && $user) {
+            $prestation = $prestationRepository->find($reservationData['prestation_id'] ?? null);
             $dateRendezVousStr = $reservationData['date_rendez_vous'] ?? null;
-        } elseif ($stripeSessionId) {
-            try {
-                $stripeSession = Session::retrieve($stripeSessionId);
-                if ($stripeSession && isset($stripeSession->metadata)) {
-                    $prestationId = $stripeSession->metadata->prestation_id ?? null;
-                    $dateRendezVousStr = $stripeSession->metadata->date_rendez_vous ?? null;
-                }
-            } catch (\Exception $e) {
-                // S'il y a un souci de récupération Stripe, on continue
-            }
-        }
+            $dateRendezVous = $dateRendezVousStr ? new \DateTime($dateRendezVousStr) : null;
 
-        // --- DUMP DE DÉBOGAGE #1 : VÉRIFICATION DES DONNÉES REÇUES ---
-        // Décommente ce bloc si la page se redirige directement sans s'arrêter
-        /*
-        dd([
-            'etape' => '1. Vérification entrée dans success',
-            'prestation_id' => $prestationId,
-            'date_rendez_vous_str' => $dateRendezVousStr,
-            'source_session_symfony' => $reservationData,
-            'source_stripe_session_id' => $stripeSessionId
-        ]);
-        */
+            if ($prestation) {
+                // Idempotence : vérifier si la séance 1 existe déjà
+                $seanceExistante = $seanceRepository->findOneBy([
+                    'user' => $user,
+                    'prestation' => $prestation,
+                    'numero' => 1
+                ]);
 
-        if ($prestationId) {
-            $prestation = $prestationRepository->find($prestationId);
-            $user = $this->getUser();
+                if (!$seanceExistante) {
+                    // Créer séance 1
+                    $premiereSeance = new Seance();
+                    $premiereSeance->setUser($user);
+                    $premiereSeance->setPrestation($prestation);
+                    $premiereSeance->setNumero(1);
+                    $premiereSeance->setDuree($prestation->getDuree() ?? 60);
+                    $premiereSeance->setDateRendezVous($dateRendezVous);
+                    $premiereSeance->setStatut('En attente de validation');
 
-            if ($prestation && $user) {
-                $nbSeances = $prestation->getNombreSeances() ?? 1;
-
-                for ($i = 1; $i <= $nbSeances; $i++) {
-                    $seance = new Seance();
-                    $seance->setUser($user);
-                    $seance->setPrestation($prestation);
-                    $seance->setNumero($i);
-
-                    if ($i === 1 && !empty($dateRendezVousStr)) {
-                        $dateRdv = new \DateTime($dateRendezVousStr);
-                        $seance->setDateRendezVous($dateRdv);
-                        $seance->setStatut('En attente de validation');
-
-                        // APPEL DU SERVICE DAILY.CO
-                        $lienVisio = $dailyCoService->createRoom($dateRdv);
- 
+                    if ($dateRendezVous) {
+                        $lienVisio = $dailyCoService->createRoom($dateRendezVous);
                         if ($lienVisio) {
-                            $seance->setLienVisio($lienVisio);
+                            $premiereSeance->setLienVisio($lienVisio);
                         }
-                    } else {
-                        $seance->setStatut('Non planifiée');
+                    }
+                    $entityManager->persist($premiereSeance);
+
+                    // Créer séances 2..N
+                    $totalSeances = $prestation->getNombreSeances() ?? 1;
+                    for ($i = 2; $i <= $totalSeances; $i++) {
+                        $seanceSuivante = new Seance();
+                        $seanceSuivante->setUser($user);
+                        $seanceSuivante->setPrestation($prestation);
+                        $seanceSuivante->setNumero($i);
+                        $seanceSuivante->setDuree($prestation->getDuree() ?? 60);
+                        $seanceSuivante->setDateRendezVous(null);
+                        $seanceSuivante->setStatut('Non planifiée');
+                        $entityManager->persist($seanceSuivante);
                     }
 
-                    $em->persist($seance);
+                    $entityManager->flush();
                 }
-
-                $em->flush();
             }
-
-            $sessionSymfony->remove('reservation_en_cours');
         }
+
+        $sessionSymfony->remove('reservation_en_cours');
 
         $this->addFlash('success', 'Merci pour votre confiance. Votre parcours d\'accompagnement est officiellement réservé.');
 

@@ -9,24 +9,34 @@ use Symfony\Component\HttpFoundation\Response;
 class MenuController extends AbstractController
 {
     public function renderDynamicNav(PageRepository $pageRepository): Response
-        {
-            // On exige afficherMenu = true ET isPublished = true
+    {
+        // Si l'utilisateur est connecté en tant qu'Admin (EasyAdmin / Aperçu), 
+        // on affiche toutes les pages avec afficherMenu = true même si elles sont en cours de rédaction (isPublished = false)
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $pages = $pageRepository->findBy([
+                'afficherMenu' => true
+            ], ['id' => 'ASC']);
+        } else {
+            // Pour les visiteurs publics, la page doit être publiée ET le menu coché
             $pages = $pageRepository->findBy([
                 'afficherMenu' => true,
                 'isPublished' => true
-            ]);
-
-            return $this->render('partials/_nav_links.html.twig', [
-                'pages' => $pages,
-            ]);
+            ], ['id' => 'ASC']);
         }
-        public function renderDynamicFooter(PageRepository $pageRepository): Response
-    {
-        // On cherche les pages publiées MAIS qui ne sont pas dans le menu principal
-        $pages = $pageRepository->findBy([
-            'isPublished' => true,
-            'afficherMenu' => false
+
+        return $this->render('partials/_nav_links.html.twig', [
+            'pages' => $pages,
         ]);
+    }
+
+    public function renderDynamicFooter(PageRepository $pageRepository): Response
+    {
+        $criteria = ['afficherMenu' => false];
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $criteria['isPublished'] = true;
+        }
+
+        $pages = $pageRepository->findBy($criteria, ['id' => 'ASC']);
 
         return $this->render('partials/_footer_links.html.twig', [
             'pages' => $pages,

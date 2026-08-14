@@ -18,14 +18,14 @@
     --meta-gold-hover: #9c804f;    
     --meta-olive-hover: #5d6352;   
 
-    /* 2. DÉGRADÉS (Base Pourpre Premium & Épurée) */
-    --grad-main: linear-gradient(
-        180deg, 
-        #2A1A1E 0%,    /* Le Pourpre riche domine tout le haut du site */
-        #1A1012 50%,   /* Assombrissement très subtil au milieu */
-        #0A0A09 100%   /* Noir profond en bas pour asseoir le design */
+    /* 2. DÉGRADÉS (Pourpre #2A1A1E dominant avec touches de noir discrètes) */
+    --grad-main: radial-gradient(
+        ellipse at 50% 40%, 
+        #2A1A1E 0%,     /* Le Pourpre riche domine tout le centre et le fond */
+        #211417 75%,    /* Ombrage pourpre très doux */
+        #0A0A09 100%    /* Noir très discret sur les bordures extrêmes */
     );
-    /* Le fond de tes cartes (indépendant du body) */
+    /* Le fond des cartes (Original Vert Olive Kaki) */
     --grad-subtle: linear-gradient(135deg, rgba(74, 79, 65, 0.90) 0%, rgba(45, 48, 38, 0.95) 100%); 
     
     /* 3. Typographie */
@@ -56,36 +56,33 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    
-    /* MODIFICATION : Nécessaire pour positionner les halos par rapport au body */
     position: relative; 
 }
 
 /* =========================================
-   HALOS VERTS LATÉRAUX (Bordures lumineuses fixes)
+   ADOUCISSEMENT DES BORDURES LATÉRALES
    ========================================= */
-/* Version légèrement plus prononcée */
 body::before, body::after {
     content: "";
     position: fixed;
     top: 0;
     bottom: 0;
-    width: 400px; /* On élargit un peu la zone (400px au lieu de 350px) */
+    width: 250px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.85; /* Intensité augmentée pour que le vert ressorte mieux */
+    opacity: 0.4;
 }
 
-/* Halo côté gauche */
+/* Ombrage très discret à gauche */
 body::before {
     left: 0;
-    background: linear-gradient(90deg, rgba(114, 119, 99, 0.35) 0%, rgba(114, 119, 99, 0.1) 30%, transparent 100%);
+    background: linear-gradient(90deg, #0A0A09 0%, transparent 100%);
 }
 
-/* Halo côté droit */
+/* Ombrage très discret à droite */
 body::after {
     right: 0;
-    background: linear-gradient(-90deg, rgba(114, 119, 99, 0.35) 0%, rgba(114, 119, 99, 0.1) 30%, transparent 100%);
+    background: linear-gradient(-90deg, #0A0A09 0%, transparent 100%);
 }
 /* =========================================
    STRUCTURE DE CONTENU (Superposition)
@@ -93,13 +90,13 @@ body::after {
 main {
     flex: 1;
     position: relative;
-    z-index: 1; /* Assure que le contenu se place au-dessus des halos en arrière-plan */
+    z-index: 1;
 }
 /* =========================================
-   LA TOUCHE OLIVE (Navbar Épurée, Luxueuse & Compacte)
+   NAVBAR ÉPURÉE (Vert Olive / Kaki Officielles)
    ========================================= */
 .navbar {
-    background: linear-gradient(180deg, rgba(74, 79, 65, 0.95) 0%, rgba(74, 79, 65, 0.75) 100%) !important;
+    background: linear-gradient(180deg, rgba(74, 79, 65, 0.95) 0%, rgba(74, 79, 65, 0.85) 100%) !important;
     border-bottom: 1px solid rgba(184, 154, 99, 0.3) !important;
     
     backdrop-filter: blur(12px);
@@ -463,9 +460,9 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
     object-fit: cover;
 }
 
-/* Le bouton adopte le pourpre #2A1A1E conseillé pour rappeler le fond de l'écran */
+/* Bouton de carte prestation */
 .prestation-track .card .mt-auto a {
-    background-color: #2A1A1E !important; 
+    background-color: var(--meta-pourpre, #21141C) !important; 
     border: 1px solid rgba(184, 154, 99, 0.3) !important;
     border-radius: 0px !important;
 }

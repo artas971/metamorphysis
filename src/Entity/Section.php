@@ -85,6 +85,39 @@ class Section
     #[ORM\Column(nullable: true)]
     private ?int $citationHauteurMax = null;
 
+    // --- BOUTON DE REDIRECTION (CTA) ---
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $boutonTexte = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $boutonLien = null;
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'gold'])]
+    private ?string $boutonStyle = 'gold';
+
+    #[ORM\Column(length: 20, nullable: true, options: ['default' => '_self'])]
+    private ?string $boutonCible = '_self';
+
+    // --- SUPERPOSITION IMAGE / TEXTE ---
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'standard'])]
+    private ?string $imageSuperposition = 'standard';
+
+    #[ORM\Column(nullable: true, options: ['default' => 1])]
+    private ?int $imageZIndex = 1;
+
+    // --- ROGNAGE IMAGE (CROP %) ---
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $cropHaut = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $cropBas = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $cropGauche = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $cropDroite = 0;
+
     /**
      * @var Collection<int, Prestation>
      */
@@ -359,4 +392,37 @@ class Section
 
     public function getCitationHauteurMax(): ?int { return $this->citationHauteurMax; }
     public function setCitationHauteurMax(?int $citationHauteurMax): static { $this->citationHauteurMax = $citationHauteurMax; return $this; }
+
+    // --- GETTERS / SETTERS BOUTON CTA ---
+    public function getBoutonTexte(): ?string { return $this->boutonTexte; }
+    public function setBoutonTexte(?string $boutonTexte): static { $this->boutonTexte = $boutonTexte; return $this; }
+
+    public function getBoutonLien(): ?string { return $this->boutonLien; }
+    public function setBoutonLien(?string $boutonLien): static { $this->boutonLien = $boutonLien; return $this; }
+
+    public function getBoutonStyle(): ?string { return $this->boutonStyle; }
+    public function setBoutonStyle(?string $boutonStyle): static { $this->boutonStyle = $boutonStyle; return $this; }
+
+    public function getBoutonCible(): ?string { return $this->boutonCible; }
+    public function setBoutonCible(?string $boutonCible): static { $this->boutonCible = $boutonCible; return $this; }
+
+    // --- GETTERS / SETTERS SUPERPOSITION ---
+    public function getImageSuperposition(): ?string { return $this->imageSuperposition; }
+    public function setImageSuperposition(?string $imageSuperposition): static { $this->imageSuperposition = $imageSuperposition; return $this; }
+
+    public function getImageZIndex(): ?int { return $this->imageZIndex; }
+    public function setImageZIndex(?int $imageZIndex): static { $this->imageZIndex = $imageZIndex; return $this; }
+
+    // --- GETTERS / SETTERS ROGNAGE ---
+    public function getCropHaut(): ?int { return $this->cropHaut; }
+    public function setCropHaut(?int $cropHaut): static { $this->cropHaut = $cropHaut; return $this; }
+
+    public function getCropBas(): ?int { return $this->cropBas; }
+    public function setCropBas(?int $cropBas): static { $this->cropBas = $cropBas; return $this; }
+
+    public function getCropGauche(): ?int { return $this->cropGauche; }
+    public function setCropGauche(?int $cropGauche): static { $this->cropGauche = $cropGauche; return $this; }
+
+    public function getCropDroite(): ?int { return $this->cropDroite; }
+    public function setCropDroite(?int $cropDroite): static { $this->cropDroite = $cropDroite; return $this; }
 }

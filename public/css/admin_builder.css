@@ -1,0 +1,229 @@
+/* ======================================================
+   PAGE BUILDER SPLIT-SCREEN & LIVE PREVIEW (RESPONSIVE)
+   ====================================================== */
+
+.builder-split-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    width: 100%;
+}
+
+.builder-form-area {
+    flex: 1 1 60%;
+    min-width: 0;
+}
+
+.builder-preview-area {
+    flex: 0 0 38%;
+    width: 38%;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 110px);
+    background: #0A0A09;
+    border: 1px solid #B89A63;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease, height 0.3s ease;
+}
+
+/* Header de la fenêtre d'aperçu */
+.builder-preview-header {
+    background: #141414;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(184, 154, 99, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.builder-preview-title {
+    color: #B89A63;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.builder-device-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #0A0A09;
+    padding: 3px;
+    border-radius: 6px;
+    border: 1px solid rgba(184, 154, 99, 0.2);
+}
+
+.builder-device-btn {
+    background: transparent;
+    border: none;
+    color: #D8D0BE;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.builder-device-btn:hover {
+    color: #B89A63;
+}
+
+.builder-device-btn.active {
+    background: #B89A63;
+    color: #0A0A09;
+    font-weight: bold;
+}
+
+.builder-action-btn {
+    background: transparent;
+    border: 1px solid rgba(184, 154, 99, 0.3);
+    color: #B89A63;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.builder-action-btn:hover {
+    background: #B89A63;
+    color: #0A0A09;
+}
+
+/* Zone d'iFrame */
+.builder-preview-body {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: #050505;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+.builder-preview-iframe {
+    background: #0A0A09;
+    border: none;
+    box-sizing: border-box;
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+/* Mode PC : Remplissage 100% parfait sans aucune zone noire */
+.builder-preview-iframe.mode-desktop {
+    top: 0 !important;
+    left: 0 !important;
+    width: 200% !important;
+    height: 200% !important;
+    transform: scale(0.5) !important;
+    transform-origin: 0 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+/* Mode Tablette (Centré) */
+.builder-preview-iframe.mode-tablet {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 768px !important;
+    max-width: 92% !important;
+    height: 92% !important;
+    border: 4px solid #222 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 25px rgba(0,0,0,0.8) !important;
+}
+
+/* Mode Mobile (Centré) */
+.builder-preview-iframe.mode-mobile {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 375px !important;
+    max-width: 92% !important;
+    height: 90% !important;
+    border: 6px solid #222 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 0 25px rgba(0,0,0,0.8) !important;
+}
+
+.builder-preview-placeholder {
+    padding: 30px;
+    text-align: center;
+    color: #D8D0BE;
+}
+
+/* Bouton tiroir pour écran moyen/mobile */
+.builder-toggle-drawer-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    background: #B89A63;
+    color: #0A0A09;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+}
+
+/* ======================================================
+   RESPONSIVE DESIGN ADAPTATIONS
+   ====================================================== */
+
+@media (max-width: 1199px) {
+    .builder-split-wrapper {
+        flex-direction: column;
+    }
+    .builder-form-area {
+        width: 100%;
+    }
+    .builder-preview-area {
+        position: fixed;
+        bottom: 0;
+        right: 20px;
+        top: auto;
+        width: 440px;
+        height: 650px;
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 80px);
+        transform: translateY(100%);
+    }
+    .builder-preview-area.is-open {
+        transform: translateY(-20px);
+    }
+    .builder-toggle-drawer-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .builder-preview-area {
+        width: calc(100vw - 20px);
+        right: 10px;
+        left: 10px;
+        height: 80vh;
+    }
+}

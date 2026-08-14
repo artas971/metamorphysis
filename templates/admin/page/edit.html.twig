@@ -1,0 +1,59 @@
+{% extends '@EasyAdmin/crud/edit.html.twig' %}
+
+{% block main %}
+<div class="builder-split-wrapper">
+    {# Colonne Formulaire EasyAdmin (Gauche 60%) #}
+    <div class="builder-form-area">
+        {{ parent() }}
+    </div>
+
+    {# Colonne Panneau d'Aperçu Collant (Droite 40%) #}
+    <div class="builder-preview-area" id="builderPreviewArea">
+        <div class="builder-preview-header">
+            <h4 class="builder-preview-title">
+                <i class="fa fa-eye"></i> Aperçu en Direct
+            </h4>
+
+            {# Sélecteur Responsive (PC / Tablette / Mobile) #}
+            <div class="builder-device-selector">
+                <button type="button" class="builder-device-btn active" data-device="desktop" title="Vue Ordinateur">
+                    💻 <span class="d-none d-lg-inline">PC</span>
+                </button>
+                <button type="button" class="builder-device-btn" data-device="tablet" title="Vue Tablette">
+                    📱 <span class="d-none d-lg-inline">Tab</span>
+                </button>
+                <button type="button" class="builder-device-btn" data-device="mobile" title="Vue Smartphone">
+                    📲 <span class="d-none d-lg-inline">Mobile</span>
+                </button>
+            </div>
+
+            <div class="d-flex align-items-center gap-1">
+                {% if entity.instance.slug is defined and entity.instance.slug %}
+                    <a href="{{ path('app_page_preview', {slug: entity.instance.slug}) }}" target="_blank" class="builder-action-btn" title="Ouvrir l'aperçu grand écran dans un nouvel onglet">
+                        <i class="fa fa-external-link-alt"></i>
+                    </a>
+                {% endif %}
+                <button type="button" class="builder-action-btn" id="builderRefreshBtn" title="Rafraîchir l'aperçu">
+                    <i class="fa fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="builder-preview-body">
+            {% if entity.instance.slug is defined and entity.instance.slug %}
+                <iframe src="{{ path('app_page_preview', {slug: entity.instance.slug}) }}" class="builder-preview-iframe mode-desktop" id="builderPreviewIframe"></iframe>
+            {% else %}
+                <div class="builder-preview-placeholder">
+                    <i class="fa fa-info-circle text-gold fs-3 mb-3 d-block"></i>
+                    <p>L'aperçu en direct s'activera dès que vous aurez enregistré le titre et l'URL de votre page.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{# Bouton tiroir flottant sur smartphone/tablette #}
+<button type="button" class="builder-toggle-drawer-btn" id="builderToggleDrawerBtn">
+    <i class="fa fa-eye"></i> Aperçu en direct
+</button>
+{% endblock %}
