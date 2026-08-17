@@ -32,8 +32,12 @@ class PageCrudController extends AbstractCrudController
         $page = $context->getEntity()->getInstance();
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
 
-        // Si la création d'une nouvelle page vient d'avoir lieu, on redirige automatiquement sur l'édition
-        if ($action === Action::NEW) {
+        $submitButton = $context->getRequest()->request->get('btn') 
+            ?? $context->getRequest()->query->get('btn') 
+            ?? $action;
+
+        // Si c'est la création d'une nouvelle page (NEW) OU si le bouton cliqué est "Enregistrer et continuer à modifier" (saveAndContinue)
+        if ($action === Action::NEW || $action === Action::SAVE_AND_CONTINUE || $submitButton === Action::SAVE_AND_CONTINUE || $submitButton === 'saveAndContinue') {
             return $this->redirect(
                 $adminUrlGenerator
                     ->setController(self::class)
@@ -43,19 +47,7 @@ class PageCrudController extends AbstractCrudController
             );
         }
 
-        // Si l'utilisateur a cliqué sur "Enregistrer et continuer à modifier" (saveAndContinue)
-        $clickedButton = $context->getRequest()->request->get('btn');
-        if ($clickedButton === 'saveAndContinue') {
-            return $this->redirect(
-                $adminUrlGenerator
-                    ->setController(self::class)
-                    ->setAction(Action::EDIT)
-                    ->setEntityId($page->getId())
-                    ->generateUrl()
-            );
-        }
-
-        // Sinon par défaut ("Enregistrer et Quitter"), redirection vers la liste des pages (/admin/page)
+        // Sinon ("Enregistrer & Quitter" / saveAndReturn), redirection vers le tableau de bord des pages (/admin/page)
         return $this->redirect(
             $adminUrlGenerator
                 ->setController(self::class)
