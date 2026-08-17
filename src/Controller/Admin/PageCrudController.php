@@ -32,11 +32,34 @@ class PageCrudController extends AbstractCrudController
         $page = $context->getEntity()->getInstance();
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
 
+        // Si la création d'une nouvelle page vient d'avoir lieu, on redirige automatiquement sur l'édition
+        if ($action === Action::NEW) {
+            return $this->redirect(
+                $adminUrlGenerator
+                    ->setController(self::class)
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($page->getId())
+                    ->generateUrl()
+            );
+        }
+
+        // Si l'utilisateur a cliqué sur "Enregistrer et continuer à modifier" (saveAndContinue)
+        $clickedButton = $context->getRequest()->request->get('btn');
+        if ($clickedButton === 'saveAndContinue') {
+            return $this->redirect(
+                $adminUrlGenerator
+                    ->setController(self::class)
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($page->getId())
+                    ->generateUrl()
+            );
+        }
+
+        // Sinon par défaut ("Enregistrer et Quitter"), redirection vers la liste des pages (/admin/page)
         return $this->redirect(
             $adminUrlGenerator
                 ->setController(self::class)
-                ->setAction(Action::EDIT)
-                ->setEntityId($page->getId())
+                ->setAction(Action::INDEX)
                 ->generateUrl()
         );
     }
@@ -61,7 +84,7 @@ class PageCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $previewAction = Action::new('preview', 'Voir l\'aperçu direct', 'fa fa-eye')
+        $previewAction = Action::new('preview', '👁️ Voir sur le site', 'fa fa-external-link-alt')
             ->linkToRoute('app_page_preview', function (Page $page) {
                 return ['slug' => $page->getSlug()];
             })
@@ -69,6 +92,17 @@ class PageCrudController extends AbstractCrudController
             ->addCssClass('btn btn-outline-info');
 
         return $actions
+            // Boutons lors de la création d'une nouvelle page (NEW)
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
+                return $action->setLabel('✨ Créer la page & Ouvrir l\'Éditeur')->setIcon('fa fa-magic')->addCssClass('btn-success');
+            })
+            // Boutons lors de l'édition d'une page existante (EDIT)
+            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function (Action $action) {
+                return $action->setLabel('💾 Enregistrer & Quitter (Retour aux Pages)')->setIcon('fa fa-check')->addCssClass('btn-primary');
+            })
+            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
+                return $action->setLabel('🔄 Enregistrer & Continuer d\'Éditer')->setIcon('fa fa-sync')->addCssClass('btn-outline-primary');
+            })
             ->add(Crud::PAGE_INDEX, $previewAction)
             ->add(Crud::PAGE_EDIT, $previewAction);
     }
