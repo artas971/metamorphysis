@@ -140,27 +140,55 @@
                         {% set grid_col_class = 'col-lg-2 col-md-4' %}
                     {% endif %}
 
-                    <div class="row g-4 justify-content-center">
-                        {% for col in section.etapes %}
-                            <article class="col-12 col-md-6 {{ grid_col_class }}">
-                                <div class="card-premium h-100 p-4 p-md-5 d-flex flex-column text-start" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                                    {% if col.icone %}
-                                        <div class="mb-3">
-                                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 50px; height: 50px; background-color: var(--meta-black);">
-                                                <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
-                                            </div>
+                    {% if nb_cols == 2 %}
+                        {# Panneau unique comparatif collé avec ligne séparatrice verticale (Exact Maquette V1) #}
+                        <div class="card-premium p-4 p-md-5 w-100 shadow-lg" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 8px;">
+                            <div class="row g-4 g-lg-5">
+                                {% for col in section.etapes %}
+                                    <div class="col-12 col-lg-6 {% if loop.first %}position-relative{% endif %}" style="{% if loop.first %}border-right: 1px solid rgba(184, 154, 99, 0.25);{% endif %}">
+                                        <div class="pe-lg-4 ps-lg-2">
+                                            {% if col.icone %}
+                                                <div class="mb-3">
+                                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 50px; height: 50px; background-color: var(--meta-black);">
+                                                        <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if col.titre %}
+                                                <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4;">{{ col.titre }}</h3>
+                                            {% endif %}
+                                            {% if col.texte %}
+                                                <div class="text-ivory content-premium mb-0" style="line-height: 1.9; font-size: 0.95rem; white-space: pre-line;">{{ col.texte }}</div>
+                                            {% endif %}
                                         </div>
-                                    {% endif %}
-                                    {% if col.titre %}
-                                        <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4;">{{ col.titre }}</h3>
-                                    {% endif %}
-                                    {% if col.texte %}
-                                        <div class="text-ivory content-premium mb-0" style="line-height: 1.9; font-size: 0.95rem; white-space: pre-line;">{{ col.texte }}</div>
-                                    {% endif %}
-                                </div>
-                            </article>
-                        {% endfor %}
-                    </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        {# Grille standard pour 3, 4 ou 5 colonnes #}
+                        <div class="row g-4 justify-content-center">
+                            {% for col in section.etapes %}
+                                <article class="col-12 col-md-6 {{ grid_col_class }}">
+                                    <div class="card-premium h-100 p-4 p-md-5 d-flex flex-column text-start" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                                        {% if col.icone %}
+                                            <div class="mb-3">
+                                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 50px; height: 50px; background-color: var(--meta-black);">
+                                                    <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if col.titre %}
+                                            <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4;">{{ col.titre }}</h3>
+                                        {% endif %}
+                                        {% if col.texte %}
+                                            <div class="text-ivory content-premium mb-0" style="line-height: 1.9; font-size: 0.95rem; white-space: pre-line;">{{ col.texte }}</div>
+                                        {% endif %}
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
                 {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
                 {% elseif section.disposition == 'banniere' %}
