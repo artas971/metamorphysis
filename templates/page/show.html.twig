@@ -60,7 +60,9 @@
                     {% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
                     <div class="row align-items-center g-5">
                         <div class="col-lg-7 position-relative mt-5 mt-lg-0" style="z-index: {{ z_img }};">
-                            <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
+                            {% if section.imageCadre %}
+                                <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; left: -20px; bottom: 20px; right: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
+                            {% endif %}
                             
                             {% if section.media %}
                                 {% if section.imageLien %}
@@ -103,7 +105,9 @@
                         </div>
                         
                         <div class="col-lg-7 order-1 order-lg-2 position-relative mt-5 mt-lg-0" style="z-index: {{ z_img }};">
-                            <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
+                            {% if section.imageCadre %}
+                                <div class="position-absolute border border-gold d-none d-md-block" style="top: -20px; right: -20px; bottom: 20px; left: 20px; z-index: 0; opacity: 0.3;" aria-hidden="true"></div>
+                            {% endif %}
                             
                             {% if section.media %}
                                 {% if section.imageLien %}

@@ -6,6 +6,7 @@ use App\Controller\Admin\EtapeCrudController;
 use App\Entity\Section;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -138,6 +139,11 @@ class SectionCrudController extends AbstractCrudController
                 ->setColumns(12)
                 ->setHelp('Optionnel : Renseignez une adresse (ex: <code>/reserver/1</code>, <code>/a-propos</code> ou <code>https://...</code>) pour rendre cette photo cliquable.')
                 ->setRequired(false),
+
+            BooleanField::new('imageCadre', '🖼️ Afficher le cadre d\'ornement doré autour de la photo')
+                ->setColumns(12)
+                ->setHelp('<b>Coché = Afficher le cadre d\'ornement doré</b>. <b>Décoché = Masquer le cadre (Photo seule épurée)</b>.')
+                ->hideOnIndex(),
                 
             IntegerField::new('imagePosX', 'Décalage Horizontal Image (%)')
                 ->setColumns(12)

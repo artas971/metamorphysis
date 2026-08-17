@@ -124,6 +124,9 @@ class Section
     #[ORM\Column(nullable: true, options: ['default' => 0])]
     private ?int $decalagePosY = 0;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $imageCadre = true;
+
     /**
      * @var Collection<int, Prestation>
      */
@@ -437,4 +440,7 @@ class Section
 
     public function getDecalagePosY(): ?int { return $this->decalagePosY; }
     public function setDecalagePosY(?int $decalagePosY): static { $this->decalagePosY = $decalagePosY; return $this; }
+
+    public function isImageCadre(): ?bool { return $this->imageCadre ?? true; }
+    public function setImageCadre(?bool $imageCadre): static { $this->imageCadre = $imageCadre; return $this; }
 }
