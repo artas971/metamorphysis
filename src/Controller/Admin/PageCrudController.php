@@ -32,12 +32,15 @@ class PageCrudController extends AbstractCrudController
         $page = $context->getEntity()->getInstance();
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
 
-        $submitButton = $context->getRequest()->request->get('btn') 
+        $postData = $context->getRequest()->request->all();
+        $submitButtonName = $postData['ea']['editForm']['btn'] 
+            ?? $postData['ea']['newForm']['btn'] 
+            ?? $context->getRequest()->request->get('btn') 
             ?? $context->getRequest()->query->get('btn') 
             ?? $action;
 
-        // Si c'est la création d'une nouvelle page (NEW) OU si le bouton cliqué est "Enregistrer et continuer à modifier" (saveAndContinue)
-        if ($action === Action::NEW || $action === Action::SAVE_AND_CONTINUE || $submitButton === Action::SAVE_AND_CONTINUE || $submitButton === 'saveAndContinue') {
+        // Si c'est la création d'une nouvelle page (NEW) OU si l'administrateur a cliqué sur "Enregistrer & Continuer d'Éditer" (saveAndContinue)
+        if ($action === Action::NEW || $submitButtonName === Action::SAVE_AND_CONTINUE || $submitButtonName === 'saveAndContinue') {
             return $this->redirect(
                 $adminUrlGenerator
                     ->setController(self::class)
