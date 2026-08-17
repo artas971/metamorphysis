@@ -25,15 +25,16 @@
         {# 1. Calcul de la classe de fond #}
         {% set classe_fond = (section.couleurFond == 'olive') ? 'bg-olive-premium' : 'bg-plum-premium' %}
         
-        {# 2. La balise structurelle avec aria-labelledby pour l'accessibilité #}
+        {# 2. La balise structurelle avec aria-labelledby et decalagePosY pour l'accessibilité & le chevauchement #}
         <{{ section.baliseHtml|default('section') }} 
-            class="{{ classe_fond }} py-5" 
-            {% if section.titre and section.disposition != 'presentation_expert' %}aria-labelledby="section-heading-{{ loop.index }}"{% endif %}>
+            class="{{ classe_fond }} py-5 position-relative" 
+            style="{% if section.decalagePosY %}margin-top: {{ section.decalagePosY }}px; z-index: 5;{% endif %}"
+            {% if section.titre and section.disposition not in ['presentation_expert', 'img_gauche', 'img_droite', 'bandeau_conclusion'] %}aria-labelledby="section-heading-{{ loop.index }}"{% endif %}>
             
             <div class="container">
             
                 {# TITRE DE SECTION (H2 dynamique) #}
-                {% if section.titre is defined and section.titre is not null and section.disposition not in ['presentation_expert', 'img_gauche', 'img_droite'] %}
+                {% if section.titre is defined and section.titre is not null and section.disposition not in ['presentation_expert', 'img_gauche', 'img_droite', 'bandeau_conclusion'] %}
                     <header class="mb-5 text-center">
                         <h2 id="section-heading-{{ loop.index }}" class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
                             {{ section.titre }}
@@ -189,6 +190,22 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+
+                {# --- DISPOSITION 10 : BANDEAU DE CONCLUSION & LOGO M --- #}
+                {% elseif section.disposition == 'bandeau_conclusion' %}
+                    <div class="d-flex align-items-center justify-content-between py-4 px-4 px-md-5 my-2" style="background-color: var(--meta-plum); border-top: 1px solid rgba(184, 154, 99, 0.25); border-bottom: 1px solid rgba(184, 154, 99, 0.25); border-radius: 4px;">
+                        <div class="text-start">
+                            {% if section.contenu %}
+                                <div class="fs-4 text-ivory typo-titre mb-0" style="letter-spacing: 1px; line-height: 1.8; white-space: pre-line;">{{ section.contenu|raw }}</div>
+                            {% else %}
+                                <p class="fs-4 text-ivory mb-1 typo-titre" style="letter-spacing: 1px;">Cette démarche demande du courage.</p>
+                                <p class="fs-4 text-ivory mb-0 typo-titre" style="letter-spacing: 1px;">Mais c'est aussi là que tout commence.</p>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center ms-4" style="width: 60px; height: 60px; border: 1px solid var(--meta-gold); border-radius: 4px; flex-shrink: 0;">
+                            <span class="text-gold fs-3 typo-symbolic">M</span>
+                        </div>
+                    </div>
 
                 {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
                 {% elseif section.disposition == 'banniere' %}

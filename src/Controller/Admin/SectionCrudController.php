@@ -42,6 +42,7 @@ class SectionCrudController extends AbstractCrudController
                     '🖼️ Image à Gauche + Texte à Droite'                => 'img_gauche',
                     '🖼️ Texte à Gauche + Image à Droite'                => 'img_droite',
                     '📊 Grille de Colonnes Côte à Côte (2, 3, 4 ou 5 colonnes avec titre & texte)' => 'grille_colonnes',
+                    '🌸 Bandeau de Conclusion & Logo M (Citation à gauche + Logo encadré à droite)' => 'bandeau_conclusion',
                     '🌅 Bannière pleine largeur'                         => 'banniere',
                     '🎦 Carrousel des Prestations (Slider dynamique)'  => 'slider_prestations',
                     '🌸 Bloc Info Pratique (Note & Fleur Libellule)'    => 'info_pratique',
@@ -59,6 +60,10 @@ class SectionCrudController extends AbstractCrudController
                 ])
                 ->setHelp('💡 Sélection de la teinte de fond du bloc dans la charte graphique.')
                 ->renderExpanded(false),
+
+            IntegerField::new('decalagePosY', '↕️ Chevauchement / Décalage vertical du bloc (px)')
+                ->setColumns(12)
+                ->setHelp('💡 <code>0</code> = alignement standard. Mettez un nombre négatif (ex: <code>-60</code>) pour faire monter ce bloc sur le bloc du dessus et les superposer sans couture.')->hideOnIndex(),
 
             // ======================================================
             // 2. CONTENU TEXTUEL & BOUTON CTA

@@ -121,6 +121,9 @@ class Section
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageLien = null;
 
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $decalagePosY = 0;
+
     /**
      * @var Collection<int, Prestation>
      */
@@ -431,4 +434,7 @@ class Section
 
     public function getImageLien(): ?string { return $this->imageLien; }
     public function setImageLien(?string $imageLien): static { $this->imageLien = $imageLien; return $this; }
+
+    public function getDecalagePosY(): ?int { return $this->decalagePosY; }
+    public function setDecalagePosY(?int $decalagePosY): static { $this->decalagePosY = $decalagePosY; return $this; }
 }
