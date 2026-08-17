@@ -421,7 +421,7 @@
                 {% endif %}
 
                 {# --- RENDU DU BOUTON D'ACTION (CTA) DE SECTION --- #}
-                {% if section.boutonTexte and section.boutonLien %}
+                {% if section.boutonTexte %}
                     {% set btn_class = 'btn-gold-premium' %}
                     {% if section.boutonStyle == 'outline' %}
                         {% set btn_class = 'btn-outline-gold' %}
@@ -431,8 +431,8 @@
                         {% set btn_class = 'btn-plum-premium' %}
                     {% endif %}
 
-                    <div class="mt-4 pt-2 text-center">
-                        <a href="{{ section.boutonLien }}" 
+                    <div class="mt-4 pt-3 text-center w-100 position-relative" style="z-index: 10;">
+                        <a href="{{ section.boutonLien|default('#') }}" 
                            target="{{ section.boutonCible|default('_self') }}" 
                            class="btn {{ btn_class }} px-4 py-2 rounded-pill fw-bold text-uppercase transition-hover" 
                            style="letter-spacing: 1.5px; font-size: 0.85rem;">
