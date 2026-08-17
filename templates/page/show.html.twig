@@ -160,10 +160,10 @@
                                                 </div>
                                             {% endif %}
                                             {% if col.titre %}
-                                                <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4;">{{ col.titre }}</h3>
+                                                <h3 class="text-gold typo-titre h5 text-uppercase mb-4 {% if section.texteGras %}fw-bold{% endif %}" style="letter-spacing: 1.5px; line-height: 1.4; {% if section.texteGras %}font-weight: 800 !important;{% endif %}">{{ col.titre }}</h3>
                                             {% endif %}
                                             {% if col.texte %}
-                                                <div class="text-ivory content-premium mb-0" style="line-height: 1.9; font-size: 0.95rem; white-space: pre-line;">{{ col.texte }}</div>
+                                                <div class="text-ivory content-premium mb-0 {% if section.texteGras %}fw-bold{% endif %}" style="line-height: 1.9; font-size: 1.05rem; white-space: pre-line; {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 500;{% endif %}">{{ col.texte }}</div>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -184,10 +184,10 @@
                                             </div>
                                         {% endif %}
                                         {% if col.titre %}
-                                            <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4;">{{ col.titre }}</h3>
+                                            <h3 class="text-gold typo-titre h5 text-uppercase mb-4 {% if section.texteGras %}fw-bold{% endif %}" style="letter-spacing: 1.5px; line-height: 1.4; {% if section.texteGras %}font-weight: 800 !important;{% endif %}">{{ col.titre }}</h3>
                                         {% endif %}
                                         {% if col.texte %}
-                                            <div class="text-ivory content-premium mb-0" style="line-height: 1.9; font-size: 0.95rem; white-space: pre-line;">{{ col.texte }}</div>
+                                            <div class="text-ivory content-premium mb-0 {% if section.texteGras %}fw-bold{% endif %}" style="line-height: 1.9; font-size: 1.05rem; white-space: pre-line; {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 500;{% endif %}">{{ col.texte }}</div>
                                         {% endif %}
                                     </div>
                                 </article>

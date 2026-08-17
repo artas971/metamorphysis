@@ -127,6 +127,9 @@ class Section
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private ?bool $imageCadre = true;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private ?bool $texteGras = false;
+
     /**
      * @var Collection<int, Prestation>
      */
@@ -443,4 +446,7 @@ class Section
 
     public function isImageCadre(): ?bool { return $this->imageCadre ?? true; }
     public function setImageCadre(?bool $imageCadre): static { $this->imageCadre = $imageCadre; return $this; }
+
+    public function isTexteGras(): ?bool { return $this->texteGras ?? false; }
+    public function setTexteGras(?bool $texteGras): static { $this->texteGras = $texteGras; return $this; }
 }

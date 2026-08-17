@@ -91,6 +91,11 @@ class SectionCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setHelp('Rédigez ici le contenu explicatif de cette section.'),
 
+            BooleanField::new('texteGras', '💪 Texte & Titres en Gras (Lisibilité Épaissie & Renforcée)')
+                ->setColumns(12)
+                ->setHelp('<b>Coché = Écriture en gras renforcée pour une visibilité maximale</b>. Décoché = Écriture élégante standard.')
+                ->hideOnIndex(),
+
             // ======================================================
             // 2.B BOUTON D'ACTION & LIEN DE REDIRECTION (CTA)
             // ======================================================
