@@ -30,6 +30,7 @@ class Page
      * @var Collection<int, Section>
      */
     #[ORM\OneToMany(targetEntity: Section::class, mappedBy: 'page', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OrderBy(['ordre' => 'ASC', 'id' => 'ASC'])]
     private Collection $sections;
 
     #[ORM\Column]
@@ -40,6 +41,9 @@ class Page
 
     #[ORM\Column]
     private ?bool $isPublished = false; 
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $fondBlocsUnifie = null; 
 
     public function __construct()
     {
@@ -150,6 +154,17 @@ class Page
     public function setAfficherTitre(bool $afficherTitre): static
     {
         $this->afficherTitre = $afficherTitre;
+        return $this;
+    }
+
+    public function getFondBlocsUnifie(): ?string
+    {
+        return $this->fondBlocsUnifie;
+    }
+
+    public function setFondBlocsUnifie(?string $fondBlocsUnifie): static
+    {
+        $this->fondBlocsUnifie = $fondBlocsUnifie;
         return $this;
     }
 }

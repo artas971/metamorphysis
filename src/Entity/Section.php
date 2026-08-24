@@ -42,6 +42,21 @@ class Section
  
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $titre = null;
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'gold-hover'])]
+    private ?string $titreCouleur = 'gold-hover';
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'apres'])]
+    private ?string $titreLigneDecor = 'apres';
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $sousTitre = null;
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'ivory'])]
+    private ?string $sousTitreCouleur = 'ivory';
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'ivory'])]
+    private ?string $texteCouleur = 'ivory';
     
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $baliseHtml = 'section';
@@ -126,6 +141,21 @@ class Section
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private ?bool $imageCadre = true;
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'plum'])]
+    private ?string $imageCadreCouleur = 'plum';
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $imageCadreHaut = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $imageCadreBas = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $imageCadreGauche = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $imageCadreDroite = 0;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $texteGras = false;
@@ -239,18 +269,21 @@ class Section
     public function __toString(): string
     {
         $dispositionLabels = [
-            'texte_centre' => '📝 Texte centré',
-            'img_gauche' => '🖼️ Image à Gauche + Texte',
-            'img_droite' => '🖼️ Texte + Image à Droite',
-            'banniere' => '✨ Bannière pleine largeur',
-            'slider_prestations' => '🎠 Slider des Prestations',
-            'info_pratique' => '🌸 Bloc Info Pratique',
-            'presentation_expert' => '👩‍💼 Profil Fondatrice (À Propos)', // <-- NOUVELLE DISPOSITION
+            'texte_centre'       => '📄 Texte Centré',
+            'img_gauche'         => '🖼️ Image à Gauche + Texte',
+            'img_droite'         => '🖼️ Texte à Gauche + Image',
+            'img_centre'         => '🖼️ Image au Centre + Textes',
+            'grille_colonnes'    => '📊 Grille Multi-Colonnes (2 à 5 colonnes)',
+            'banniere'           => '🌅 Bannière Pleine Largeur',
+            'slider_prestations' => '🎠 Carrousel des Prestations',
+            'bandeau_conclusion' => '🌸 Bandeau Signature & Logo M',
+            'info_pratique'      => '🌸 Bloc Info Pratique',
         ];
 
-        $label = $dispositionLabels[$this->disposition] ?? 'Nouveau bloc';
+        $label = $dispositionLabels[$this->disposition] ?? 'Bloc';
+        $titre = !empty($this->titre) ? ' : ' . $this->titre : '';
         
-        return sprintf('%s (Position %d)', $label, $this->ordre);
+        return sprintf('%s (Position %d)%s', $label, $this->ordre ?? 0, $titre);
     }
     
     public function setImageFile(?File $imageFile = null): void
@@ -286,6 +319,54 @@ class Section
     public function setTitre(?string $titre): static
     {
         $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function getTitreCouleur(): ?string
+    {
+        return $this->titreCouleur ?? 'gold';
+    }
+
+    public function setTitreCouleur(?string $titreCouleur): static
+    {
+        $this->titreCouleur = $titreCouleur;
+
+        return $this;
+    }
+
+    public function getSousTitre(): ?string
+    {
+        return $this->sousTitre;
+    }
+
+    public function setSousTitre(?string $sousTitre): static
+    {
+        $this->sousTitre = $sousTitre;
+
+        return $this;
+    }
+
+    public function getSousTitreCouleur(): ?string
+    {
+        return $this->sousTitreCouleur ?? 'ivory';
+    }
+
+    public function setSousTitreCouleur(?string $sousTitreCouleur): static
+    {
+        $this->sousTitreCouleur = $sousTitreCouleur;
+
+        return $this;
+    }
+
+    public function getTexteCouleur(): ?string
+    {
+        return $this->texteCouleur ?? 'ivory';
+    }
+
+    public function setTexteCouleur(?string $texteCouleur): static
+    {
+        $this->texteCouleur = $texteCouleur;
 
         return $this;
     }
@@ -447,6 +528,24 @@ class Section
     public function isImageCadre(): ?bool { return $this->imageCadre ?? true; }
     public function setImageCadre(?bool $imageCadre): static { $this->imageCadre = $imageCadre; return $this; }
 
+    public function getImageCadreCouleur(): ?string { return $this->imageCadreCouleur ?? 'plum'; }
+    public function setImageCadreCouleur(?string $imageCadreCouleur): static { $this->imageCadreCouleur = $imageCadreCouleur; return $this; }
+
+    public function getImageCadreHaut(): ?int { return $this->imageCadreHaut ?? 0; }
+    public function setImageCadreHaut(?int $imageCadreHaut): static { $this->imageCadreHaut = $imageCadreHaut; return $this; }
+
+    public function getImageCadreBas(): ?int { return $this->imageCadreBas ?? 0; }
+    public function setImageCadreBas(?int $imageCadreBas): static { $this->imageCadreBas = $imageCadreBas; return $this; }
+
+    public function getImageCadreGauche(): ?int { return $this->imageCadreGauche ?? 0; }
+    public function setImageCadreGauche(?int $imageCadreGauche): static { $this->imageCadreGauche = $imageCadreGauche; return $this; }
+
+    public function getImageCadreDroite(): ?int { return $this->imageCadreDroite ?? 0; }
+    public function setImageCadreDroite(?int $imageCadreDroite): static { $this->imageCadreDroite = $imageCadreDroite; return $this; }
+
     public function isTexteGras(): ?bool { return $this->texteGras ?? false; }
     public function setTexteGras(?bool $texteGras): static { $this->texteGras = $texteGras; return $this; }
+
+    public function getTitreLigneDecor(): ?string { return $this->titreLigneDecor ?? 'apres'; }
+    public function setTitreLigneDecor(?string $titreLigneDecor): static { $this->titreLigneDecor = $titreLigneDecor ?? 'apres'; return $this; }
 }

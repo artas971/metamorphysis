@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
@@ -130,6 +131,17 @@ class PageCrudController extends AbstractCrudController
                 ->setColumns('col-12 col-md-4')
                 ->setHelp('Décochez pour la page d\'Accueil.'),
 
+            ChoiceField::new('fondBlocsUnifie', '🎨 Harmonisation du fond des blocs')
+                ->setColumns('col-12 col-md-6')
+                ->setChoices([
+                    '🎨 Couleurs individuelles par bloc (Mode standard)'               => 'individuel',
+                    '🍷 Harmoniser : Tous les blocs en Pourpre Sombre continu (#2A1A1E)' => 'pourpre',
+                    '🌿 Harmoniser : Tous les blocs en Vert Olive continu (#4A4F41)'    => 'olive',
+                ])
+                ->setRequired(false)
+                ->setEmptyData('individuel')
+                ->setHelp('💡 <b>Astuce Dégradé :</b> Choisissez <i>Pourpre continu</i> ou <i>Vert Olive continu</i> pour que tous les blocs de cette page s\'enchaînent sans coupure ni démarcation visuelle.'),
+
             TextareaField::new('metaDescription', 'Description pour Google (SEO)')
                 ->setColumns(12)
                 ->setHelp('💡 <b>Astuce référencement :</b> Rédigez 1 à 2 phrases courtes (max 150 caractères) décrivant le contenu de cette page. C\'est ce résumé qui s\'affichera sur Google !')
@@ -138,6 +150,7 @@ class PageCrudController extends AbstractCrudController
             FormField::addFieldset('🧱 Constructeur de Blocs de Contenu (Page Builder)')->setIcon('fas fa-layer-group'),
 
             CollectionField::new('sections', 'Blocs de la page')
+                ->setColumns(12)
                 ->useEntryCrudForm(SectionCrudController::class)
                 ->setHelp('💡 <b>Comment composer votre page ?</b> Cliquez sur "Ajouter un élément" ci-dessous. Chaque bloc peut être un texte centré, une photo avec texte, un carrousel de prestations ou un parcours d\'étapes. Renseignez la "Position" (1, 2, 3...) dans chaque bloc pour choisir quel bloc passe en haut ou en bas.')
         ];

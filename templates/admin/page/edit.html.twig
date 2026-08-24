@@ -33,8 +33,11 @@
                         <i class="fa fa-external-link-alt"></i>
                     </a>
                 {% endif %}
-                <button type="button" class="builder-action-btn" id="builderRefreshBtn" title="Rafraîchir l'aperçu">
+                <button type="button" class="builder-action-btn" id="builderRefreshBtn" title="Rafraîchir l'aperçu (sans sauvegarder)" {% if entity.instance.id is defined and entity.instance.id %}data-preview-draft-url="{{ path('app_page_preview_draft', {id: entity.instance.id}) }}"{% endif %}>
                     <i class="fa fa-sync-alt"></i>
+                </button>
+                <button type="button" class="builder-action-btn" id="builderScreenshotBtn" title="📸 Exporter la capture d'écran de la maquette (PNG Haute Définition)">
+                    <i class="fa fa-camera"></i>
                 </button>
             </div>
         </div>

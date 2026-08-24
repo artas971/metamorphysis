@@ -28,19 +28,27 @@ class EtapeCrudController extends AbstractCrudController implements ServiceSubsc
                 ->setNumOfRows(5)
                 ->setHelp('Rédigez ici le contenu de cette colonne (vous pouvez mettre des flèches → ou puces).'),
                 
-            ChoiceField::new('icone', 'Symbole visuel (Icône dorée)')
+            ChoiceField::new('icone', 'Symbole visuel (Icône dorée ou SVG)')
                 ->setColumns(12)
                 ->setChoices([
                     '🚫 Aucune icône (Texte brut pur)' => '',
-                    '👁️ Œil (Observation)' => 'bi-eye',
-                    '🔍 Loupe (Compréhension)' => 'bi-search',
-                    '🔄 Flèches (Transformation)' => 'bi-arrow-repeat',
-                    '✨ Étoiles (Alignement)' => 'bi-stars',
-                    '💎 Diamant' => 'bi-gem',
-                    '🌱 Feuille / Nature' => 'bi-flower1',
+                    '🦋 Libellule Métamorphysis (Logo SVG Officiel)' => 'libellule.svg',
+                    '👁️ Observer - Œil (bi-eye)' => 'bi-eye',
+                    '🧠 Comprendre - Réseau / Esprit (bi-diagram-3)' => 'bi-diagram-3',
+                    '💡 Comprendre - Ampoule / Éveil (bi-lightbulb)' => 'bi-lightbulb',
+                    '⚖️ Confronter - Symétrie / Axe (bi-symmetry-vertical)' => 'bi-symmetry-vertical',
+                    '🛡️ Confronter - Bouclier (bi-shield-check)' => 'bi-shield-check',
+                    '🌸 Transformer - Libellule / Fleur (bi-flower1)' => 'bi-flower1',
+                    '✨ Transformer - Étoiles / Éveil (bi-stars)' => 'bi-stars',
+                    '🎯 S\'aligner - Cible / Centre (bi-crosshair)' => 'bi-crosshair',
+                    '🧭 S\'aligner - Boussole (bi-compass)' => 'bi-compass',
+                    '🔘 S\'aligner - Cible pleine (bi-bullseye)' => 'bi-bullseye',
+                    '🔍 Loupe (bi-search)' => 'bi-search',
+                    '🔄 Flèches répétition (bi-arrow-repeat)' => 'bi-arrow-repeat',
+                    '💎 Diamant (bi-gem)' => 'bi-gem',
                 ])
                 ->setRequired(false)
-                ->setHelp('Optionnel : Choisissez une icône si vous souhaitez afficher un cercle doré au-dessus du titre.'),
+                ->setHelp('Choisissez une icône dorée ou le logo libellule à afficher au-dessus du titre.'),
         ];
     }
 }

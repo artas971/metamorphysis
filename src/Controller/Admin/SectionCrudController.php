@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class SectionCrudController extends AbstractCrudController
@@ -24,31 +25,40 @@ class SectionCrudController extends AbstractCrudController
         return Section::class;
     }
 
+    public function configureAssets(Assets $assets): Assets
+    {
+        return $assets
+            ->addCssFile('css/admin_builder.css')
+            ->addJsFile('js/admin_builder.js');
+    }
+
     public function configureFields(string $pageName): iterable
     {
         return [
             // ======================================================
             // 1. CONFIGURATION GÉNÉRALE DU BLOC
             // ======================================================
-            FormField::addFieldset('⚙️ Disposition & Couleur de Fond')->setIcon('fas fa-cogs'),
+            FormField::addFieldset('⚙️ Disposition & Couleur de Fond')
+                ->setIcon('fas fa-cogs')
+                ->setCssClass('builder-fieldset-general'),
             
-            IntegerField::new('ordre', 'Ordre d\'affichage du bloc (1, 2, 3...)')
+            IntegerField::new('ordre', 'Position du bloc dans la page (1, 2, 3...)')
                 ->setColumns(12)
-                ->setHelp('💡 <code>1</code> = tout en haut de la page, <code>2</code> = second bloc, <code>3</code> = troisième bloc, etc.'),
+                ->setHelp('💡 <code>1</code> = tout en haut, <code>2</code> = second bloc, <code>3</code> = troisième bloc...'),
             
-            ChoiceField::new('disposition', 'Design & Disposition du bloc')
+            ChoiceField::new('disposition', 'Modèle de mise en page (Gabarit)')
                 ->setColumns(12)
                 ->setChoices([
-                    '📄 Texte centré (Classique & Épuré)'               => 'texte_centre',
-                    '🖼️ Image à Gauche + Texte à Droite'                => 'img_gauche',
-                    '🖼️ Texte à Gauche + Image à Droite'                => 'img_droite',
-                    '📊 Grille de Colonnes Côte à Côte (2, 3, 4 ou 5 colonnes avec titre & texte)' => 'grille_colonnes',
-                    '🌸 Bandeau de Conclusion & Logo M (Citation à gauche + Logo encadré à droite)' => 'bandeau_conclusion',
-                    '🌅 Bannière pleine largeur'                         => 'banniere',
-                    '🎦 Carrousel des Prestations (Slider dynamique)'  => 'slider_prestations',
-                    '🌸 Bloc Info Pratique (Note & Fleur Libellule)'    => 'info_pratique',
-                    '🔄 Cheminement (Parcours en 4 Étapes)'             => 'cheminement',
-                    '👩‍💼 Profil Fondatrice (Présentation À Propos)'     => 'presentation_expert',
+                    '📄 Texte Centré'                                           => 'texte_centre',
+                    '🖼️ Image à Gauche + Texte à Droite'                         => 'img_gauche',
+                    '🖼️ Texte à Gauche + Image à Droite'                         => 'img_droite',
+                    '🖼️ Image au Centre + Textes'                                => 'img_centre',
+                    '📊 Grille Multi-Colonnes (2 à 5 colonnes avec icônes)'      => 'grille_colonnes',
+                    '📦 Rangée Flexible / Conteneur Horizontal (Flexbox Row)'    => 'flex_row',
+                    '🌅 Bannière Pleine Largeur'                                  => 'banniere',
+                    '🎠 Carrousel des Prestations'                              => 'slider_prestations',
+                    '🌸 Bandeau Signature & Logo M'                             => 'bandeau_conclusion',
+                    '🌸 Bloc Info Pratique'                                     => 'info_pratique',
                 ])
                 ->setHelp('Choisissez le modèle visuel de ce bloc sur votre page.')
                 ->setRequired(true)->setEmptyData('texte_centre')->renderExpanded(false),
@@ -64,20 +74,76 @@ class SectionCrudController extends AbstractCrudController
 
             IntegerField::new('decalagePosY', '↕️ Chevauchement / Décalage vertical du bloc (px)')
                 ->setColumns(12)
-                ->setHelp('💡 <code>0</code> = alignement standard. Mettez un nombre négatif (ex: <code>-60</code>) pour faire monter ce bloc sur le bloc du dessus et les superposer sans couture.')->hideOnIndex(),
+                ->setHelp('💡 <code>0</code> = alignement standard. Mettez un nombre négatif (ex: <code>-60</code>) pour faire monter ce bloc sur le bloc du dessus.')->hideOnIndex(),
 
             // ======================================================
-            // 2. CONTENU TEXTUEL & BOUTON CTA
+            // 2. CONTENU TEXTUEL
             // ======================================================
-            FormField::addFieldset('📝 Textes & Contenu')->setIcon('fas fa-align-left'),
+            FormField::addFieldset('📝 Textes & Paragraphes')
+                ->setIcon('fas fa-align-left')
+                ->setCssClass('builder-fieldset-texte'),
 
-            TextField::new('titre', 'Titre de la section')
+            TextField::new('titre', 'Titre de la section (ex: L\'EXPÉRIENCE)')
                 ->setColumns(12)
-                ->setHelp('Le titre principal qui apparaîtra dans cette section.')
+                ->setCssClass('builder-field-titre')
+                ->setHelp('Le titre principal affiché en grand.')
                 ->setRequired(false),
+
+            ChoiceField::new('titreCouleur', '🎨 Couleur du titre')
+                ->setColumns(12)
+                ->setCssClass('builder-field-titreCouleur')
+                ->setChoices([
+                    '🔱 Or Bruni / Ambré (#9C804F - Recommandé)' => 'gold-hover',
+                    '✨ Or Antique (#B89A63 - Doré Métamorphysis)' => 'gold',
+                    '📜 Ivoire Délicat (#D8D0BE - Blanc Cassé)'    => 'ivory',
+                    '🌿 Vert Sauge (#727763 - Vert Doux)'          => 'sage',
+                    '🫒 Vert Olive (#4A4F41 - Vert Profond)'       => 'olive',
+                    '🍷 Pourpre Sombre (#2A1A1E - Bordeaux)'       => 'plum',
+                    '⬛ Noir Charbon (#0A0A09)'                    => 'black',
+                ])
+                ->setRequired(false)
+                ->setEmptyData('gold-hover')
+                ->setHelp('Choisissez la teinte de votre grand titre.'),
+
+            ChoiceField::new('titreLigneDecor', '✨ Trait doré décoratif autour du titre')
+                ->setColumns(12)
+                ->setCssClass('builder-field-titreLigneDecor')
+                ->setChoices([
+                    '➡️ Ligne dorée après le titre (ex: LE PROCESSUS ────────)' => 'apres',
+                    '⬅️ Ligne dorée avant le titre (ex: ──────── LE PROCESSUS)' => 'avant',
+                    '↔️ Lignes dorées avant ET après (ex: ──── LE PROCESSUS ────)' => 'avant_apres',
+                    '🚫 Aucun trait décoratif (Titre simple épuré)' => 'none',
+                ])
+                ->setRequired(false)
+                ->setEmptyData('apres')
+                ->setHelp('Personnalisez la disposition de la ligne dorée décorative à côté de votre titre.'),
+
+            TextareaField::new('sousTitre', 'Sous-titre / Phrase d\'accroche (Retour à la ligne possible)')
+                ->setColumns(12)
+                ->setCssClass('builder-field-sousTitre')
+                ->setNumOfRows(2)
+                ->setHelp('Optionnel : Appuyez sur Entrée pour écrire sur 2 lignes (ex : ligne 1 en grec, ligne 2 en français).')
+                ->setRequired(false),
+
+            ChoiceField::new('sousTitreCouleur', '🎨 Couleur du sous-titre')
+                ->setColumns(12)
+                ->setCssClass('builder-field-sousTitreCouleur')
+                ->setChoices([
+                    '📜 Ivoire Délicat (#D8D0BE - Recommandé)'     => 'ivory',
+                    '🔱 Or Bruni / Ambré (#9C804F)'                => 'gold-hover',
+                    '✨ Or Antique (#B89A63 - Doré Métamorphysis)' => 'gold',
+                    '🌿 Vert Sauge (#727763 - Vert Doux)'          => 'sage',
+                    '🫒 Vert Olive (#4A4F41 - Vert Profond)'       => 'olive',
+                    '🍷 Pourpre Sombre (#2A1A1E - Bordeaux)'       => 'plum',
+                    '⬛ Noir Charbon (#0A0A09)'                    => 'black',
+                ])
+                ->setRequired(false)
+                ->setEmptyData('ivory')
+                ->setHelp('Choisissez la teinte de votre sous-titre.'),
 
             ChoiceField::new('baliseHtml', 'Taille du titre')
                 ->setColumns(12)
+                ->setCssClass('builder-field-baliseHtml')
                 ->setChoices([
                     'Grand Titre (H2 - Recommandé)' => 'h2', 
                     'Moyen (H3)'                    => 'h3', 
@@ -87,173 +153,232 @@ class SectionCrudController extends AbstractCrudController
             
             TextareaField::new('contenu', 'Texte & Paragraphes')
                 ->setColumns(12)
+                ->setCssClass('builder-field-contenu')
                 ->setNumOfRows(6)
                 ->setRequired(false)
-                ->setHelp('Rédigez ici le contenu explicatif de cette section.'),
+                ->setHelp('Rédigez ici le contenu textuel de cette section.'),
 
-            BooleanField::new('texteGras', '💪 Texte & Titres en Gras (Lisibilité Épaissie & Renforcée)')
+            ChoiceField::new('texteCouleur', '🎨 Couleur du texte & description des colonnes')
                 ->setColumns(12)
-                ->setHelp('<b>Coché = Écriture en gras renforcée pour une visibilité maximale</b>. Décoché = Écriture élégante standard.')
+                ->setCssClass('builder-field-texteCouleur')
+                ->setChoices([
+                    '📜 Ivoire Délicat (#D8D0BE - Recommandé)'     => 'ivory',
+                    '🔱 Or Bruni / Ambré (#9C804F)'                => 'gold-hover',
+                    '✨ Or Antique (#B89A63 - Doré Métamorphysis)' => 'gold',
+                    '🌿 Vert Sauge (#727763 - Vert Doux)'          => 'sage',
+                    '🫒 Vert Olive (#4A4F41 - Vert Profond)'       => 'olive',
+                    '🍷 Pourpre Sombre (#2A1A1E - Bordeaux)'       => 'plum',
+                    '⬛ Noir Charbon (#0A0A09)'                    => 'black',
+                ])
+                ->setRequired(false)
+                ->setEmptyData('ivory')
+                ->setHelp('Choisissez la teinte de vos paragraphes ou des textes de vos colonnes.'),
+
+            BooleanField::new('texteGras', '💪 Renforcer l\'écriture en Gras')
+                ->setColumns(12)
+                ->setCssClass('builder-field-texteGras')
+                ->setHelp('<b>Coché = Écriture plus grasse pour une lisibilité maximale</b>. Décoché = Écriture élégante fine.')
                 ->hideOnIndex(),
 
             // ======================================================
-            // 2.B BOUTON D'ACTION & LIEN DE REDIRECTION (CTA)
+            // 3. BOUTON D'ACTION & REDIRECTION (CTA)
             // ======================================================
-            FormField::addFieldset('🔘 Bouton d\'Action & Lien de Redirection (CTA)')->setIcon('fas fa-link'),
+            FormField::addFieldset('🔘 Bouton d\'Action & Redirection (Optionnel)')
+                ->setIcon('fas fa-link')
+                ->setCssClass('builder-fieldset-cta'),
 
-            TextField::new('boutonTexte', 'Texte du bouton (ex: Réserver un soin, En savoir plus)')
+            TextField::new('boutonTexte', 'Texte sur le bouton (ex: Réserver un soin, En savoir plus)')
                 ->setColumns(12)
                 ->setHelp('Laissez vide si vous ne souhaitez pas afficher de bouton.')
                 ->setRequired(false),
 
             TextField::new('boutonLien', 'Adresse du lien de redirection (URL ou Page)')
                 ->setColumns(12)
-                ->setHelp('Ex: <code>/reserver/1</code>, <code>/a-propos</code>, ou une adresse complète <code>https://...</code>.')
+                ->setHelp('Ex: <code>/reserver/1</code>, <code>/a-propos</code>, ou <code>https://...</code>.')
                 ->setRequired(false),
 
-            ChoiceField::new('boutonStyle', 'Style & Couleurs du Bouton')
+            ChoiceField::new('boutonStyle', 'Style visuel du Bouton')
                 ->setColumns(12)
                 ->setChoices([
-                    '🔱 Doré Premium (Fond: Or #B89A63 | Texte: Noir #0A0A09 | Survol: Or Foncé #9C804F)' => 'gold',
-                    '🔲 Contour Épuré (Fond: Transparent | Bordure: Or #B89A63 | Survol: Plein Or #B89A63)' => 'outline',
-                    '🌿 Vert Sauge (Fond: Sauge #727763 | Texte: Ivoire #D8D0BE | Survol: Olive #4A4F41)' => 'sage',
-                    '🍷 Pourpre Sombre (Fond: Pourpre #2A1A1E | Texte: Or #B89A63 | Survol: Plein Or #B89A63)' => 'plum',
+                    '🔱 Doré Premium (Fond: Or | Texte: Noir | Survol: Or Foncé)' => 'gold',
+                    '🔲 Contour Épuré (Fond: Transparent | Bordure: Or | Survol: Plein Or)' => 'outline',
+                    '🌿 Vert Sauge (Fond: Sauge | Texte: Ivoire | Survol: Olive)' => 'sage',
+                    '🍷 Pourpre Sombre (Fond: Pourpre | Texte: Or | Survol: Plein Or)' => 'plum',
                 ])
-                ->setHelp('💡 Définit la palette du bouton : couleur de fond, couleur du texte et l\'effet visuel au survol (Hover).')
+                ->setHelp('Définit les couleurs du bouton.')
                 ->setRequired(false)->setEmptyData('gold')->hideOnIndex(),
 
             ChoiceField::new('boutonCible', 'Ouverture du lien')
                 ->setColumns(12)
                 ->setChoices([
-                    'Dans le même onglet (_self)' => '_self',
-                    'Dans un nouvel onglet (_blank)' => '_blank',
+                    'Dans le même onglet' => '_self',
+                    'Dans un nouvel onglet' => '_blank',
                 ])
                 ->setRequired(false)->setEmptyData('_self')->hideOnIndex(),
 
             // ======================================================
-            // 3. IMAGE & ILLUSTRATION (SUPERPOSITION & ROGNAGE)
+            // 4. PHOTO & RÉGLAGES VISUELS (VULGARISÉS)
             // ======================================================
-            FormField::addFieldset('🖼️ Image Principale, Rognage & Superposition')->setIcon('fas fa-image'),
+            FormField::addFieldset('🖼️ Photo Principale & Réglages Visuels')
+                ->setIcon('fas fa-image')
+                ->setCssClass('builder-fieldset-image'),
             
-            Field::new('imageFile', 'Télécharger l\'illustration')
+            Field::new('imageFile', 'Téléverser votre photo depuis votre ordinateur')
                 ->setColumns(12)
                 ->setFormType(VichImageType::class)->setRequired(false)->hideOnIndex()
-                ->setHelp('💡 <b>Format recommandé :</b> Photo paysage ou portrait (1200x800 px max), format JPG ou WebP, poids idéal < 1 Mo.'),
+                ->setHelp('💡 <b>Format conseillé :</b> JPG ou WebP, taille max 1200x800 px, poids < 1 Mo.'),
 
-            TextField::new('imageLien', '🔗 Lien de redirection au clic sur l\'image (URL ou Page)')
+            TextField::new('media', '📁 OU Nom d\'une image existante (ex: fauteuils.jpg, soin.webp)')
                 ->setColumns(12)
-                ->setHelp('Optionnel : Renseignez une adresse (ex: <code>/reserver/1</code>, <code>/a-propos</code> ou <code>https://...</code>) pour rendre cette photo cliquable.')
+                ->setHelp('💡 Si votre image est déjà sur le site (ex: <code>fauteuils.jpg</code>), vous pouvez simplement taper son nom ici sans devoir la re-téléverser.')
                 ->setRequired(false),
 
-            BooleanField::new('imageCadre', '🖼️ Afficher le cadre d\'ornement doré autour de la photo')
+            TextField::new('imageLien', '🔗 Rendre la photo cliquable (Adresse URL optionnelle)')
                 ->setColumns(12)
-                ->setHelp('<b>Coché = Afficher le cadre d\'ornement doré</b>. <b>Décoché = Masquer le cadre (Photo seule épurée)</b>.')
-                ->hideOnIndex(),
-                
-            IntegerField::new('imagePosX', 'Décalage Horizontal Image (%)')
-                ->setColumns(12)
-                ->setHelp('💡 <code>0</code> = centré. Positif (ex: <code>10</code>) décale à droite, négatif (ex: <code>-10</code>) à gauche.')->hideOnIndex(),
-                
-            IntegerField::new('imagePosY', 'Décalage Vertical Image (px)')
-                ->setColumns(12)
-                ->setHelp('💡 <code>0</code> = aligné. Positif (ex: <code>50</code>) vers le bas, négatif (ex: <code>-50</code>) vers le haut.')->hideOnIndex(),
+                ->setHelp('Ex: <code>/a-propos</code> ou <code>https://...</code>.')
+                ->setRequired(false),
 
-            ChoiceField::new('imageSuperposition', 'Superposition Image & Texte')
+            ChoiceField::new('imageCadreCouleur', '🖼️ Couleur du cadre décoratif autour de la photo')
                 ->setColumns(12)
                 ->setChoices([
-                    'Standard (A côté)'                      => 'standard',
-                    '🖼️ Image PAR-DESSUS le Texte'           => 'image_sur_texte',
-                    '📝 Texte PAR-DESSUS l\'Image'           => 'texte_sur_image',
+                    '🍷 Pourpre Sombre (#2A1A1E - Recommandé)'   => 'plum',
+                    '🔱 Or Bruni / Ambré (#9C804F)'                => 'gold-hover',
+                    '✨ Or Antique (#B89A63 - Doré Métamorphysis)' => 'gold',
+                    '🌿 Vert Sauge (#727763 - Vert Doux)'          => 'sage',
+                    '🫒 Vert Olive (#4A4F41 - Vert Profond)'       => 'olive',
+                    '📜 Ivoire Délicat (#D8D0BE - Blanc Cassé)'    => 'ivory',
+                    '⬛ Noir Charbon (#0A0A09)'                    => 'black',
+                    '🚫 Aucun cadre'                               => 'none',
+                ])
+                ->setHelp('Choisissez la couleur du cadre autour de votre photo.')
+                ->setRequired(false)->setEmptyData('plum')->hideOnIndex(),
+
+            IntegerField::new('imageCadreHaut', '⬆️ Bord Haut')
+                ->setColumns('col-12 col-md-6')
+                ->hideOnIndex(),
+
+            IntegerField::new('imageCadreBas', '⬇️ Bord Bas')
+                ->setColumns('col-12 col-md-6')
+                ->hideOnIndex(),
+
+            IntegerField::new('imageCadreGauche', '⬅️ Bord Gauche')
+                ->setColumns('col-12 col-md-6')
+                ->hideOnIndex(),
+
+            IntegerField::new('imageCadreDroite', '➡️ Bord Droite')
+                ->setColumns('col-12 col-md-6')
+                ->setHelp('💡 Ex: 40 pour créer une bande latérale colorée')
+                ->hideOnIndex(),
+                
+            IntegerField::new('imagePosX', '↔️ Déplacer la photo vers la gauche ou la droite (%)')
+                ->setColumns(12)
+                ->setHelp('💡 <code>0</code> = centré. Nombre positif (ex: <code>10</code>) = vers la droite, négatif (ex: <code>-10</code>) = vers la gauche.')->hideOnIndex(),
+                
+            IntegerField::new('imagePosY', '↕️ Faire monter ou descendre la photo (px)')
+                ->setColumns(12)
+                ->setHelp('💡 <code>0</code> = aligné. Positif (ex: <code>40</code>) = descend, négatif (ex: <code>-40</code>) = monte pour chevaucher.')->hideOnIndex(),
+
+            ChoiceField::new('imageSuperposition', '🔀 Effet de superposition (Image & Texte)')
+                ->setColumns(12)
+                ->setChoices([
+                    'Standard (Côte à côte sans superposition)' => 'standard',
+                    '🖼️ Photo PAR-DESSUS le Texte'              => 'image_sur_texte',
+                    '📝 Texte PAR-DESSUS la Photo'              => 'texte_sur_image',
                 ])->setRequired(false)->setEmptyData('standard')->hideOnIndex(),
 
-            IntegerField::new('imageZIndex', 'Priorité d\'affichage Z-Index (Empilement)')
+            IntegerField::new('cropHaut', '✂️ Recadrer le Haut de la photo (%)')
                 ->setColumns(12)
-                ->setHelp('1 = arrière-plan, 2 ou 5 = passe au-dessus des autres éléments.')->hideOnIndex(),
+                ->setHelp('Pourcentage à supprimer en haut (ex: <code>10</code> pour 10%).')->hideOnIndex(),
 
-            IntegerField::new('cropHaut', '✂️ Rogner le Haut (%)')
+            IntegerField::new('cropBas', '✂️ Recadrer le Bas de la photo (%)')
                 ->setColumns(12)
-                ->setHelp('Pourcentage à supprimer en haut de l\'image (ex: <code>10</code> pour 10%).')->hideOnIndex(),
+                ->setHelp('Pourcentage à supprimer en bas.')->hideOnIndex(),
 
-            IntegerField::new('cropBas', '✂️ Rogner le Bas (%)')
+            IntegerField::new('cropGauche', '✂️ Recadrer la Gauche de la photo (%)')
                 ->setColumns(12)
-                ->setHelp('Pourcentage à supprimer en bas de l\'image (ex: <code>10</code> pour 10%).')->hideOnIndex(),
+                ->setHelp('Pourcentage à supprimer à gauche.')->hideOnIndex(),
 
-            IntegerField::new('cropGauche', '✂️ Rogner la Gauche (%)')
+            IntegerField::new('cropDroite', '✂️ Recadrer la Droite de la photo (%)')
                 ->setColumns(12)
-                ->setHelp('Pourcentage à supprimer à gauche (ex: <code>15</code> pour 15%).')->hideOnIndex(),
+                ->setHelp('Pourcentage à supprimer à droite.')->hideOnIndex(),
 
-            IntegerField::new('cropDroite', '✂️ Rogner la Droite (%)')
-                ->setColumns(12)
-                ->setHelp('Pourcentage à supprimer à droite (ex: <code>15</code> pour 15%).')->hideOnIndex(),
-
-            IntegerField::new('largeurMedia', 'Largeur sur-mesure (px)')
+            IntegerField::new('largeurMedia', '📐 Largeur Maximale sur-mesure (px - optionnel)')
                 ->setColumns(12)
                 ->setHelp('Laissez vide pour la taille automatique par défaut.')->setRequired(false)->hideOnIndex(),
 
-            IntegerField::new('hauteurMedia', 'Hauteur sur-mesure (px)')
+            IntegerField::new('hauteurMedia', '📐 Hauteur Maximale sur-mesure (px - optionnel)')
                 ->setColumns(12)
                 ->setHelp('Laissez vide pour le ratio automatique.')->setRequired(false)->hideOnIndex(),
 
             // ======================================================
-            // 4. BOÎTE DE CITATION SUPERPOSÉE
+            // 5. ENCART CITATION SUPERPOSÉE
             // ======================================================
-            FormField::addFieldset('✨ Encart "Citation" ou Phrase d\'Accroche Superposée')->setIcon('fas fa-quote-right'),
+            FormField::addFieldset('✨ Encart Citation Superposée sur la Photo (Optionnel)')
+                ->setIcon('fas fa-quote-right')
+                ->setCssClass('builder-fieldset-citation'),
 
-            TextareaField::new('citation', 'Texte de la citation')
+            TextareaField::new('citation', '💬 Texte de la Citation / Phrase d\'Accroche')
                 ->setColumns(12)
-                ->setHelp('Phrase d\'impact mise en valeur dans un encart élégant.')->setRequired(false),
+                ->setHelp('Remplissez ce champ si vous souhaitez afficher un encart élégant par-dessus votre photo.')->setRequired(false),
 
-            IntegerField::new('citationHauteurMax', 'Hauteur Max de la citation (px)')
+            IntegerField::new('citationHauteurMax', '📜 Hauteur Max de l\'encart avant défilement (px - optionnel)')
                 ->setColumns(12)
                 ->setHelp('Ex: <code>300</code> pour faire défiler un long texte, ou laissez vide.')->hideOnIndex(),
 
-            IntegerField::new('citationLargeur', 'Largeur de la boîte (%)')
+            IntegerField::new('citationLargeur', 'Largeur de l\'encart (%)')
                 ->setColumns(12)
                 ->setHelp('Ex: <code>90</code>% (recommandé pour une belle lisibilité).')->hideOnIndex(),
 
-            IntegerField::new('citationPosX', 'Citation - Décalage horizontal (%)')
+            IntegerField::new('citationPosX', '↔️ Décalage Horizontal de l\'encart (%)')
                 ->setColumns(12)
-                ->setHelp('Ex: <code>-10</code> (déborde joliment à gauche de la photo), <code>5</code> (décalé à droite).')->hideOnIndex(),
+                ->setHelp('Ex: <code>-10</code> (déborde joliment à gauche de la photo).')->hideOnIndex(),
                 
-            IntegerField::new('citationPosY', 'Citation - Chevauchement vertical (px)')
+            IntegerField::new('citationPosY', '↕️ Chevauchement Vertical sur la Photo (px)')
                 ->setColumns(12)
-                ->setHelp('💡 <b>Le secret du design :</b> Mettez <code>-150</code> pour faire monter la citation sur la photo, ou <code>0</code> pour un alignement standard.')->hideOnIndex(),
+                ->setHelp('💡 Mettez <code>-150</code> pour faire monter la citation sur la photo, ou <code>0</code> pour aligner en bas.')->hideOnIndex(),
 
-            ChoiceField::new('citationCouleurFond', 'Couleur de Fond de la Citation')
+            ChoiceField::new('citationCouleurFond', 'Couleur de Fond de l\'encart')
                 ->setColumns(12)
                 ->setChoices([
-                    '🍷 Pourpre Sombre (#2A1A1E - Pourpre officiel)'     => 'meta-plum', 
-                    '🌿 Vert Sauge / Olive (#727763 - Fond vert sauge)'  => 'meta-olive',
-                    '⬛ Noir Profond (#0A0A09 - Fond sombre)'            => 'meta-black', 
-                    '🌿 Vert Sauge (#727763 - Teinte sauge)'              => 'meta-sage', 
-                    '🔱 Or Antique (#B89A63 - Fond doré)'                => 'meta-gold', 
-                    '📜 Ivoire Délicat (#D8D0BE - Encart clair)'          => 'meta-ivory',
+                    '🍷 Pourpre Sombre (#2A1A1E)'       => 'meta-plum', 
+                    '🌿 Vert Sauge / Olive (#727763)'    => 'meta-olive',
+                    '⬛ Noir Profond (#0A0A09)'          => 'meta-black', 
+                    '🔱 Or Antique (#B89A63)'            => 'meta-gold', 
+                    '📜 Ivoire Délicat (#D8D0BE)'        => 'meta-ivory',
                 ])->hideOnIndex(),
 
-            ChoiceField::new('citationCouleurTexte', 'Couleur du Texte de la Citation')
+            ChoiceField::new('citationCouleurTexte', 'Couleur du Texte de l\'encart')
                 ->setColumns(12)
                 ->setChoices([
-                    '📜 Ivoire Délicat (#D8D0BE - Texte clair recommandé)' => 'meta-ivory',
-                    '🔱 Or Antique (#B89A63 - Écriture dorée)'            => 'meta-gold',
-                    '⬛ Noir Profond (#0A0A09 - Texte sombre)'             => 'meta-black', 
-                    '🍷 Pourpre Sombre (#2A1A1E - Écriture pourpre)'       => 'meta-plum', 
-                    '🌿 Vert Sauge / Olive (#727763 - Écriture sauge)'     => 'meta-olive',
-                    '🌿 Vert Sauge (#727763 - Écriture sauge)'             => 'meta-sage',
+                    '📜 Ivoire Délicat (#D8D0BE - Recommandé)' => 'meta-ivory',
+                    '🔱 Or Antique (#B89A63 - Écriture dorée)'  => 'meta-gold',
+                    '⬛ Noir Profond (#0A0A09)'                  => 'meta-black', 
+                    '🍷 Pourpre Sombre (#2A1A1E)'                => 'meta-plum', 
+                    '🌿 Vert Sauge (#727763)'                    => 'meta-sage',
                 ])->hideOnIndex(),
 
             // ======================================================
-            // 5. MODULES SPÉCIAUX (COLONNES CÔTE À CÔTE & CARROUSEL)
+            // 6. COLONNES CÔTE À CÔTE (POUR GRILLE MULTI-COLONNES)
             // ======================================================
-            FormField::addFieldset('📊 Colonnes Côte à Côte & Carrousel de Soins')->setIcon('fas fa-columns'),
+            FormField::addFieldset('📊 Colonnes Côte à Côte (Multi-Colonnes)')
+                ->setIcon('fas fa-columns')
+                ->setCssClass('builder-fieldset-colonnes'),
 
-            CollectionField::new('etapes', '📊 Colonnes Côte à Côte (Pour Grille de Colonnes ou Cheminement)')
+            CollectionField::new('etapes', '📊 Liste des Colonnes')
                 ->setColumns(12)
-                ->setHelp('💡 <b>Pour ajouter vos colonnes (ex: Colonne 1 & Colonne 2) :</b> Cliquez sur "Ajouter un nouvel élément" ci-dessous pour créer chaque colonne de votre tableau comparatif.')
+                ->setHelp('💡 <b>Pour ajouter une colonne :</b> Cliquez sur "Ajouter un nouvel élément" ci-dessous (Icône, Titre, Texte).')
                 ->useEntryCrudForm(EtapeCrudController::class)->hideOnIndex(),
 
-            AssociationField::new('prestations', 'Prestations à afficher dans le Carrousel')
+            // ======================================================
+            // 7. CARROUSEL DES PRESTATIONS
+            // ======================================================
+            FormField::addFieldset('🎠 Carrousel des Prestations')
+                ->setIcon('fas fa-gem')
+                ->setCssClass('builder-fieldset-prestations'),
+
+            AssociationField::new('prestations', 'Prestations à inclure dans le Carrousel')
                 ->setColumns(12)
-                ->setHelp('Sélectionnez les prestations à mettre en valeur si vous avez choisi la disposition "Carrousel des Prestations".')
+                ->setHelp('Sélectionnez les prestations à afficher.')
                 ->setFormTypeOptions(['by_reference' => false])->hideOnIndex(),
         ];
     }

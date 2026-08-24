@@ -319,13 +319,15 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
    Fonds Dynamiques des Sections (Admin)
    ========================================= */
 .bg-plum-premium {
-    background-color: transparent; 
+    background-color: var(--meta-plum) !important;
+    border: none !important;
+    margin: 0 !important;
 }
 
 .bg-olive-premium {
     background: var(--grad-subtle) !important;
-    border-top: 1px solid rgba(184, 154, 99, 0.15);
-    border-bottom: 1px solid rgba(184, 154, 99, 0.15);
+    border: none !important;
+    margin: 0 !important;
 }
 
 /* Scrollbar premium "Caméléon" pour les citations */
@@ -474,12 +476,13 @@ h1, h2, h3, h4, h5, h6, .brand-logo, .typo-titre {
    AJUSTEMENTS DU CARROUSEL DE PRESTATIONS (Kaki & Pourpre #2A1A1E)
    ========================================= */
 .prestation-track .card {
-    background: var(--grad-subtle) !important; 
-    border: 1px solid rgba(184, 154, 99, 0.25) !important;
-    border-radius: var(--radius-card) !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: transparent !important; 
+    background-image: none !important;
+    border: 1px solid rgba(184, 154, 99, 0.3) !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 /* Fixation hauteur image pour garder un ratio plus horizontal/carré */

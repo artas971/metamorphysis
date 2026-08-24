@@ -79,4 +79,9 @@ class Etape
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return !empty($this->titre) ? '🏛️ Colonne : ' . $this->titre : '🏛️ Nouvelle Colonne';
+    }
 }
