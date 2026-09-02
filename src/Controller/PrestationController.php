@@ -29,17 +29,26 @@ class PrestationController extends AbstractController
         ]);
     }
 
-    // 2. La route pour afficher UNE SEULE prestation en détail
-    // On utilise {id} car c'est ce qui existe dans ton entité
-    #[Route('/prestation/{id}', name: 'app_prestation_show')]
-        public function show(Prestation $prestation): Response
-        {
-            // Symfony est intelligent : grâce à l'ID dans l'URL, 
-            // il va chercher automatiquement la bonne prestation en base de données !
-            
-            return $this->render('prestation/show.html.twig', [
-                'prestation' => $prestation,
-            ]);
+    // 2. La route pour afficher UNE SEULE prestation en détail (supporte le slug ou l'ID)
+    #[Route('/prestation/{slug}', name: 'app_prestation_show')]
+    public function show(string $slug, PrestationRepository $prestationRepository): Response
+    {
+        $prestation = is_numeric($slug) 
+            ? $prestationRepository->find((int) $slug) 
+            : $prestationRepository->findOneBy(['slug' => $slug]);
+
+        if (!$prestation) {
+            throw $this->createNotFoundException('Prestation introuvable.');
         }
+
+        // Si l'utilisateur accède via un ID numérique et qu'un slug existe, redirection canonique 301
+        if (is_numeric($slug) && $prestation->getSlug()) {
+            return $this->redirectToRoute('app_prestation_show', ['slug' => $prestation->getSlug()], Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        return $this->render('prestation/show.html.twig', [
+            'prestation' => $prestation,
+        ]);
+    }
     
 }

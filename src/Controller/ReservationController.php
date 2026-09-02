@@ -25,10 +25,26 @@ class ReservationController extends AbstractController
 {
 
 
-    #[Route('/reserver/{id}', name: 'app_reservation_new')]
+    #[Route('/reserver/{slug}', name: 'app_reservation_new')]
     #[IsGranted('ROLE_USER')]
-    public function reserver(Prestation $prestation, Request $request, CacheInterface $cache): Response
+    public function reserver(string $slug, \App\Repository\PrestationRepository $prestationRepository, Request $request, CacheInterface $cache): Response
     {
+        $prestation = is_numeric($slug) 
+            ? $prestationRepository->find((int) $slug) 
+            : $prestationRepository->findOneBy(['slug' => $slug]);
+
+        if (!$prestation) {
+            throw $this->createNotFoundException('Prestation introuvable.');
+        }
+
+        // Si l'accès s'est fait par ID numérique et qu'un slug existe, redirection canonique 301
+        if (is_numeric($slug) && $prestation->getSlug()) {
+            return $this->redirectToRoute('app_reservation_new', [
+                'slug' => $prestation->getSlug(),
+                'personnes' => $request->query->get('personnes')
+            ], Response::HTTP_MOVED_PERMANENTLY);
+        }
+
         /** @var User|null $user */
         $user = $this->getUser();
 
@@ -60,7 +76,7 @@ class ReservationController extends AbstractController
                 $delaiMin6h = (new \DateTime())->modify('+6 hours');
                 if ($dateRendezVous < $delaiMin6h) {
                     $this->addFlash('danger', 'Les rendez-vous doivent être réservés au moins 6 heures à l\'avance.');
-                    return $this->redirectToRoute('app_reservation_new', ['id' => $prestation->getId(), 'personnes' => $nombrePersonnes]);
+                    return $this->redirectToRoute('app_reservation_new', ['slug' => $prestation->getSlug() ?? $prestation->getId(), 'personnes' => $nombrePersonnes]);
                 }
             }
 

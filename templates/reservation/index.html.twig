@@ -47,9 +47,21 @@
                         <p class="fs-3 fw-bold mb-1" style="color: #FFFFF0; opacity: 0.95;">
                             {{ montant|default(prestation.prix) }} €
                         </p>
-                        {% if nombrePersonnes is defined and (nombrePersonnes > 1 or prestation.minPersonnes > 1) %}
-                            <div class="mt-1">
-                                <span class="badge bg-dark text-gold px-3 py-1" style="border: 1px solid var(--meta-gold); font-size: 0.8rem; letter-spacing: 0.5px;">
+                        {% if prestation.hasTarificationVariable %}
+                            <div class="mt-2">
+                                <a href="{{ path('app_prestation_show', {'slug': prestation.slug|default(prestation.id)}) }}" 
+                                   class="badge text-decoration-none transition-hover d-inline-flex align-items-center gap-2 py-2 px-3"
+                                   style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); font-size: 0.82rem; letter-spacing: 0.8px; border-radius: 0;"
+                                   title="Cliquez pour changer de formule ou de nombre de participants">
+                                    <i class="bi bi-people-fill" style="color: var(--meta-gold);"></i>
+                                    <span style="color: var(--meta-ivory);">{{ prestation.getLibelleFormule(nombrePersonnes|default(prestation.minPersonnes)) }}</span>
+                                    <i class="bi bi-arrow-repeat ms-1" style="color: var(--meta-gold);"></i>
+                                    <span class="small" style="color: var(--meta-gold); font-size: 0.72rem; text-decoration: underline;">changer</span>
+                                </a>
+                            </div>
+                        {% elseif nombrePersonnes is defined and (nombrePersonnes > 1 or prestation.minPersonnes > 1) %}
+                            <div class="mt-2">
+                                <span class="badge px-3 py-2" style="background-color: rgba(10, 10, 9, 0.7); color: var(--meta-gold); border: 1px solid rgba(184, 154, 99, 0.4); font-size: 0.8rem; letter-spacing: 0.5px;">
                                     <i class="bi bi-people-fill me-1"></i>{{ prestation.getLibelleFormule(nombrePersonnes|default(1)) }}
                                 </span>
                             </div>

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PrestationRepository::class)]
@@ -21,6 +22,10 @@ class Prestation
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
+
+    // Slug lisible pour les URLs (ex: /prestation/couple-et-relations)
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
@@ -127,6 +132,24 @@ class Prestation
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+        if (empty($this->slug)) {
+            $this->slug = (new AsciiSlugger())->slug($nom)->lower()->toString();
+        }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        if (empty($this->slug) && !empty($this->nom)) {
+            return (new AsciiSlugger())->slug($this->nom)->lower()->toString();
+        }
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

@@ -146,7 +146,7 @@
                             </div>
                         {% else %}
                             <div class="mt-4 pt-3" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
-                                <a id="btn-reserver-prestation" href="{{ path('app_reservation_new', {'id': prestation.id, 'personnes': prestation.minPersonnes}) }}" 
+                                <a id="btn-reserver-prestation" href="{{ path('app_reservation_new', {'slug': prestation.slug|default(prestation.id), 'personnes': prestation.minPersonnes}) }}" 
                                    class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
                                    style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
                                     <span style="color: var(--meta-ivory);">Réserver cette séance</span>
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formulaCards = document.querySelectorAll('.formula-card');
     const btnPricePreview = document.getElementById('btn-price-preview');
     const btnReserver = document.getElementById('btn-reserver-prestation');
-    const baseReservationUrl = "{{ path('app_reservation_new', {'id': prestation.id}) }}";
+    const baseReservationUrl = "{{ path('app_reservation_new', {'slug': prestation.slug|default(prestation.id)}) }}";
 
     formulaCards.forEach(card => {
         card.addEventListener('click', function() {

@@ -174,5 +174,9 @@ class PrestationCrudController extends AbstractCrudController
             $val3 = $tarifs['3'];
             $prestation->setPrixGroupe((float) (is_array($val3) ? ($val3['prix'] ?? 0) : $val3));
         }
+
+        if (!empty($prestation->getNom())) {
+            $prestation->setSlug((new \Symfony\Component\String\Slugger\AsciiSlugger())->slug($prestation->getNom())->lower()->toString());
+        }
     }
 }

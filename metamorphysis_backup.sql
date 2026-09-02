@@ -211,6 +211,7 @@ CREATE TABLE `prestation` (
   `prix_couple` double DEFAULT NULL,
   `prix_groupe` double DEFAULT NULL,
   `tarifs_par_personne` json DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -221,7 +222,7 @@ CREATE TABLE `prestation` (
 
 LOCK TABLES `prestation` WRITE;
 /*!40000 ALTER TABLE `prestation` DISABLE KEYS */;
-INSERT INTO `prestation` VALUES (10,'Séance Individuelle (Analyse Transactionnelle)','Exploration en profondeur d\'une problématique ciblée, mise en lumière des états du moi et déconstruction des scénarios répétitifs.',70,60,NULL,NULL,0,'bi-person',NULL,1,NULL,NULL,1,'70 €',1,1,NULL,NULL,NULL),(9,'Consultation Initiale','Un premier diagnostic complet pour cibler vos besoins, explorer vos attentes et définir ensemble une stratégie d\'évolution et d\'accompagnement sur-mesure.',50,45,NULL,NULL,0,'bi-person',NULL,2,NULL,NULL,1,'45 MIN . 50 €',1,1,NULL,NULL,'{\"1\": {\"prix\": 50, \"titre\": \"1 personne\", \"sousTitre\": \"Individuel\"}}'),(11,'COUPLE ET RELATIONS','Comprendre les dynamiques relationnelles',80,60,NULL,NULL,0,'bi-diagram-3','SÉANCE',3,'Comprendre les dynamiques relationnelles et sortir des schémas répétitifs.',NULL,1,'80 À 120 € / SÉANCE',2,3,80,120,'{\"2\": {\"prix\": 80, \"titre\": \"2 personnes\", \"sousTitre\": \"Couple\"}, \"3\": {\"prix\": 120, \"titre\": \"3 personnes et +\", \"sousTitre\": \"Autre\"}}'),(12,'Famille','Retrouver un dialogue plus serein',80,60,NULL,NULL,0,'bi-house-heart',NULL,4,'Retrouver un dialogue plus serein et comprendre les mécanismes qui influencent les relations familiales.',NULL,1,'80 À 120 € / SÉANCE',2,3,80,120,'{\"2\": {\"prix\": 80, \"titre\": \"2 personnes\", \"sousTitre\": \"familles\"}, \"3\": {\"prix\": 120, \"titre\": \"3 personnes\", \"sousTitre\": \"familles\"}}'),(13,'THÉRAPIE DE GROUPE','Explorer, partager et avancer ensemble',130,180,NULL,NULL,0,'bi-diagram-3',NULL,5,'Explorer, partager et avancer ensemble dans un cadre sécurisant',NULL,3,'À partir de 30€',5,4,NULL,NULL,'[]');
+INSERT INTO `prestation` VALUES (10,'Séance Individuelle (Analyse Transactionnelle)','Exploration en profondeur d\'une problématique ciblée, mise en lumière des états du moi et déconstruction des scénarios répétitifs.',70,60,NULL,NULL,0,'bi-person',NULL,1,NULL,NULL,1,'70 €',1,1,NULL,NULL,NULL,'seance-individuelle-analyse-transactionnelle'),(9,'Consultation Initiale','Un premier diagnostic complet pour cibler vos besoins, explorer vos attentes et définir ensemble une stratégie d\'évolution et d\'accompagnement sur-mesure.',50,45,NULL,NULL,0,'bi-person',NULL,2,NULL,NULL,1,'45 MIN . 50 €',1,1,NULL,NULL,'{\"1\": {\"prix\": 50, \"titre\": \"1 personne\", \"sousTitre\": \"Individuel\"}}','consultation-initiale'),(11,'COUPLE ET RELATIONS','Comprendre les dynamiques relationnelles',80,60,NULL,NULL,0,'bi-diagram-3','SÉANCE',3,'Comprendre les dynamiques relationnelles et sortir des schémas répétitifs.',NULL,1,'80 À 120 € / SÉANCE',2,3,80,120,'{\"2\": {\"prix\": 80, \"titre\": \"2 personnes\", \"sousTitre\": \"Couple\"}, \"3\": {\"prix\": 120, \"titre\": \"3 personnes et +\", \"sousTitre\": \"Autre\"}}','couple-et-relations'),(12,'Famille','Retrouver un dialogue plus serein',80,60,NULL,NULL,0,'bi-house-heart',NULL,4,'Retrouver un dialogue plus serein et comprendre les mécanismes qui influencent les relations familiales.',NULL,1,'80 À 120 € / SÉANCE',2,3,80,120,'{\"2\": {\"prix\": 80, \"titre\": \"2 personnes\", \"sousTitre\": \"familles\"}, \"3\": {\"prix\": 120, \"titre\": \"3 personnes\", \"sousTitre\": \"familles\"}}','famille'),(13,'THÉRAPIE DE GROUPE','Explorer, partager et avancer ensemble',130,180,NULL,NULL,0,'bi-diagram-3',NULL,5,'Explorer, partager et avancer ensemble dans un cadre sécurisant',NULL,3,'À partir de 30€',5,4,NULL,NULL,'[]','therapie-de-groupe');
 /*!40000 ALTER TABLE `prestation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +304,7 @@ CREATE TABLE `seance` (
   PRIMARY KEY (`id`),
   KEY `IDX_DF7DFD0E9E45C554` (`prestation_id`),
   KEY `IDX_DF7DFD0EA76ED395` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,6 +313,7 @@ CREATE TABLE `seance` (
 
 LOCK TABLES `seance` WRITE;
 /*!40000 ALTER TABLE `seance` DISABLE KEYS */;
+INSERT INTO `seance` VALUES (53,1,60,'2026-09-03 09:00:00','En attente de validation',10,8,'https://metamorphysis.daily.co/MKhilMJLjEqDfWlDN8Tr','2026-09-02 13:25:40',1,70);
 /*!40000 ALTER TABLE `seance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -443,7 +445,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (6,'artas971@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$yj744CfO5wQQpb/Da50jae7QnKIDF/tubxntcpVJfno6TGTn21ur.','Admin','Metamorphysis',NULL),(7,'metamorphysisconsulting@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC','Louisa','Chouihi','0600000000'),(8,'artas971@hotmail.fr','[]','$2y$13$644eBmummfQ3RI/920iW0.InQ82yw2r5x67WC4LJgRcXcG8Ymqgwa','floyd','george','jF2os3XAUukSA3zh6VSA91BtSDBZaVBwSHMvdnphWURjNHMrb2c9PQ==');
+INSERT INTO `user` VALUES (6,'artas971@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$yj744CfO5wQQpb/Da50jae7QnKIDF/tubxntcpVJfno6TGTn21ur.','Admin','Metamorphysis',NULL),(7,'metamorphysisconsulting@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC','Louisa','Chouihi','0600000000'),(8,'artas971@hotmail.fr','[]','$2y$13$644eBmummfQ3RI/920iW0.InQ82yw2r5x67WC4LJgRcXcG8Ymqgwa','floyd','george','0a6fisv8+yM/VMLfN7rcc2hmWGVJbTBzWnZEbWUzNjAzVzdvMWc9PQ==');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -456,4 +458,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-02 15:24:33
+-- Dump completed on 2026-09-02 15:28:55
