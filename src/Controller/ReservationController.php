@@ -42,7 +42,7 @@ class ReservationController extends AbstractController
             $nombrePersonnes = 1;
         }
 
-        $montant = $prestation->calculerPrix($nombrePersonnes);
+        $montant = $prestation->calculerPrixTotal($nombrePersonnes);
 
         $premiereSeance = new Seance();
         $premiereSeance->setPrestation($prestation);

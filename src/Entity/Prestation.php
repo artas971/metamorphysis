@@ -25,14 +25,21 @@ class Prestation
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    // Prix de base unitaire (par personne et par séance)
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $prixCouple = null;
+    // Texte commercial libre affiché sur les cartes et le site (ex: "À partir de 80 €", "Entre 80 € et 120 €", "Sur devis")
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prixAffiche = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $prixGroupe = null;
+    // Nombre de personnes minimum (ex: 1 pour individuel, 2 pour couple)
+    #[ORM\Column(options: ['default' => 1])]
+    private int $minPersonnes = 1;
+
+    // Nombre de personnes maximum (ex: 1, 2, 6, 10...)
+    #[ORM\Column(options: ['default' => 1])]
+    private int $maxPersonnes = 1;
 
     #[ORM\Column(nullable: true)]
     private ?int $duree = null;
@@ -77,7 +84,7 @@ class Prestation
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
-    private ?int $nombreSeances = null;
+    private ?int $nombreSeances = 1;
 
     /**
      * @var Collection<int, Seance>
@@ -89,6 +96,9 @@ class Prestation
     {
         $this->Entrée = new ArrayCollection();
         $this->seances = new ArrayCollection();
+        $this->minPersonnes = 1;
+        $this->maxPersonnes = 1;
+        $this->nombreSeances = 1;
     }
 
     public function getId(): ?int
@@ -132,59 +142,81 @@ class Prestation
         return $this;
     }
 
-    public function getPrixCouple(): ?float
+    public function getPrixAffiche(): ?string
     {
-        return $this->prixCouple;
+        return $this->prixAffiche;
     }
 
-    public function setPrixCouple(?float $prixCouple): static
+    public function setPrixAffiche(?string $prixAffiche): static
     {
-        $this->prixCouple = $prixCouple;
+        $this->prixAffiche = $prixAffiche;
 
         return $this;
     }
 
-    public function getPrixGroupe(): ?float
+    public function getMinPersonnes(): int
     {
-        return $this->prixGroupe;
+        return $this->minPersonnes ?? 1;
     }
 
-    public function setPrixGroupe(?float $prixGroupe): static
+    public function setMinPersonnes(?int $minPersonnes): static
     {
-        $this->prixGroupe = $prixGroupe;
+        $this->minPersonnes = $minPersonnes ?? 1;
 
         return $this;
+    }
+
+    public function getMaxPersonnes(): int
+    {
+        return $this->maxPersonnes ?? 1;
+    }
+
+    public function setMaxPersonnes(?int $maxPersonnes): static
+    {
+        $this->maxPersonnes = $maxPersonnes ?? 1;
+
+        return $this;
+    }
+
+    public function hasChoixPersonnes(): bool
+    {
+        return $this->getMaxPersonnes() > $this->getMinPersonnes();
     }
 
     public function hasTarificationVariable(): bool
     {
-        return $this->prixCouple !== null || $this->prixGroupe !== null;
+        return $this->hasChoixPersonnes();
     }
 
-    public function calculerPrix(?int $nombrePersonnes): float
+    /**
+     * Calcule le prix total exact : Nombre de personnes x Nombre de séances x Prix de base
+     */
+    public function calculerPrixTotal(?int $nombrePersonnes = null): float
     {
-        if ($nombrePersonnes === 2 && $this->prixCouple !== null) {
-            return (float) $this->prixCouple;
+        $personnes = $nombrePersonnes ?? $this->getMinPersonnes();
+        if ($personnes < $this->getMinPersonnes()) {
+            $personnes = $this->getMinPersonnes();
+        }
+        if ($personnes > $this->getMaxPersonnes() && $this->getMaxPersonnes() >= $this->getMinPersonnes()) {
+            $personnes = $this->getMaxPersonnes();
         }
 
-        if ($nombrePersonnes !== null && $nombrePersonnes >= 3 && $this->prixGroupe !== null) {
-            return (float) $this->prixGroupe;
-        }
+        $seances = $this->getNombreSeances() ?? 1;
+        $prixBase = (float) ($this->prix ?? 0.0);
 
-        return (float) ($this->prix ?? 0.0);
+        return round($personnes * $seances * $prixBase, 2);
     }
 
     public function getLibelleFormule(?int $nombrePersonnes): string
     {
-        if ($nombrePersonnes === 2) {
+        $personnes = $nombrePersonnes ?? $this->getMinPersonnes();
+        if ($personnes === 1) {
+            return '1 personne';
+        }
+        if ($personnes === 2) {
             return 'Formule Couple (2 personnes)';
         }
-
-        if ($nombrePersonnes !== null && $nombrePersonnes >= 3) {
-            return 'Formule Groupe (' . $nombrePersonnes . ' personnes)';
-        }
-
-        return 'Formule Individuelle (1 personne)';
+        return 'Formule Groupe (' . $personnes . ' personnes)';
     }
 
     public function getDuree(): ?int
@@ -329,7 +361,7 @@ class Prestation
 
     public function getNombreSeances(): ?int
     {
-        return $this->nombreSeances;
+        return $this->nombreSeances ?? 1;
     }
 
     public function setNombreSeances(int $nombreSeances): static

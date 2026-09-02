@@ -47,7 +47,7 @@
                         <p class="fs-3 fw-bold mb-1" style="color: #FFFFF0; opacity: 0.95;">
                             {{ montant|default(prestation.prix) }} €
                         </p>
-                        {% if prestation.hasTarificationVariable %}
+                        {% if nombrePersonnes is defined and (nombrePersonnes > 1 or prestation.minPersonnes > 1) %}
                             <div class="mt-1">
                                 <span class="badge bg-dark text-gold px-3 py-1" style="border: 1px solid var(--meta-gold); font-size: 0.8rem; letter-spacing: 0.5px;">
                                     <i class="bi bi-people-fill me-1"></i>{{ prestation.getLibelleFormule(nombrePersonnes|default(1)) }}

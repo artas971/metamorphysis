@@ -38,21 +38,30 @@
 
                     {# 2. COLONNE CONTENU #}
                     <div class="col-md-7 d-flex flex-column p-4 p-md-5">
-                        
-                        {# En-tête : Icône, Titre et Prix #}
+                                                {# En-tête : Icône, Titre et Prix #}
                         <div class="mb-4">
                             <i class="bi {{ prestation.icone|default('bi-star') }} text-gold fs-3 mb-2 d-block"></i>
                             <h1 class="text-gold typo-titre mb-3" style="font-size: 2.5rem; letter-spacing: 1px;">{{ prestation.nom }}</h1>
                             
-                            <div class="d-flex align-items-center gap-4 text-ivory">
+                            <div class="d-flex flex-wrap align-items-center gap-3 text-ivory">
                                 <span class="fs-4 fw-bold text-gold">
-                                    <span id="dynamic-price-display">{{ prestation.prix }} €</span>
-                                    {% if prestation.unitePrix %}<span class="fs-6 fw-light text-uppercase">/ {{ prestation.unitePrix }}</span>{% endif %}
+                                    {% if prestation.prixAffiche %}
+                                        {{ prestation.prixAffiche }}
+                                    {% else %}
+                                        {{ prestation.calculerPrixTotal(prestation.minPersonnes) }} € 
+                                        {% if prestation.unitePrix %}<span class="fs-6 fw-light text-uppercase">/ {{ prestation.unitePrix }}</span>{% endif %}
+                                    {% endif %}
                                 </span>
                                 
                                 {% if prestation.duree %}
-                                    <span class="text-sage border-start border-sage ps-4">
-                                        <i class="bi bi-clock me-2"></i>{{ prestation.duree }} minutes
+                                    <span class="text-sage border-start border-sage ps-3">
+                                        <i class="bi bi-clock me-1"></i>{{ prestation.duree }} minutes
+                                    </span>
+                                {% endif %}
+
+                                {% if prestation.nombreSeances > 1 %}
+                                    <span class="text-sage border-start border-sage ps-3">
+                                        <i class="bi bi-ticket-perforated me-1"></i>{{ prestation.nombreSeances }} séances
                                     </span>
                                 {% endif %}
                             </div>
@@ -76,69 +85,53 @@
                         {# Description Longue (Contenu Premium Amélioré) #}
                         {% if prestation.descriptionComplementaire %}
                             <div class="mt-4 pt-4 border-top border-gold-subtle">
-                                {# Un petit sous-titre discret pour introduire la section #}
                                 <h2 class="text-gold typo-symbolic fs-6 text-uppercase mb-4" style="letter-spacing: 3px; opacity: 0.8;">
                                     Le Déroulé du Soin
                                 </h2>
                                 
-                                {# Le bloc de texte avec une typographie haut de gamme #}
                                 <div class="content-premium-text text-ivory flex-grow-1" style="
-                                    font-family: 'Playfair Display', 'Didot', 'Georgia', serif; {# Utilise une police Serif élégante si ta charte en a une, sinon ajuste #}
+                                    font-family: 'Playfair Display', 'Didot', 'Georgia', serif;
                                     font-size: 1.05rem; 
                                     line-height: 1.9; 
                                     font-weight: 300; 
                                     letter-spacing: 0.5px;
-                                    white-space: pre-line; {# Gère nativement et proprement les sauts de ligne tapés dans EasyAdmin #}
+                                    white-space: pre-line;
                                 ">
                                     {{ prestation.descriptionComplementaire }}
                                 </div>
                             </div>
                         {% endif %}
 
-                        {# Section Tarification Variable (Participants) #}
-                        {% if prestation.hasTarificationVariable %}
+                        {# Section Sélection du Nombre de Personnes #}
+                        {% if prestation.hasChoixPersonnes %}
                             <div class="my-4 p-4" style="background-color: rgba(10, 10, 9, 0.65); border: 1px solid rgba(184, 154, 99, 0.35);">
                                 <label class="form-label text-gold text-uppercase small fw-bold mb-3 d-flex align-items-center" style="letter-spacing: 1.5px;">
-                                    <i class="bi bi-people-fill me-2 fs-5"></i>Formule & Nombre de participants
+                                    <i class="bi bi-people-fill me-2 fs-5"></i>Nombre de participants ({{ prestation.minPersonnes }} à {{ prestation.maxPersonnes }} personnes)
                                 </label>
-                                <div class="row g-2" id="participant-options">
-                                    {% if prestation.prix %}
-                                        <div class="col-12 col-sm-4">
-                                            <div class="formula-card p-3 text-center cursor-pointer transition-hover position-relative active-formula" 
-                                                 data-price="{{ prestation.prix }}" data-personnes="1" 
-                                                 style="background-color: rgba(184, 154, 99, 0.2); border: 2px solid var(--meta-gold); cursor: pointer;">
-                                                <input class="form-check-input visually-hidden" type="radio" name="nbPersonnes" id="formule1" value="1" checked>
-                                                <div class="fw-bold text-ivory small text-uppercase mb-1"><i class="bi bi-person me-1"></i>Individuel</div>
-                                                <div class="text-gold fw-bold fs-5">{{ prestation.prix }} €</div>
-                                                <div class="small text-sage" style="font-size: 0.75rem;">1 personne</div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    {% if prestation.prixCouple %}
-                                        <div class="col-12 col-sm-4">
-                                            <div class="formula-card p-3 text-center cursor-pointer transition-hover position-relative" 
-                                                 data-price="{{ prestation.prixCouple }}" data-personnes="2" 
-                                                 style="background-color: rgba(74, 79, 65, 0.3); border: 1px solid rgba(184, 154, 99, 0.3); cursor: pointer;">
-                                                <input class="form-check-input visually-hidden" type="radio" name="nbPersonnes" id="formule2" value="2" {% if not prestation.prix %}checked{% endif %}>
-                                                <div class="fw-bold text-ivory small text-uppercase mb-1"><i class="bi bi-people me-1"></i>Couple / Duo</div>
-                                                <div class="text-gold fw-bold fs-5">{{ prestation.prixCouple }} €</div>
-                                                <div class="small text-sage" style="font-size: 0.75rem;">2 personnes</div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    {% if prestation.prixGroupe %}
-                                        <div class="col-12 col-sm-4">
-                                            <div class="formula-card p-3 text-center cursor-pointer transition-hover position-relative" 
-                                                 data-price="{{ prestation.prixGroupe }}" data-personnes="3" 
-                                                 style="background-color: rgba(74, 79, 65, 0.3); border: 1px solid rgba(184, 154, 99, 0.3); cursor: pointer;">
-                                                <input class="form-check-input visually-hidden" type="radio" name="nbPersonnes" id="formule3" value="3">
-                                                <div class="fw-bold text-ivory small text-uppercase mb-1"><i class="bi bi-diagram-3 me-1"></i>Groupe</div>
-                                                <div class="text-gold fw-bold fs-5">{{ prestation.prixGroupe }} €</div>
-                                                <div class="small text-sage" style="font-size: 0.75rem;">3+ personnes</div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
+                                <div class="d-flex flex-wrap gap-2 mb-3" id="participant-options">
+                                    {% for i in prestation.minPersonnes..prestation.maxPersonnes %}
+                                        {% set prixCalcule = prestation.calculerPrixTotal(i) %}
+                                        <button type="button" class="btn btn-sm participant-btn flex-fill py-2" 
+                                                data-personnes="{{ i }}" 
+                                                data-total="{{ prixCalcule }}" 
+                                                style="{% if loop.first %}background-color: rgba(184, 154, 99, 0.25); border: 2px solid var(--meta-gold); color: #FFFFF0;{% else %}background-color: rgba(74, 79, 65, 0.3); border: 1px solid rgba(184, 154, 99, 0.3); color: var(--meta-ivory);{% endif %}">
+                                            <span class="d-block fw-bold text-uppercase" style="font-size: 0.85rem;"><i class="bi bi-people me-1"></i>{{ i }} {% if i > 1 %}personnes{% else %}personne{% endif %}</span>
+                                            <span class="d-block text-gold fw-bold mt-1" style="font-size: 1rem;">{{ prixCalcule }} €</span>
+                                        </button>
+                                    {% endfor %}
                                 </div>
+                                <div class="p-3" style="background-color: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(184, 154, 99, 0.3);">
+                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center small text-ivory gap-1">
+                                        <span>Détail de la tarification :</span>
+                                        <span id="formula-detail-text" class="text-gold font-monospace">
+                                            {{ prestation.minPersonnes }} pers. &times; {{ prestation.nombreSeances }} séance(s) &times; {{ prestation.prix }} € = <strong>{{ prestation.calculerPrixTotal(prestation.minPersonnes) }} €</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% elseif prestation.minPersonnes > 1 %}
+                            <div class="my-3 p-3 text-ivory small" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.2);">
+                                <i class="bi bi-people-fill text-gold me-2"></i>Accompagnement pour {{ prestation.minPersonnes }} personnes ({{ prestation.nombreSeances }} séance(s) &times; {{ prestation.prix }} € = {{ prestation.calculerPrixTotal(prestation.minPersonnes) }} €).
                             </div>
                         {% endif %}
 
@@ -160,11 +153,11 @@
                             </div>
                         {% else %}
                             <div class="mt-4 pt-3" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
-                                <a id="btn-reserver-prestation" href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
+                                <a id="btn-reserver-prestation" href="{{ path('app_reservation_new', {'id': prestation.id, 'personnes': prestation.minPersonnes}) }}" 
                                    class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
                                    style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
                                     <span>Réserver cette séance</span>
-                                    <span id="btn-price-preview" class="badge bg-dark text-gold ms-2 px-2 py-1" style="border: 1px solid var(--meta-gold); font-size: 0.9rem;">{{ prestation.prix }} €</span>
+                                    <span id="btn-price-preview" class="badge bg-dark text-gold ms-2 px-2 py-1" style="border: 1px solid var(--meta-gold); font-size: 0.9rem;">{{ prestation.calculerPrixTotal(prestation.minPersonnes) }} €</span>
                                 </a>
                             </div>
                         {% endif %}
@@ -180,39 +173,37 @@
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const formulaCards = document.querySelectorAll('.formula-card');
-    const dynamicPriceDisplay = document.getElementById('dynamic-price-display');
+    const participantButtons = document.querySelectorAll('.participant-btn');
     const btnPricePreview = document.getElementById('btn-price-preview');
     const btnReserver = document.getElementById('btn-reserver-prestation');
+    const formulaDetail = document.getElementById('formula-detail-text');
     const baseReservationUrl = "{{ path('app_reservation_new', {'id': prestation.id}) }}";
+    const prixBase = {{ prestation.prix|default(0) }};
+    const nbSeances = {{ prestation.nombreSeances|default(1) }};
 
-    formulaCards.forEach(card => {
-        card.addEventListener('click', function() {
-            formulaCards.forEach(c => {
-                c.classList.remove('active-formula');
-                c.style.backgroundColor = 'rgba(74, 79, 65, 0.3)';
-                c.style.border = '1px solid rgba(184, 154, 99, 0.3)';
-                const input = c.querySelector('input[type="radio"]');
-                if (input) input.checked = false;
+    participantButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            participantButtons.forEach(b => {
+                b.style.backgroundColor = 'rgba(74, 79, 65, 0.3)';
+                b.style.border = '1px solid rgba(184, 154, 99, 0.3)';
+                b.style.color = 'var(--meta-ivory)';
             });
 
-            this.classList.add('active-formula');
             this.style.backgroundColor = 'rgba(184, 154, 99, 0.25)';
             this.style.border = '2px solid var(--meta-gold)';
-            const currentRadio = this.querySelector('input[type="radio"]');
-            if (currentRadio) currentRadio.checked = true;
+            this.style.color = '#FFFFF0';
 
-            const selectedPrice = this.getAttribute('data-price');
-            const selectedPersonnes = this.getAttribute('data-personnes');
+            const nbPers = parseInt(this.getAttribute('data-personnes'), 10);
+            const total = parseFloat(this.getAttribute('data-total'));
 
-            if (dynamicPriceDisplay) {
-                dynamicPriceDisplay.innerHTML = selectedPrice + ' €';
-            }
             if (btnPricePreview) {
-                btnPricePreview.innerText = selectedPrice + ' €';
+                btnPricePreview.innerText = total.toFixed(2).replace('.00', '') + ' €';
             }
             if (btnReserver) {
-                btnReserver.href = baseReservationUrl + '?personnes=' + selectedPersonnes;
+                btnReserver.href = baseReservationUrl + '?personnes=' + nbPers;
+            }
+            if (formulaDetail) {
+                formulaDetail.innerHTML = nbPers + ' pers. &times; ' + nbSeances + ' séance(s) &times; ' + prixBase + ' € = <strong>' + total.toFixed(2).replace('.00', '') + ' €</strong>';
             }
         });
     });

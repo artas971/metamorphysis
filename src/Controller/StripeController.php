@@ -48,10 +48,10 @@ class StripeController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
-        $montant = (float) ($reservationData['montant'] ?? $prestation->getPrix());
         $nombrePersonnes = (int) ($reservationData['nombre_personnes'] ?? 1);
+        $montant = (float) ($reservationData['montant'] ?? $prestation->calculerPrixTotal($nombrePersonnes));
         $libelleLigne = $prestation->getNom();
-        if ($prestation->hasTarificationVariable()) {
+        if ($nombrePersonnes > 1) {
             $libelleLigne .= ' (' . $prestation->getLibelleFormule($nombrePersonnes) . ')';
         }
 
@@ -104,7 +104,7 @@ class StripeController extends AbstractController
             $dateRendezVousStr = $reservationData['date_rendez_vous'] ?? null;
             $dateRendezVous = $dateRendezVousStr ? new \DateTime($dateRendezVousStr) : null;
             $nombrePersonnes = (int) ($reservationData['nombre_personnes'] ?? 1);
-            $montant = (float) ($reservationData['montant'] ?? ($prestation ? $prestation->calculerPrix($nombrePersonnes) : 0));
+            $montant = (float) ($reservationData['montant'] ?? ($prestation ? $prestation->calculerPrixTotal($nombrePersonnes) : 0));
 
             if ($prestation) {
                 // Idempotence : vérifier si la séance 1 existe déjà

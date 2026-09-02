@@ -205,8 +205,9 @@ CREATE TABLE `prestation` (
   `description_complementaire` longtext,
   `lien_video` varchar(255) DEFAULT NULL,
   `nombre_seances` int NOT NULL,
-  `prix_couple` double DEFAULT NULL,
-  `prix_groupe` double DEFAULT NULL,
+  `prix_affiche` varchar(255) DEFAULT NULL,
+  `min_personnes` int NOT NULL DEFAULT '1',
+  `max_personnes` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -217,7 +218,7 @@ CREATE TABLE `prestation` (
 
 LOCK TABLES `prestation` WRITE;
 /*!40000 ALTER TABLE `prestation` DISABLE KEYS */;
-INSERT INTO `prestation` VALUES (10,'Séance Individuelle (Analyse Transactionnelle)','Exploration en profondeur d\'une problématique ciblée, mise en lumière des états du moi et déconstruction des scénarios répétitifs.',70,60,NULL,NULL,1,'bi-person',NULL,2,NULL,NULL,1,NULL,NULL),(9,'Consultation Initiale','Un premier diagnostic complet pour cibler vos besoins, explorer vos attentes et définir ensemble une stratégie d\'évolution et d\'accompagnement sur-mesure.',50,45,NULL,NULL,1,'bi-person',NULL,1,NULL,NULL,1,NULL,NULL),(11,'Bilan Émotionnel & Relationnel','Cartographie complète de vos dynamiques intérieures, analyse de vos mécanismes de défense et identification des blocages profonds.',50,90,NULL,NULL,0,'bi-diagram-3',NULL,3,NULL,NULL,1,80,120),(12,'Suivi Mensuel','Un accompagnement régulier avec des points d\'étape hebdomadaires, des exercices d\'alignement et des ajustements continus.',150,120,NULL,NULL,0,'bi-people',NULL,4,NULL,NULL,2,NULL,NULL),(13,'Parcours Renaissance (3 Mois)','Un programme structuré de transformation personnelle sur 3 mois pour vous libérer des schémas limitants et ancrer durablement vos nouveaux choix.',390,180,NULL,NULL,1,'bi-diagram-3',NULL,5,NULL,NULL,3,NULL,NULL),(14,'Pack Métamorphose','La refonte totale de votre approche de vie. Inclut un suivi intensif prioritaire, bilans personnalisés et accompagnement immersif.',450,300,NULL,NULL,1,'bi-house-heart',NULL,6,NULL,NULL,5,NULL,NULL);
+INSERT INTO `prestation` VALUES (10,'Séance Individuelle (Analyse Transactionnelle)','Exploration en profondeur d\'une problématique ciblée, mise en lumière des états du moi et déconstruction des scénarios répétitifs.',70,60,NULL,NULL,1,'bi-person',NULL,2,NULL,NULL,1,'70 €',1,1),(9,'Consultation Initiale','Un premier diagnostic complet pour cibler vos besoins, explorer vos attentes et définir ensemble une stratégie d\'évolution et d\'accompagnement sur-mesure.',50,45,NULL,NULL,1,'bi-person',NULL,1,NULL,NULL,1,'50 €',1,1),(11,'Bilan Émotionnel & Relationnel','Cartographie complète de vos dynamiques intérieures, analyse de vos mécanismes de défense et identification des blocages profonds.',40,90,NULL,NULL,0,'bi-diagram-3',NULL,3,NULL,NULL,1,'Entre 80 € et 120 €',2,3),(12,'Suivi Mensuel','Un accompagnement régulier avec des points d\'étape hebdomadaires, des exercices d\'alignement et des ajustements continus.',150,120,NULL,NULL,0,'bi-people',NULL,4,NULL,NULL,2,'150 €',1,1),(13,'Parcours Renaissance (3 Mois)','Un programme structuré de transformation personnelle sur 3 mois pour vous libérer des schémas limitants et ancrer durablement vos nouveaux choix.',130,180,NULL,NULL,1,'bi-diagram-3',NULL,5,NULL,NULL,3,'À partir de 390 €',1,2),(14,'Pack Métamorphose','La refonte totale de votre approche de vie. Inclut un suivi intensif prioritaire, bilans personnalisés et accompagnement immersif.',450,300,NULL,NULL,1,'bi-house-heart',NULL,6,NULL,NULL,5,'450 €',1,1);
 /*!40000 ALTER TABLE `prestation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -299,7 +300,7 @@ CREATE TABLE `seance` (
   PRIMARY KEY (`id`),
   KEY `IDX_DF7DFD0E9E45C554` (`prestation_id`),
   KEY `IDX_DF7DFD0EA76ED395` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +432,7 @@ CREATE TABLE `user` (
   `telephone` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -440,7 +441,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (6,'artas971@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$yj744CfO5wQQpb/Da50jae7QnKIDF/tubxntcpVJfno6TGTn21ur.','Admin','Metamorphysis',NULL),(7,'metamorphysisconsulting@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC','Louisa','Chouihi','0600000000');
+INSERT INTO `user` VALUES (6,'artas971@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$yj744CfO5wQQpb/Da50jae7QnKIDF/tubxntcpVJfno6TGTn21ur.','Admin','Metamorphysis',NULL),(7,'metamorphysisconsulting@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC','Louisa','Chouihi','0600000000'),(8,'artas971@hotmail.fr','[]','$2y$13$644eBmummfQ3RI/920iW0.InQ82yw2r5x67WC4LJgRcXcG8Ymqgwa','floyd','george','jF2os3XAUukSA3zh6VSA91BtSDBZaVBwSHMvdnphWURjNHMrb2c9PQ==');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -453,4 +454,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-02 14:25:53
+-- Dump completed on 2026-09-02 14:39:00
