@@ -155,18 +155,23 @@ class PrestationCrudController extends AbstractCrudController
         $tarifs = $prestation->getTarifsParPersonne();
         $min = $prestation->getMinPersonnes();
 
-        if (isset($tarifs[(string)$min]) && (float)$tarifs[(string)$min] > 0) {
-            $prestation->setPrix((float) $tarifs[(string)$min]);
+        if (isset($tarifs[(string)$min])) {
+            $val = $tarifs[(string)$min];
+            $prix = is_array($val) ? ($val['prix'] ?? 0) : $val;
+            $prestation->setPrix((float) $prix);
         } elseif (!empty($tarifs)) {
             $first = reset($tarifs);
-            $prestation->setPrix((float) $first);
+            $prix = is_array($first) ? ($first['prix'] ?? 0) : $first;
+            $prestation->setPrix((float) $prix);
         }
 
         if (isset($tarifs['2'])) {
-            $prestation->setPrixCouple((float) $tarifs['2']);
+            $val2 = $tarifs['2'];
+            $prestation->setPrixCouple((float) (is_array($val2) ? ($val2['prix'] ?? 0) : $val2));
         }
         if (isset($tarifs['3'])) {
-            $prestation->setPrixGroupe((float) $tarifs['3']);
+            $val3 = $tarifs['3'];
+            $prestation->setPrixGroupe((float) (is_array($val3) ? ($val3['prix'] ?? 0) : $val3));
         }
     }
 }

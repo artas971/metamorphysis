@@ -49,8 +49,8 @@ class Prestation
     #[ORM\Column(options: ['default' => 1])]
     private int $maxPersonnes = 1;
 
-    // Grille tarifaire dynamique JSON stockant le prix exact pour chaque nombre de personnes de minPersonnes à maxPersonnes
-    // Ex: {"2": 80, "3": 100, "4": 120, "5": 140}
+    // Grille tarifaire dynamique JSON stockant le prix exact, titre et sous-titre pour chaque palier
+    // Ex: {"2": {"prix": 80, "titre": "2 personnes", "sousTitre": "Meilleur ami"}, "3": {"prix": 120, "titre": "3 personnes et +", "sousTitre": "Trouple"}}
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $tarifsParPersonne = [];
 
@@ -254,26 +254,61 @@ class Prestation
     }
 
     /**
-     * Retourne le tarif exact pour le nombre de personnes sélectionné
+     * Retourne les détails complets (prix, titre, sous-titre) pour un palier donné
      */
-    public function getTarifPour(int $nombrePersonnes): float
+    public function getFormuleDetails(int $nombrePersonnes): array
     {
         $tarifs = $this->getTarifsParPersonne();
         $key = (string) $nombrePersonnes;
 
-        if (isset($tarifs[$key]) && is_numeric($tarifs[$key]) && (float)$tarifs[$key] > 0) {
-            return (float) $tarifs[$key];
+        $defaultTitre = ($nombrePersonnes === $this->getMaxPersonnes() && $nombrePersonnes > 2) 
+            ? $nombrePersonnes . ' personnes et +' 
+            : $nombrePersonnes . ($nombrePersonnes > 1 ? ' personnes' : ' personne');
+
+        $defaultSousTitre = match ($nombrePersonnes) {
+            1 => 'Individuel',
+            2 => 'Couple / Duo',
+            default => 'Groupe / Famille'
+        };
+
+        if (isset($tarifs[$key])) {
+            $item = $tarifs[$key];
+            if (is_array($item)) {
+                return [
+                    'prix' => isset($item['prix']) && is_numeric($item['prix']) ? (float) $item['prix'] : (float) ($this->prix ?? 0),
+                    'titre' => !empty($item['titre']) ? $item['titre'] : $defaultTitre,
+                    'sousTitre' => isset($item['sousTitre']) ? $item['sousTitre'] : $defaultSousTitre,
+                ];
+            } elseif (is_numeric($item)) {
+                return [
+                    'prix' => (float) $item,
+                    'titre' => $defaultTitre,
+                    'sousTitre' => $defaultSousTitre,
+                ];
+            }
         }
 
+        // Fallbacks
+        $prix = (float) ($this->prix ?? 0);
         if ($nombrePersonnes === 2 && $this->prixCouple !== null) {
-            return (float) $this->prixCouple;
+            $prix = (float) $this->prixCouple;
+        } elseif ($nombrePersonnes >= 3 && $this->prixGroupe !== null) {
+            $prix = (float) $this->prixGroupe;
         }
 
-        if ($nombrePersonnes >= 3 && $this->prixGroupe !== null) {
-            return (float) $this->prixGroupe;
-        }
+        return [
+            'prix' => $prix,
+            'titre' => $defaultTitre,
+            'sousTitre' => $defaultSousTitre,
+        ];
+    }
 
-        return (float) ($this->prix ?? 0.0);
+    /**
+     * Retourne le tarif exact pour le nombre de personnes sélectionné
+     */
+    public function getTarifPour(int $nombrePersonnes): float
+    {
+        return $this->getFormuleDetails($nombrePersonnes)['prix'];
     }
 
     /**
@@ -293,13 +328,10 @@ class Prestation
     public function getLibelleFormule(?int $nombrePersonnes): string
     {
         $nb = $nombrePersonnes ?? $this->getMinPersonnes();
-        if ($nb === 1) {
-            return '1 personne (Individuel)';
-        }
-        if ($nb === 2) {
-            return 'Formule Couple (2 personnes)';
-        }
-        return 'Formule ' . $nb . ' personnes';
+        $details = $this->getFormuleDetails($nb);
+        $titre = $details['titre'] ?: ($nb . ' personnes');
+        $sousTitre = $details['sousTitre'] ? ' (' . $details['sousTitre'] . ')' : '';
+        return $titre . $sousTitre;
     }
 
     public function getDuree(): ?int
