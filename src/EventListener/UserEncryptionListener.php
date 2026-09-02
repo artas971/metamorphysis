@@ -25,32 +25,23 @@ class UserEncryptionListener
     // Avant une création en BDD
     public function onPrePersist(User $user): void
     {
-        if ($user->getTelephone()) {
-            $user->setTelephone($this->encryptionService->encrypt($user->getTelephone()));
-        }
+        $this->encryptUserData($user);
     }
 
     // Avant une modification en BDD
     public function onPreUpdate(User $user): void
     {
-        if ($user->getTelephone() && !$this->isEncrypted($user->getTelephone())) {
-            $user->setTelephone($this->encryptionService->encrypt($user->getTelephone()));
-        }
+        $this->encryptUserData($user);
     }
 
-    // Après avoir chargé l'utilisateur depuis la BDD (On remet en clair pour le site)
+    // Après avoir chargé l'utilisateur depuis la BDD (On remet en clair pour l'application)
     public function onPostLoad(User $user): void
     {
-        if ($user->getTelephone() && $this->isEncrypted($user->getTelephone())) {
-            $decrypted = $this->encryptionService->decrypt($user->getTelephone());
-            if ($decrypted) {
-                $user->setTelephone($decrypted);
-            }
-        }
+        $this->decryptUserData($user);
     }
 
-    // Après un enregistrement, on remet le numéro en clair dans la mémoire de l'application
-    // pour éviter qu'il s'affiche chiffré si la page se recharge directement
+    // Après un enregistrement, on remet les données en clair dans la mémoire de l'application
+    // pour éviter qu'elles ne s'affichent chiffrées si la page se recharge directement
     public function onPostPersist(User $user): void
     {
         $this->onPostLoad($user); 
@@ -61,13 +52,41 @@ class UserEncryptionListener
         $this->onPostLoad($user);
     }
 
-    /**
-     * Petite sécurité pour éviter un double-chiffrement ou de tenter de déchiffrer
-     * un ancien numéro de téléphone qui était stocké en clair (10 chiffres).
-     */
-    private function isEncrypted(string $data): bool
+    private function encryptUserData(User $user): void
     {
-        // Une donnée chiffrée par notre service fera toujours plus de 30 caractères
-        return strlen($data) > 30;
+        if ($user->getEmail()) {
+            $user->setEmail($this->encryptionService->encrypt(mb_strtolower($user->getEmail()), true));
+        }
+
+        if ($user->getPrenom()) {
+            $user->setPrenom($this->encryptionService->encrypt($user->getPrenom(), false));
+        }
+
+        if ($user->getNom()) {
+            $user->setNom($this->encryptionService->encrypt($user->getNom(), false));
+        }
+
+        if ($user->getTelephone()) {
+            $user->setTelephone($this->encryptionService->encrypt($user->getTelephone(), false));
+        }
+    }
+
+    private function decryptUserData(User $user): void
+    {
+        if ($user->getEmail()) {
+            $user->setEmail($this->encryptionService->decrypt($user->getEmail()));
+        }
+
+        if ($user->getPrenom()) {
+            $user->setPrenom($this->encryptionService->decrypt($user->getPrenom()));
+        }
+
+        if ($user->getNom()) {
+            $user->setNom($this->encryptionService->decrypt($user->getNom()));
+        }
+
+        if ($user->getTelephone()) {
+            $user->setTelephone($this->encryptionService->decrypt($user->getTelephone()));
+        }
     }
 }

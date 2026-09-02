@@ -9,14 +9,75 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
+use App\Service\EncryptionService;
+use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * @extends ServiceEntityRepository<User>
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserLoaderInterface
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private EncryptionService $encryptionService
+    ) {
         parent::__construct($registry, User::class);
+    }
+
+    /**
+     * Utilisé par Symfony Security pour authentifier un utilisateur par son identifiant / email.
+     */
+    public function loadUserByIdentifier(string $identifier): ?UserInterface
+    {
+        $encrypted = $this->encryptionService->encrypt(mb_strtolower($identifier), true);
+
+        return $this->createQueryBuilder('u')
+            ->where('u.email = :enc OR u.email = :raw')
+            ->setParameter('enc', $encrypted)
+            ->setParameter('raw', $identifier)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Recherche transparente par email (chiffré ou en clair).
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?object
+    {
+        if (isset($criteria['email']) && is_string($criteria['email'])) {
+            $email = $criteria['email'];
+            if (!$this->encryptionService->isEncrypted($email)) {
+                $criteria['email'] = $this->encryptionService->encrypt(mb_strtolower($email), true);
+            }
+            $result = parent::findOneBy($criteria, $orderBy);
+            if (!$result) {
+                // Fallback si l'email était encore stocké en clair
+                $criteria['email'] = $email;
+                $result = parent::findOneBy($criteria, $orderBy);
+            }
+            return $result;
+        }
+
+        return parent::findOneBy($criteria, $orderBy);
+    }
+
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
+    {
+        if (isset($criteria['email']) && is_string($criteria['email'])) {
+            $email = $criteria['email'];
+            if (!$this->encryptionService->isEncrypted($email)) {
+                $criteria['email'] = $this->encryptionService->encrypt(mb_strtolower($email), true);
+            }
+            $results = parent::findBy($criteria, $orderBy, $limit, $offset);
+            if (empty($results)) {
+                $criteria['email'] = $email;
+                $results = parent::findBy($criteria, $orderBy, $limit, $offset);
+            }
+            return $results;
+        }
+
+        return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
 
     /**
