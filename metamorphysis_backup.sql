@@ -1,5 +1,5 @@
 -- Metamorphysis Database Dump
--- Generated on 2026-09-02 11:19:12
+-- Generated on 2026-09-02 11:26:27
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -100,7 +100,16 @@ CREATE TABLE `horaire_hebdomadaire` (
   `ouverture_apres_midi` time DEFAULT NULL,
   `fermeture_apres_midi` time DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table `horaire_hebdomadaire`
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('9', '1', '1', '08:00:00', '11:00:00', '13:00:00', '18:00:00');
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('10', '2', '1', '08:00:00', '11:00:00', '13:00:00', '18:00:00');
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('11', '3', '1', '08:00:00', '11:00:00', '13:00:00', '18:00:00');
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('12', '4', '1', '08:00:00', '11:00:00', '13:00:00', '18:00:00');
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('13', '5', '1', '08:00:00', '11:00:00', '13:00:00', '18:00:00');
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('14', '6', '0', NULL, NULL, NULL, NULL);
+INSERT INTO `horaire_hebdomadaire` (`id`, `jour`, `est_ouvert`, `ouverture_matin`, `fermeture_matin`, `ouverture_apres_midi`, `fermeture_apres_midi`) VALUES ('15', '7', '0', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 -- Structure for table `indisponibilite`
