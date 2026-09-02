@@ -25,19 +25,27 @@ class Prestation
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    // Prix de base unitaire (par personne et par séance)
+    // Tarif fixé directement par l'administrateur pour 1 personne (Individuel / Base)
     #[ORM\Column]
     private ?float $prix = null;
+
+    // Tarif fixé directement par l'administrateur pour 2 personnes (Couple / Duo)
+    #[ORM\Column(nullable: true)]
+    private ?float $prixCouple = null;
+
+    // Tarif fixé directement par l'administrateur pour 3 personnes et plus (Groupe / Famille)
+    #[ORM\Column(nullable: true)]
+    private ?float $prixGroupe = null;
 
     // Texte commercial libre affiché sur les cartes et le site (ex: "À partir de 80 €", "Entre 80 € et 120 €", "Sur devis")
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $prixAffiche = null;
 
-    // Nombre de personnes minimum (ex: 1 pour individuel, 2 pour couple)
+    // Nombre de personnes minimum
     #[ORM\Column(options: ['default' => 1])]
     private int $minPersonnes = 1;
 
-    // Nombre de personnes maximum (ex: 1, 2, 6, 10...)
+    // Nombre de personnes maximum
     #[ORM\Column(options: ['default' => 1])]
     private int $maxPersonnes = 1;
 
@@ -48,7 +56,7 @@ class Prestation
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $icone = null;
 
-    // --- NOUVEAU CHAMP UNITÉ DE PRIX ---
+    // --- CHAMP UNITÉ DE PRIX ---
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $unitePrix = null;
 
@@ -71,15 +79,14 @@ class Prestation
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'prestation', orphanRemoval: true)]
     private Collection $Entrée;
 
-    // Ce champ ne va pas dans la base de données, il sert juste à manipuler le fichier uploadé
+    // Manipulation du fichier uploadé
     #[Vich\UploadableField(mapping: 'prestations_images', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
-    // Ce champ va dans la base de données pour stocker le nom (ex: mon-image-64a2b.jpg)
+    // Stockage du nom d'image en base
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
-    // VichUploader a besoin de savoir quand l'image a été modifiée pour forcer la mise à jour
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
@@ -142,6 +149,30 @@ class Prestation
         return $this;
     }
 
+    public function getPrixCouple(): ?float
+    {
+        return $this->prixCouple;
+    }
+
+    public function setPrixCouple(?float $prixCouple): static
+    {
+        $this->prixCouple = $prixCouple;
+
+        return $this;
+    }
+
+    public function getPrixGroupe(): ?float
+    {
+        return $this->prixGroupe;
+    }
+
+    public function setPrixGroupe(?float $prixGroupe): static
+    {
+        $this->prixGroupe = $prixGroupe;
+
+        return $this;
+    }
+
     public function getPrixAffiche(): ?string
     {
         return $this->prixAffiche;
@@ -178,45 +209,49 @@ class Prestation
         return $this;
     }
 
-    public function hasChoixPersonnes(): bool
-    {
-        return $this->getMaxPersonnes() > $this->getMinPersonnes();
-    }
-
     public function hasTarificationVariable(): bool
     {
-        return $this->hasChoixPersonnes();
+        return $this->prixCouple !== null || $this->prixGroupe !== null;
+    }
+
+    public function hasChoixPersonnes(): bool
+    {
+        return $this->hasTarificationVariable();
     }
 
     /**
-     * Calcule le prix total exact : Nombre de personnes x Nombre de séances x Prix de base
+     * Retourne le prix exact fixé par l'administrateur selon le nombre de personnes sélectionné
      */
+    public function calculerPrix(?int $nombrePersonnes = null): float
+    {
+        $nb = $nombrePersonnes ?? 1;
+        if ($nb === 2 && $this->prixCouple !== null) {
+            return (float) $this->prixCouple;
+        }
+        if ($nb >= 3 && $this->prixGroupe !== null) {
+            return (float) $this->prixGroupe;
+        }
+        if ($nb >= 2 && $this->prixCouple !== null) {
+            return (float) $this->prixCouple;
+        }
+        return (float) ($this->prix ?? 0.0);
+    }
+
     public function calculerPrixTotal(?int $nombrePersonnes = null): float
     {
-        $personnes = $nombrePersonnes ?? $this->getMinPersonnes();
-        if ($personnes < $this->getMinPersonnes()) {
-            $personnes = $this->getMinPersonnes();
-        }
-        if ($personnes > $this->getMaxPersonnes() && $this->getMaxPersonnes() >= $this->getMinPersonnes()) {
-            $personnes = $this->getMaxPersonnes();
-        }
-
-        $seances = $this->getNombreSeances() ?? 1;
-        $prixBase = (float) ($this->prix ?? 0.0);
-
-        return round($personnes * $seances * $prixBase, 2);
+        return $this->calculerPrix($nombrePersonnes);
     }
 
     public function getLibelleFormule(?int $nombrePersonnes): string
     {
-        $personnes = $nombrePersonnes ?? $this->getMinPersonnes();
-        if ($personnes === 1) {
-            return '1 personne';
-        }
-        if ($personnes === 2) {
+        $nb = $nombrePersonnes ?? 1;
+        if ($nb === 2) {
             return 'Formule Couple (2 personnes)';
         }
-        return 'Formule Groupe (' . $personnes . ' personnes)';
+        if ($nb >= 3) {
+            return 'Formule Groupe (' . $nb . ' personnes)';
+        }
+        return 'Formule Individuelle (1 personne)';
     }
 
     public function getDuree(): ?int

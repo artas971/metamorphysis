@@ -39,11 +39,15 @@ class PrestationCrudController extends AbstractCrudController
                     ->setBasePath('/uploads/prestations'),
                 TextField::new('nom', '💆 Nom'),
                 TextField::new('prixAffiche', '🏷️ Prix Affiché'),
-                MoneyField::new('prix', '💶 Prix Base')
+                MoneyField::new('prix', '👤 Tarif 1 pers')
                     ->setCurrency('EUR')
                     ->setStoredAsCents(false),
-                IntegerField::new('minPersonnes', '👥 Min'),
-                IntegerField::new('maxPersonnes', '👥 Max'),
+                MoneyField::new('prixCouple', '👥 Tarif Couple')
+                    ->setCurrency('EUR')
+                    ->setStoredAsCents(false),
+                MoneyField::new('prixGroupe', '👨‍👩‍👧 Tarif Groupe')
+                    ->setCurrency('EUR')
+                    ->setStoredAsCents(false),
                 IntegerField::new('nombreSeances', '🎟️ Séances'),
                 IntegerField::new('ordre', '🔢 Ordre'),
                 BooleanField::new('estMisEnAvant', '⭐ En Vedette')
@@ -58,22 +62,26 @@ class PrestationCrudController extends AbstractCrudController
                 ->setHelp('Ex: Accompagnement Individuel, Séance d\'alignement...'),
 
             TextField::new('prixAffiche', '🏷️ Texte du prix affiché sur les cartes')
-                ->setHelp('Texte commercial libre. Ex: "À partir de 80 €", "Entre 80 € et 120 €", "80 €", "Sur devis"...')
+                ->setHelp('Texte commercial libre. Ex: "À partir de 80 €", "Entre 80 € et 120 €", "80 €", "Sur devis"... (si vide, affiche le tarif 1 personne)')
                 ->setRequired(false),
 
-            MoneyField::new('prix', '💶 Prix de base unitaire (par personne / séance)')
+            MoneyField::new('prix', '👤 Tarif 1 personne (Individuel / Base)')
                 ->setCurrency('EUR')
                 ->setStoredAsCents(false)
                 ->setRequired(true)
-                ->setHelp('Utilisé pour le calcul Stripe réel : (Nb personnes) x (Nb séances) x (Prix de base).'),
+                ->setHelp('Montant exact payé sur Stripe pour 1 personne (ex: 50 €).'),
 
-            IntegerField::new('minPersonnes', '👥 Nombre minimum de personnes')
-                ->setRequired(true)
-                ->setHelp('Ex: 1 pour individuel, 2 pour couple.'),
+            MoneyField::new('prixCouple', '👥 Tarif 2 personnes (Couple / Duo)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
+                ->setRequired(false)
+                ->setHelp('Montant exact payé sur Stripe pour 2 personnes (ex: 80 €). Laissez vide si non applicable.'),
 
-            IntegerField::new('maxPersonnes', '👥 Nombre maximum de personnes')
-                ->setRequired(true)
-                ->setHelp('Ex: 1 pour individuel strict, 2 pour couple, 6 pour petit groupe. Si Max > Min, un sélecteur de participants s\'affichera.'),
+            MoneyField::new('prixGroupe', '👨‍👩‍👧 Tarif 3+ personnes (Groupe / Famille)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
+                ->setRequired(false)
+                ->setHelp('Montant exact payé sur Stripe pour 3 personnes et plus (ex: 120 €). Laissez vide si non applicable.'),
 
             IntegerField::new('nombreSeances', '🎟️ Nombre de séances incluses')
                 ->setRequired(true)
@@ -90,10 +98,6 @@ class PrestationCrudController extends AbstractCrudController
             IntegerField::new('duree', 'Durée de la séance (en minutes)')
                 ->setRequired(false)
                 ->setHelp('Ex: 45. Laissez vide si la durée n\'est pas fixe ou non applicable.'),
-
-            IntegerField::new('nombreSeances', 'Nombre de séances incluses')
-                ->setRequired(true)
-                ->setHelp('Indiquez 1 pour un soin unique, ou plus s\'il s\'agit d\'un forfait/parcours (ex: 3, 5, 10).'),
 
             BooleanField::new('estMisEnAvant', 'Mettre en avant cette prestation')
                 ->renderAsSwitch(true)

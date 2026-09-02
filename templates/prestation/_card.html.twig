@@ -57,7 +57,8 @@
                 {% if prestation.prixAffiche %}
                     {{ prestation.prixAffiche }}
                 {% else %}
-                    {{ prestation.calculerPrixTotal(prestation.minPersonnes) }} € 
+                    {% if prestation.hasTarificationVariable %}<span class="fs-6 fw-normal text-capitalize" style="color: var(--meta-sage); font-size: 0.82rem !important;">À partir de </span>{% endif %}
+                    {{ prestation.prix }} € 
                     {% if prestation.unitePrix is defined and prestation.unitePrix %}
                         <span class="fs-6 fw-light text-lowercase" style="color: var(--meta-ivory);">/ {{ prestation.unitePrix }}</span>
                     {% endif %}
