@@ -106,8 +106,8 @@ class StripeWebhookController extends AbstractController
 
                     $entityManager->flush();
 
-                    // --- ENVOI DES MAILS ---
-                    $bookingMailer->sendPendingBookingToClient($premiereSeance);
+                    // --- ENVOI DES MAILS (Avec facture PDF jointe dès le paiement) ---
+                    $bookingMailer->sendPendingBookingToClient($premiereSeance, true);
                     $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $prestation->getPrix());
                 }
             }

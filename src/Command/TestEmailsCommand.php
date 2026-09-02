@@ -21,7 +21,8 @@ class TestEmailsCommand extends Command
 {
     public function __construct(
         private Environment $twig,
-        private BookingMailerService $bookingMailer
+        private BookingMailerService $bookingMailer,
+        private \App\Service\PdfService $pdfService
     ) {
         parent::__construct();
     }
@@ -29,7 +30,7 @@ class TestEmailsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->title('Génération des prévisualisations d\'e-mails...');
+        $io->title('Génération des prévisualisations d\'e-mails et de la Facture PDF...');
 
         $user = new User();
         $user->setEmail('client.test@gmail.com');
@@ -55,6 +56,7 @@ class TestEmailsCommand extends Command
                 'seance' => $seance,
                 'client' => $user,
                 'prestation' => $prestation,
+                'hasInvoice' => true,
             ]),
             '02_admin_nouvelle_reservation.html' => $this->twig->render('emails/admin_nouvelle_reservation.html.twig', [
                 'seance' => $seance,
@@ -89,10 +91,18 @@ class TestEmailsCommand extends Command
         $baseDir = 'C:/Users/artas/.gemini/antigravity/brain/0ea2f9e9-b0c8-4138-8ad1-530b58f7f0bb/scratch';
         foreach ($previews as $filename => $html) {
             file_put_contents($baseDir . '/' . $filename, $html);
-            $io->text(sprintf('✓ %s (%d octets)', $filename, strlen($html)));
+            $io->text(sprintf('✓ Email template : %s (%d octets)', $filename, strlen($html)));
         }
 
-        $io->success('Toutes les prévisualisations d\'e-mails ont été générées et validées avec succès !');
+        // Test PDF Generation
+        $htmlFacture = $this->twig->render('pdf/facture.html.twig', [
+            'reservation' => $seance
+        ]);
+        $pdfContent = $this->pdfService->generateBinaryPdf($htmlFacture);
+        file_put_contents($baseDir . '/07_facture_test.pdf', $pdfContent);
+        $io->text(sprintf('✓ Facture PDF générée : 07_facture_test.pdf (%d octets)', strlen($pdfContent)));
+
+        $io->success('Toutes les prévisualisations d\'e-mails et la Facture PDF ont été générées et validées avec succès !');
 
         return Command::SUCCESS;
     }

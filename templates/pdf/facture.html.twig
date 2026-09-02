@@ -104,32 +104,32 @@
 
     <div style="margin-bottom: 20px;">
         <strong>Facture N° :</strong> FAC-{{ "now"|date("Ymd") }}-{{ reservation.id }}<br>
-        <strong>Date de facturation :</strong> {{ "now"|date("d/m/Y") }}<br>
-        <strong>Date du rendez-vous :</strong> {{ reservation.dateRendezVous|date("d/m/Y à H:i") }}
+        <strong>Date d'émission :</strong> {{ "now"|date("d/m/Y") }}<br>
+        <strong>Séance :</strong> Séance n°{{ reservation.numero }} - {% if reservation.dateRendezVous %}{{ reservation.dateRendezVous|date("d/m/Y à H:i") }}{% else %}À convenir{% endif %}
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Prestation</th>
-                <th class="text-right">Montant TTC</th>
+                <th>Désignation de l'accompagnement</th>
+                <th class="text-right">Montant Réglé TTC</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ reservation.prestation.nom }}</td>
-                <td class="text-right">{{ reservation.prestation.prix }} €</td>
+                <td>{{ reservation.prestation.nom }} (Séance n°{{ reservation.numero }})</td>
+                <td class="text-right">{{ reservation.prestation.prix|number_format(2, ',', ' ') }} €</td>
             </tr>
             <tr class="total-row">
-                <td class="text-right">Total à régler :</td>
-                <td class="text-right" style="color: #B89A63;">{{ reservation.prestation.prix }} €</td>
+                <td class="text-right">Total Réglé :</td>
+                <td class="text-right" style="color: #B89A63;">{{ reservation.prestation.prix|number_format(2, ',', ' ') }} €</td>
             </tr>
         </tbody>
     </table>
 
     <div class="footer">
-        Metamorphysis - Société par actions simplifiée au capital de 1 000 €<br>
-        TVA non applicable, art. 293 B du CGI. (À modifier selon le statut de la cliente)
+        Metamorphysis &bull; Louisa Chouihi — Consultante en Relation Humaine &bull; contact@metamorphysis.com<br>
+        TVA non applicable, art. 293 B du CGI &bull; Facture acquittée
     </div>
 
 </body>

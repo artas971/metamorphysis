@@ -52,6 +52,12 @@
         </p>
     </div>
 
+    {% if hasInvoice|default(false) %}
+        <p style="font-size: 13.5px; color: #8F8876; line-height: 1.6; margin-top: 20px;">
+            📄 <em>Votre facture d'achat acquittée est disponible en pièce jointe de cet e-mail. Vous pouvez également la retrouver et la télécharger à tout moment depuis votre espace client.</em>
+        </p>
+    {% endif %}
+
     {# Bouton d'action #}
     <div style="text-align: center; margin: 35px 0 20px 0;">
         <a href="http://127.0.0.1:8000/mon-compte" target="_blank" 

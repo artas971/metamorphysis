@@ -27,7 +27,7 @@ class BookingMailerService
     /**
      * 1. CLIENT : Email informant que la demande de RDV est bien enregistrée et en attente de validation par Louisa.
      */
-    public function sendPendingBookingToClient(Seance $seance): bool
+    public function sendPendingBookingToClient(Seance $seance, bool $attachInvoice = false): bool
     {
         $client = $seance->getUser();
         if (!$client || !$client->getEmail()) {
@@ -35,6 +35,24 @@ class BookingMailerService
         }
 
         try {
+            $pdfContent = null;
+            $pdfFilename = null;
+
+            if ($attachInvoice) {
+                try {
+                    $htmlPdf = $this->twig->render('pdf/facture.html.twig', [
+                        'reservation' => $seance
+                    ]);
+                    $pdfContent = $this->pdfService->generateBinaryPdf($htmlPdf);
+                    
+                    $numeroFacture = 'FAC-' . date('Ymd') . '-' . $seance->getId();
+                    $nomClientClean = preg_replace('/[^A-Za-z0-9\-]/', '_', $client->getNom() ?? 'Client');
+                    $pdfFilename = 'Facture_Metamorphysis_' . $numeroFacture . '_' . strtoupper($nomClientClean) . '.pdf';
+                } catch (\Throwable $pdfError) {
+                    $this->logger?->warning('Impossible de générer le PDF de facture: ' . $pdfError->getMessage());
+                }
+            }
+
             $email = (new TemplatedEmail())
                 ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
                 ->to(new Address($client->getEmail(), $client->getPrenom() . ' ' . $client->getNom()))
@@ -44,7 +62,12 @@ class BookingMailerService
                     'seance' => $seance,
                     'client' => $client,
                     'prestation' => $seance->getPrestation(),
+                    'hasInvoice' => ($pdfContent !== null),
                 ]);
+
+            if ($pdfContent && $pdfFilename) {
+                $email->attach($pdfContent, $pdfFilename, 'application/pdf');
+            }
 
             $this->mailer->send($email);
             return true;

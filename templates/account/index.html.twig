@@ -90,11 +90,18 @@
                                 <article class="parcours-block">
                                     
                                     {# En-tête du parcours #}
-                                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom pb-3" style="border-color: rgba(184, 154, 99, 0.3) !important;">
-                                        <h3 class="fw-bold mb-2 mb-md-0 text-uppercase h5" style="color: var(--meta-ivory); font-family: var(--font-title, inherit); letter-spacing: 1px;">
-                                            {{ parcours.prestation.nom }}
-                                        </h3>
-                                        <span class="small fw-bold text-uppercase px-3 py-1 rounded-0" style="background-color: rgba(184, 154, 99, 0.12); color: var(--meta-gold); letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.3);">
+                                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom pb-3 gap-2" style="border-color: rgba(184, 154, 99, 0.3) !important;">
+                                        <div>
+                                            <h3 class="fw-bold mb-1 text-uppercase h5" style="color: var(--meta-ivory); font-family: var(--font-title, inherit); letter-spacing: 1px;">
+                                                {{ parcours.prestation.nom }}
+                                            </h3>
+                                            {% if parcours.seances|length > 0 %}
+                                                <a href="{{ path('app_account_facture', {'id': parcours.seances[0].id}) }}" target="_blank" class="small text-decoration-none transition-hover d-inline-flex align-items-center mt-1" style="color: var(--meta-gold); font-size: 0.82rem; letter-spacing: 0.5px;">
+                                                    <i class="bi bi-file-earmark-pdf me-1 text-gold"></i>Télécharger ma facture PDF
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                        <span class="small fw-bold text-uppercase px-3 py-1 rounded-0 align-self-start align-self-md-auto" style="background-color: rgba(184, 154, 99, 0.12); color: var(--meta-gold); letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.3);">
                                             {{ parcours.planifiees }} / {{ parcours.total }} planifiée(s)
                                         </span>
                                     </div>

@@ -136,8 +136,8 @@ class StripeController extends AbstractController
 
                     $entityManager->flush();
 
-                    // 1. Email Client (Demande de RDV bien enregistrée, en attente de validation par Louisa)
-                    $bookingMailer->sendPendingBookingToClient($premiereSeance);
+                    // 1. Email Client (Demande de RDV bien enregistrée + Facture PDF jointe dès le paiement)
+                    $bookingMailer->sendPendingBookingToClient($premiereSeance, true);
 
                     // 2. Email Admin (Notification paiement validé & séance en attente)
                     $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $prestation->getPrix());

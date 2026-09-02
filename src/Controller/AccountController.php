@@ -96,5 +96,29 @@ class AccountController extends AbstractController
         return $this->render('account/password.html.twig', [
             'form' => $form->createView(),
         ]);
-    }   
+    }
+
+    #[Route('/mon-compte/facture/{id}', name: 'app_account_facture')]
+    public function telechargerFacture(\App\Entity\Seance $seance, \App\Service\PdfService $pdfService, \Twig\Environment $twig): Response
+    {
+        $user = $this->getUser();
+        if ($seance->getUser() !== $user) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à consulter cette facture.');
+        }
+
+        $htmlPdf = $twig->render('pdf/facture.html.twig', [
+            'reservation' => $seance
+        ]);
+
+        $pdfContent = $pdfService->generateBinaryPdf($htmlPdf);
+
+        $numeroFacture = 'FAC-' . date('Ymd') . '-' . $seance->getId();
+        $nomClient = preg_replace('/[^A-Za-z0-9\-]/', '_', $user->getNom() ?? 'Client');
+        $nomFichierPdf = 'Facture_Metamorphysis_' . $numeroFacture . '_' . strtoupper($nomClient) . '.pdf';
+
+        return new Response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $nomFichierPdf . '"'
+        ]);
+    }
 }
