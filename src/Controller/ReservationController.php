@@ -60,9 +60,19 @@ class ReservationController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
-        $nombrePersonnes = (int) ($request->query->get('personnes') ?? $request->request->get('personnes', 1));
-        if ($nombrePersonnes < 1) {
-            $nombrePersonnes = 1;
+        $minPersonnes = $prestation->getMinPersonnes();
+        $maxPersonnes = $prestation->getMaxPersonnes();
+
+        $reqPersonnes = $request->query->get('personnes') ?? $request->request->get('personnes');
+        if ($reqPersonnes !== null && is_numeric($reqPersonnes)) {
+            $nombrePersonnes = (int) $reqPersonnes;
+            if ($nombrePersonnes < $minPersonnes) {
+                $nombrePersonnes = $minPersonnes;
+            } elseif ($nombrePersonnes > $maxPersonnes) {
+                $nombrePersonnes = $maxPersonnes;
+            }
+        } else {
+            $nombrePersonnes = $minPersonnes;
         }
 
         $montant = $prestation->calculerPrixTotal($nombrePersonnes);

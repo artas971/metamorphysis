@@ -45,7 +45,7 @@
                         </p>
                         {# Prix et Formule en IVOIRE / OR #}
                         <p class="fs-3 fw-bold mb-1" style="color: #FFFFF0; opacity: 0.95;">
-                            {{ montant|default(prestation.prix) }} €
+                            {{ montant|default(prestation.calculerPrixTotal(nombrePersonnes|default(prestation.minPersonnes))) }} €
                         </p>
                         {% if prestation.hasTarificationVariable %}
                             <div class="mt-2">
@@ -59,17 +59,17 @@
                                     <span class="small" style="color: var(--meta-gold); font-size: 0.72rem; text-decoration: underline;">changer</span>
                                 </a>
                             </div>
-                        {% elseif nombrePersonnes is defined and (nombrePersonnes > 1 or prestation.minPersonnes > 1) %}
+                        {% elseif (nombrePersonnes is defined and nombrePersonnes > 1) or prestation.minPersonnes > 1 %}
                             <div class="mt-2">
                                 <span class="badge px-3 py-2" style="background-color: rgba(10, 10, 9, 0.7); color: var(--meta-gold); border: 1px solid rgba(184, 154, 99, 0.4); font-size: 0.8rem; letter-spacing: 0.5px;">
-                                    <i class="bi bi-people-fill me-1"></i>{{ prestation.getLibelleFormule(nombrePersonnes|default(1)) }}
+                                    <i class="bi bi-people-fill me-1"></i>{{ prestation.getLibelleFormule(nombrePersonnes|default(prestation.minPersonnes)) }}
                                 </span>
                             </div>
                         {% endif %}
                     </div>
 
                     {{ form_start(form, {'attr': {'id': 'reservation-form'}}) }}
-                        <input type="hidden" name="personnes" value="{{ nombrePersonnes|default(1) }}">
+                        <input type="hidden" name="personnes" value="{{ nombrePersonnes|default(prestation.minPersonnes) }}">
                         <div class="mb-4 text-start">
                             
                             {# Label 1 en IVOIRE #}

@@ -214,21 +214,24 @@ class Prestation
         return $this;
     }
 
-    public function getMinPersonnes(): int
-    {
-        return $this->minPersonnes ?? 1;
-    }
-
     public function setMinPersonnes(?int $minPersonnes): static
     {
-        $this->minPersonnes = $minPersonnes ?? 1;
+        $this->minPersonnes = max(1, $minPersonnes ?? 1);
 
         return $this;
     }
 
+    public function getMinPersonnes(): int
+    {
+        return max(1, $this->minPersonnes ?? 1);
+    }
+
     public function getMaxPersonnes(): int
     {
-        return $this->maxPersonnes ?? 1;
+        $min = $this->getMinPersonnes();
+        $max = $this->maxPersonnes ?? $min;
+
+        return max($min, $max);
     }
 
     public function setMaxPersonnes(?int $maxPersonnes): static
@@ -290,12 +293,21 @@ class Prestation
     /**
      * Retourne les détails complets (prix, titre, sous-titre) pour un palier donné
      */
-    public function getFormuleDetails(int $nombrePersonnes): array
+    public function getFormuleDetails(?int $nombrePersonnes = null): array
     {
+        $min = $this->getMinPersonnes();
+        $max = $this->getMaxPersonnes();
+
+        if ($nombrePersonnes === null || $nombrePersonnes < $min) {
+            $nombrePersonnes = $min;
+        } elseif ($nombrePersonnes > $max) {
+            $nombrePersonnes = $max;
+        }
+
         $tarifs = $this->getTarifsParPersonne();
         $key = (string) $nombrePersonnes;
 
-        $defaultTitre = ($nombrePersonnes === $this->getMaxPersonnes() && $nombrePersonnes > 2) 
+        $defaultTitre = ($nombrePersonnes === $max && $nombrePersonnes > 2) 
             ? $nombrePersonnes . ' personnes et +' 
             : $nombrePersonnes . ($nombrePersonnes > 1 ? ' personnes' : ' personne');
 
@@ -340,7 +352,7 @@ class Prestation
     /**
      * Retourne le tarif exact pour le nombre de personnes sélectionné
      */
-    public function getTarifPour(int $nombrePersonnes): float
+    public function getTarifPour(?int $nombrePersonnes = null): float
     {
         return $this->getFormuleDetails($nombrePersonnes)['prix'];
     }
@@ -359,12 +371,11 @@ class Prestation
         return $this->calculerPrix($nombrePersonnes);
     }
 
-    public function getLibelleFormule(?int $nombrePersonnes): string
+    public function getLibelleFormule(?int $nombrePersonnes = null): string
     {
-        $nb = $nombrePersonnes ?? $this->getMinPersonnes();
-        $details = $this->getFormuleDetails($nb);
-        $titre = $details['titre'] ?: ($nb . ' personnes');
-        $sousTitre = $details['sousTitre'] ? ' (' . $details['sousTitre'] . ')' : '';
+        $details = $this->getFormuleDetails($nombrePersonnes);
+        $titre = !empty($details['titre']) ? $details['titre'] : ($this->getMinPersonnes() . ' personnes');
+        $sousTitre = !empty($details['sousTitre']) ? ' (' . $details['sousTitre'] . ')' : '';
         return $titre . $sousTitre;
     }
 

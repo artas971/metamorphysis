@@ -58,7 +58,7 @@
                     {{ prestation.prixAffiche }}
                 {% else %}
                     {% if prestation.hasTarificationVariable %}<span class="fs-6 fw-normal text-capitalize" style="color: var(--meta-sage); font-size: 0.82rem !important;">À partir de </span>{% endif %}
-                    {{ prestation.prix }} € 
+                    {{ prestation.calculerPrixTotal(prestation.minPersonnes) }} € 
                     {% if prestation.unitePrix is defined and prestation.unitePrix %}
                         <span class="fs-6 fw-light text-lowercase" style="color: var(--meta-ivory);">/ {{ prestation.unitePrix }}</span>
                     {% endif %}
@@ -73,7 +73,7 @@
                    class="btn w-100 text-uppercase rounded-0 py-2 transition-hover" 
                    style="background-color: rgba(184, 154, 99, 0.15); border: 1px solid rgba(184, 154, 99, 0.5); color: var(--meta-gold); font-size: 0.72rem; letter-spacing: 1.2px; font-weight: 600;"
                    title="Une Consultation Initiale préalable est requise pour accéder à cette prestation">
-                    <i class="bi bi-lock me-1"></i> CONSULTATION INITIALE REQUISE
+                   <i class="bi bi-lock me-1"></i> CONSULTATION INITIALE REQUISE
                 </a>
             {% elseif app.user and app.user.hasActivePrestation(prestation) %}
                 <a href="{{ path('app_account') }}" 
@@ -83,7 +83,7 @@
                     <i class="bi bi-hourglass-split me-1"></i> EN COURS &bull; MON ESPACE
                 </a>
             {% else %}
-                <a href="{{ path('app_reservation_new', {'slug': prestation.slug|default(prestation.id)}) }}" 
+                <a href="{{ path('app_reservation_new', {'slug': prestation.slug|default(prestation.id), 'personnes': prestation.minPersonnes}) }}" 
                    class="btn w-100 text-gold text-uppercase rounded-0 py-2 transition-hover" 
                    style="background-color: var(--meta-plum); border: 1px solid rgba(184, 154, 99, 0.4); font-size: 0.75rem; letter-spacing: 2px; font-weight: 500;">
                     RÉSERVER

@@ -48,10 +48,18 @@ class StripeController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
-        $nombrePersonnes = (int) ($reservationData['nombre_personnes'] ?? 1);
+        $minPersonnes = $prestation->getMinPersonnes();
+        $maxPersonnes = $prestation->getMaxPersonnes();
+        $nombrePersonnes = (int) ($reservationData['nombre_personnes'] ?? $minPersonnes);
+        if ($nombrePersonnes < $minPersonnes) {
+            $nombrePersonnes = $minPersonnes;
+        } elseif ($nombrePersonnes > $maxPersonnes) {
+            $nombrePersonnes = $maxPersonnes;
+        }
+
         $montant = (float) ($reservationData['montant'] ?? $prestation->calculerPrixTotal($nombrePersonnes));
         $libelleLigne = $prestation->getNom();
-        if ($nombrePersonnes > 1) {
+        if ($prestation->hasTarificationVariable() || $nombrePersonnes > 1) {
             $libelleLigne .= ' (' . $prestation->getLibelleFormule($nombrePersonnes) . ')';
         }
 
