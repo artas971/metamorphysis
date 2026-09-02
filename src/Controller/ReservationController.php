@@ -27,24 +27,13 @@ class ReservationController extends AbstractController
 
     #[Route('/reserver/{id}', name: 'app_reservation_new')]
     #[IsGranted('ROLE_USER')]
-    public function reserver(Prestation $prestation, Request $request, CacheInterface $cache, SeanceRepository $seanceRepository): Response
+    public function reserver(Prestation $prestation, Request $request, CacheInterface $cache): Response
     {
-        $maintenant = new \DateTime();
-        
-        $seancesEnCours = $seanceRepository->createQueryBuilder('s')
-            ->where('s.user = :user')
-            ->andWhere('s.prestation = :prestation')
-            ->andWhere('(s.dateRendezVous IS NULL OR s.dateRendezVous >= :maintenant)')
-            ->andWhere('(s.statut IS NULL OR s.statut != :annule)')
-            ->setParameter('user', $this->getUser())
-            ->setParameter('prestation', $prestation)
-            ->setParameter('maintenant', $maintenant)
-            ->setParameter('annule', 'Annulé')
-            ->getQuery()
-            ->getResult();
+        /** @var User|null $user */
+        $user = $this->getUser();
 
-        if (count($seancesEnCours) > 0) {
-            $this->addFlash('warning', 'Vous avez déjà un accompagnement en cours pour la prestation "' . $prestation->getNom() . '". Veuillez terminer vos séances actuelles avant de pouvoir la réserver de nouveau.');
+        if ($user && $user->hasActivePrestation($prestation)) {
+            $this->addFlash('warning', 'Vous suivez déjà un accompagnement en cours pour la prestation "' . $prestation->getNom() . '". Vous devez terminer vos séances actuelles avant de pouvoir reprendre ce même type de prestation.');
             return $this->redirectToRoute('app_account');
         }
 

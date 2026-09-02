@@ -95,14 +95,31 @@
                             </div>
                         {% endif %}
 
-                        {# Bouton d'action Réserver #}
-                        <div class="mt-5 pt-4" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
-                            <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
-                               class="btn w-100 py-3 fw-bold text-uppercase transition-hover" 
-                               style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
-                                Réserver cette séance
-                            </a>
-                        </div>
+                        {# Bouton d'action Réserver / Info Accompagnement en cours #}
+                        {% if app.user and app.user.hasActivePrestation(prestation) %}
+                            <div class="mt-5 p-4" style="background-color: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.35); border-left: 4px solid #E5C78D;">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <i class="bi bi-info-circle-fill fs-4" style="color: #E5C78D;"></i>
+                                    <h3 class="m-0 text-gold fs-6 text-uppercase" style="letter-spacing: 1.5px; font-family: var(--font-title), serif;">Accompagnement déjà en cours</h3>
+                                </div>
+                                <p class="text-ivory small mb-3" style="line-height: 1.6; opacity: 0.9;">
+                                    Vous suivez actuellement ce parcours d'accompagnement. Vous ne pouvez pas souscrire de nouveau à cette même prestation tant que vos séances actuelles ne sont pas achevées.
+                                </p>
+                                <a href="{{ path('app_account') }}" 
+                                   class="btn w-100 py-3 fw-bold text-uppercase transition-hover" 
+                                   style="background-color: rgba(184, 154, 99, 0.2); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0; font-size: 0.85rem;">
+                                    <i class="bi bi-person-circle me-2"></i>Accéder à mon espace personnel
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="mt-5 pt-4" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
+                                <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
+                                   class="btn w-100 py-3 fw-bold text-uppercase transition-hover" 
+                                   style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
+                                    Réserver cette séance
+                                </a>
+                            </div>
+                        {% endif %}
                         
                     </div>
                 </div>

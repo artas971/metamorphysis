@@ -43,6 +43,11 @@ class StripeController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        if ($user && $user->hasActivePrestation($prestation)) {
+            $this->addFlash('warning', 'Vous suivez déjà un accompagnement en cours pour la prestation "' . $prestation->getNom() . '". Vous devez terminer vos séances actuelles avant de pouvoir reprendre ce même type de prestation.');
+            return $this->redirectToRoute('app_account');
+        }
+
         $checkout_session = Session::create([
             'payment_method_types' => ['card'],
             'customer_email' => $user->getEmail(),

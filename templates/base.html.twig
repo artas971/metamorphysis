@@ -117,19 +117,25 @@
     </header>
 
     <main id="main-content" class="flex-grow-1" tabindex="-1">
-        {% if app.flashes|length > 0 %}
+        {% for label, messages in app.flashes %}
             <div class="container mt-4">
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="alert alert-premium alert-dismissible fade show d-flex align-items-center" role="alert">
-                            <i class="bi bi-check-circle text-gold fs-4 me-3"></i>
-                            <div>{{ message }}</div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-                        </div>
-                    {% endfor %}
+                {% for message in messages %}
+                    <div class="alert alert-premium alert-dismissible fade show d-flex align-items-center shadow-lg" 
+                         style="{% if label == 'warning' %}border-left: 4px solid #E5C78D; background-color: rgba(255, 193, 7, 0.15); color: #FFFFF0; border-radius: 4px;{% elseif label == 'danger' %}border-left: 4px solid #dc3545; background-color: rgba(220, 53, 69, 0.15); color: #FFFFF0; border-radius: 4px;{% else %}border-left: 4px solid var(--meta-gold); background-color: rgba(74, 79, 65, 0.45); color: #FFFFF0; border-radius: 4px;{% endif %}" 
+                         role="alert">
+                        {% if label == 'warning' %}
+                            <i class="bi bi-exclamation-triangle-fill fs-4 me-3" style="color: #E5C78D;"></i>
+                        {% elseif label == 'danger' %}
+                            <i class="bi bi-x-circle-fill text-danger fs-4 me-3"></i>
+                        {% else %}
+                            <i class="bi bi-check-circle-fill text-gold fs-4 me-3"></i>
+                        {% endif %}
+                        <div class="flex-grow-1" style="font-size: 0.95rem; line-height: 1.5;">{{ message }}</div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
                 {% endfor %}
             </div>
-        {% endif %}
+        {% endfor %}
 
         {% block body %}{% endblock %}
     </main>

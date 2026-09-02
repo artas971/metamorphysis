@@ -24,7 +24,17 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('media_url', [$this, 'getMediaUrl']),
+            new TwigFunction('has_active_prestation', [$this, 'hasActivePrestation']),
         ];
+    }
+
+    public function hasActivePrestation(?\App\Entity\Prestation $prestation, ?\App\Entity\User $user = null): bool
+    {
+        if (!$user || !$prestation) {
+            return false;
+        }
+
+        return $user->hasActivePrestation($prestation);
     }
 
     public function getFilters(): array

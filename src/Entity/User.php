@@ -243,4 +243,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * Vérifie si l'utilisateur a déjà des séances actives / en cours pour une prestation donnée.
+     * Une prestation est considérée en cours si au moins une séance n'est ni 'Effectuée' ni 'Annulé'.
+     */
+    public function hasActivePrestation(?Prestation $prestation): bool
+    {
+        if (!$prestation || !$prestation->getId()) {
+            return false;
+        }
+
+        foreach ($this->seances as $seance) {
+            if ($seance->getPrestation() && $seance->getPrestation()->getId() === $prestation->getId()) {
+                $statut = $seance->getStatut();
+                if (!in_array($statut, ['Effectuée', 'Annulé'], true)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
