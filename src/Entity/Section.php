@@ -189,6 +189,7 @@ class Section
      * @var Collection<int, Prestation>
      */
     #[ORM\ManyToMany(targetEntity: Prestation::class)]
+    #[ORM\OrderBy(['ordre' => 'ASC', 'id' => 'ASC'])]
     private Collection $prestations;
 
     public function __construct()

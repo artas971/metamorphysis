@@ -20,7 +20,7 @@
     </button>
 
     <div class="prestation-track" id="slider-track-{{ loop_index|default(1) }}" role="region" aria-label="Carrousel des prestations">
-        {% for prestation in section.prestations %}
+        {% for prestation in section.prestations|sort((a, b) => (a.ordre ?? 999) <=> (b.ordre ?? 999) ?: a.id <=> b.id) %}
             <article class="prestation-card-item">
                 {% include 'prestation/_card.html.twig' with {'prestation': prestation} %}
             </article>

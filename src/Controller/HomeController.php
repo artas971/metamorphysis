@@ -41,7 +41,7 @@ class HomeController extends AbstractController
         }
 
         // 3. Fallback : Si le bouton est DÉCOCHÉ, on affiche ta page native optimisée
-        $prestations = $prestationRepository->findAll();
+        $prestations = $prestationRepository->findBy([], ['ordre' => 'ASC', 'id' => 'ASC']);
         
         return $this->render('home/accueil.html.twig', [
             'prestations' => $prestations,

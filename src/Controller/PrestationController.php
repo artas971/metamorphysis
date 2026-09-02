@@ -23,8 +23,8 @@ class PrestationController extends AbstractController
 
         return $this->render('prestation/index.html.twig', [
             'prestations' => $prestationRepository->findBy([], [
-                'estMisEnAvant' => 'DESC',
-                'ordre' => 'ASC'
+                'ordre' => 'ASC',
+                'id' => 'ASC'
             ]),
         ]);
     }

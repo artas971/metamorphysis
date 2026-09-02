@@ -29,6 +29,7 @@ class PrestationCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Prestation')
             ->setEntityLabelInPlural('Prestations')
+            ->setDefaultSort(['ordre' => 'ASC', 'id' => 'ASC'])
             ->setHelp('index', 'Gérez ici votre catalogue de soins. Les modifications sont instantanément répercutées sur votre site public.');
     }
 
