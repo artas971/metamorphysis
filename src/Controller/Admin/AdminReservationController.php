@@ -30,12 +30,17 @@ class AdminReservationController extends AbstractController
     }
 
     #[Route('/reservation/{id}/valider', name: 'app_admin_reservation_valider')]
-    public function valider(Seance $seance, EntityManagerInterface $em): Response
-    {
+    public function valider(
+        Seance $seance, 
+        EntityManagerInterface $em,
+        \App\Service\BookingMailerService $bookingMailer
+    ): Response {
         $seance->setStatut('Confirmé');
         $em->flush();
 
-        $this->addFlash('success', 'La séance n°' . $seance->getNumero() . ' a été confirmée.');
+        $bookingMailer->sendBookingConfirmedToClient($seance);
+
+        $this->addFlash('success', 'La séance n°' . $seance->getNumero() . ' a été confirmée et un e-mail avec facture a été envoyé au client.');
         return $this->redirectToRoute('app_admin_reservations');
     }
 }

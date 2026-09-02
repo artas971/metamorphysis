@@ -34,7 +34,7 @@ class ContactController extends AbstractController
             // Création de l'e-mail
             $email = (new Email())
                 ->from($data['email'])
-                ->to('contact@metamorphysis.com') // L'adresse de l'administratrice
+                ->to('Metamorphysisconsulting@gmail.com') // L'adresse de l'administratrice Louisa
                 ->subject('Nouveau message de : ' . $data['nom'] . ' - ' . $data['sujet'])
                 ->text($data['message']);
 
