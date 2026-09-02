@@ -10,8 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 class ChangePasswordType extends AbstractType
 {
@@ -44,15 +42,9 @@ class ChangePasswordType extends AbstractType
                             'message' => 'Veuillez saisir un nouveau mot de passe.',
                         ]),
                         new Length([
-                            'min' => 12,
+                            'min' => 6,
                             'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères.',
                             'max' => 4096,
-                        ]),
-                        new PasswordStrength([
-                            'message' => 'Le mot de passe est trop faible. Veuillez utiliser un mélange de lettres majuscules, minuscules, chiffres et caractères spéciaux.',
-                        ]),
-                        new NotCompromisedPassword([
-                            'message' => 'Ce mot de passe a fuité lors d\'une violation de données sur Internet. Pour votre sécurité, veuillez en choisir un autre.',
                         ]),
                     ],
                 ],
