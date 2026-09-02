@@ -29,6 +29,12 @@ class Prestation
     private ?float $prix = null;
 
     #[ORM\Column(nullable: true)]
+    private ?float $prixCouple = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $prixGroupe = null;
+
+    #[ORM\Column(nullable: true)]
     private ?int $duree = null;
     
     // --- CHAMP ICÔNE ---
@@ -126,12 +132,66 @@ class Prestation
         return $this;
     }
 
+    public function getPrixCouple(): ?float
+    {
+        return $this->prixCouple;
+    }
+
+    public function setPrixCouple(?float $prixCouple): static
+    {
+        $this->prixCouple = $prixCouple;
+
+        return $this;
+    }
+
+    public function getPrixGroupe(): ?float
+    {
+        return $this->prixGroupe;
+    }
+
+    public function setPrixGroupe(?float $prixGroupe): static
+    {
+        $this->prixGroupe = $prixGroupe;
+
+        return $this;
+    }
+
+    public function hasTarificationVariable(): bool
+    {
+        return $this->prixCouple !== null || $this->prixGroupe !== null;
+    }
+
+    public function calculerPrix(?int $nombrePersonnes): float
+    {
+        if ($nombrePersonnes === 2 && $this->prixCouple !== null) {
+            return (float) $this->prixCouple;
+        }
+
+        if ($nombrePersonnes !== null && $nombrePersonnes >= 3 && $this->prixGroupe !== null) {
+            return (float) $this->prixGroupe;
+        }
+
+        return (float) ($this->prix ?? 0.0);
+    }
+
+    public function getLibelleFormule(?int $nombrePersonnes): string
+    {
+        if ($nombrePersonnes === 2) {
+            return 'Formule Couple (2 personnes)';
+        }
+
+        if ($nombrePersonnes !== null && $nombrePersonnes >= 3) {
+            return 'Formule Groupe (' . $nombrePersonnes . ' personnes)';
+        }
+
+        return 'Formule Individuelle (1 personne)';
+    }
+
     public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    // Ajoute le "?" devant int pour accepter que ce soit vide
     public function setDuree(?int $duree): static
     {
         $this->duree = $duree;
@@ -139,7 +199,6 @@ class Prestation
         return $this;
     }
 
-    // --- GETTER & SETTER POUR L'ICÔNE ---
     public function getIcone(): ?string
     {
         return $this->icone;
@@ -152,7 +211,6 @@ class Prestation
         return $this;
     }
 
-    // --- GETTER & SETTER POUR L'UNITÉ DE PRIX ---
     public function getUnitePrix(): ?string
     {
         return $this->unitePrix;
@@ -186,7 +244,6 @@ class Prestation
     public function removeEntrE(Reservation $entrE): static
     {
         if ($this->Entrée->removeElement($entrE)) {
-            // set the owning side to null (unless already changed)
             if ($entrE->getPrestation() === $this) {
                 $entrE->setPrestation(null);
             }
@@ -222,8 +279,7 @@ class Prestation
 
     public function __toString(): string
     {
-        // On affiche simplement le nom de la prestation
-        return $this->nom;
+        return $this->nom ?? '';
     }
  
     public function isEstMisEnAvant(): bool
@@ -304,7 +360,6 @@ class Prestation
     public function removeSeance(Seance $seance): static
     {
         if ($this->seances->removeElement($seance)) {
-            // set the owning side to null (unless already changed)
             if ($seance->getPrestation() === $this) {
                 $seance->setPrestation(null);
             }

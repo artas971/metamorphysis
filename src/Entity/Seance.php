@@ -36,6 +36,12 @@ class Seance
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lienVisio = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $nombrePersonnes = 1;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $montantPaye = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $dateCreation = null;
 
@@ -145,5 +151,34 @@ class Seance
         $this->lienVisio = $lienVisio;
 
         return $this;
+    }
+
+    public function getNombrePersonnes(): ?int
+    {
+        return $this->nombrePersonnes ?? 1;
+    }
+
+    public function setNombrePersonnes(?int $nombrePersonnes): static
+    {
+        $this->nombrePersonnes = $nombrePersonnes;
+
+        return $this;
+    }
+
+    public function getMontantPaye(): ?float
+    {
+        return $this->montantPaye;
+    }
+
+    public function setMontantPaye(?float $montantPaye): static
+    {
+        $this->montantPaye = $montantPaye;
+
+        return $this;
+    }
+
+    public function getLibelleFormule(): string
+    {
+        return $this->prestation ? $this->prestation->getLibelleFormule($this->nombrePersonnes) : 'Séance';
     }
 }

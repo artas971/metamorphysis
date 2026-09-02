@@ -26,8 +26,13 @@
             <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Prestation & Séance</strong><br>
             <span style="color: #FFFFF0; font-size: 15px;">{{ prestation.nom }}</span>
             <span style="color: #B89A63; font-size: 13px;">(Séance n°{{ seance.numero }})</span>
+            {% if seance.nombrePersonnes is defined and seance.nombrePersonnes > 1 %}
+                <br><span style="color: #E5C78D; font-size: 13px; font-weight: bold;">👥 {{ seance.getLibelleFormule() }}</span>
+            {% endif %}
             {% if montant is defined and montant is not null %}
                 <br><span style="color: #28a745; font-size: 13px; font-weight: bold;">💳 Montant réglé : {{ montant|number_format(2, ',', ' ') }} €</span>
+            {% elseif seance.montantPaye %}
+                <br><span style="color: #28a745; font-size: 13px; font-weight: bold;">💳 Montant réglé : {{ seance.montantPaye|number_format(2, ',', ' ') }} €</span>
             {% elseif prestation.prix %}
                 <br><span style="color: #28a745; font-size: 13px; font-weight: bold;">💳 Montant réglé : {{ prestation.prix|number_format(2, ',', ' ') }} €</span>
             {% endif %}

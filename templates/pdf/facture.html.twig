@@ -108,6 +108,7 @@
         <strong>Séance :</strong> Séance n°{{ reservation.numero }} - {% if reservation.dateRendezVous %}{{ reservation.dateRendezVous|date("d/m/Y à H:i") }}{% else %}À convenir{% endif %}
     </div>
 
+    {% set prixFacture = reservation.montantPaye|default(reservation.prestation.prix) %}
     <table>
         <thead>
             <tr>
@@ -117,12 +118,17 @@
         </thead>
         <tbody>
             <tr>
-                <td>{{ reservation.prestation.nom }} (Séance n°{{ reservation.numero }})</td>
-                <td class="text-right">{{ reservation.prestation.prix|number_format(2, ',', ' ') }} €</td>
+                <td>
+                    <strong>{{ reservation.prestation.nom }}</strong> (Séance n°{{ reservation.numero }})
+                    {% if reservation.nombrePersonnes is defined and reservation.nombrePersonnes > 1 %}
+                        <br><span style="color: #666; font-size: 12px;">Formule : {{ reservation.getLibelleFormule() }}</span>
+                    {% endif %}
+                </td>
+                <td class="text-right">{{ prixFacture|number_format(2, ',', ' ') }} €</td>
             </tr>
             <tr class="total-row">
                 <td class="text-right">Total Réglé :</td>
-                <td class="text-right" style="color: #B89A63;">{{ reservation.prestation.prix|number_format(2, ',', ' ') }} €</td>
+                <td class="text-right" style="color: #B89A63;">{{ prixFacture|number_format(2, ',', ' ') }} €</td>
             </tr>
         </tbody>
     </table>

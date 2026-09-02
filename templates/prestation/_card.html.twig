@@ -54,6 +54,7 @@
         {# 2.5 Prix et Unité #}
         <div class="prestation-card-price-box mb-3 d-flex align-items-center justify-content-center" style="height: 2rem;">
             <p class="text-gold fw-bold m-0 text-uppercase" style="font-size: 1.15rem; letter-spacing: 1px;">
+                {% if prestation.hasTarificationVariable %}<span class="fs-6 fw-normal text-capitalize" style="color: var(--meta-sage); font-size: 0.82rem !important;">À partir de </span>{% endif %}
                 {{ prestation.prix }} € 
                 {% if prestation.unitePrix is defined and prestation.unitePrix %}
                     <span class="fs-6 fw-light text-lowercase" style="color: var(--meta-ivory);">/ {{ prestation.unitePrix }}</span>

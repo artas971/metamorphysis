@@ -55,11 +55,23 @@ class PrestationCrudController extends AbstractCrudController
                 ->setRequired(true)
                 ->setHelp('Ex: Accompagnement Individuel, Séance d\'alignement...'),
 
-            MoneyField::new('prix', 'Tarif de la consultation')
+            MoneyField::new('prix', 'Tarif 1 personne (Individuel / Base)')
                 ->setCurrency('EUR')
                 ->setStoredAsCents(false)
                 ->setRequired(true)
-                ->setHelp('Le prix sera affiché avec le symbole € de manière automatique.'),
+                ->setHelp('Tarif standard pour 1 personne (ex: 50 €).'),
+
+            MoneyField::new('prixCouple', 'Tarif 2 personnes (Couple / Duo)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
+                ->setRequired(false)
+                ->setHelp('Optionnel. Ex: 80 €. Si renseigné, le client pourra sélectionner la formule Couple sur le site.'),
+
+            MoneyField::new('prixGroupe', 'Tarif 3+ personnes (Groupe / Famille)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
+                ->setRequired(false)
+                ->setHelp('Optionnel. Ex: 120 €. Si renseigné, le client pourra sélectionner la formule Groupe sur le site.'),
 
             TextField::new('unitePrix', 'Unité de facturation')
                 ->setHelp('Exemple : SÉANCE, FORFAIT, ACCOMPAGNEMENT. Par défaut : SÉANCE')

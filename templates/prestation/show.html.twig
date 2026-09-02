@@ -46,7 +46,7 @@
                             
                             <div class="d-flex align-items-center gap-4 text-ivory">
                                 <span class="fs-4 fw-bold text-gold">
-                                    {{ prestation.prix }} € 
+                                    <span id="dynamic-price-display">{{ prestation.prix }} €</span>
                                     {% if prestation.unitePrix %}<span class="fs-6 fw-light text-uppercase">/ {{ prestation.unitePrix }}</span>{% endif %}
                                 </span>
                                 
@@ -95,9 +95,56 @@
                             </div>
                         {% endif %}
 
+                        {# Section Tarification Variable (Participants) #}
+                        {% if prestation.hasTarificationVariable %}
+                            <div class="my-4 p-4" style="background-color: rgba(10, 10, 9, 0.65); border: 1px solid rgba(184, 154, 99, 0.35);">
+                                <label class="form-label text-gold text-uppercase small fw-bold mb-3 d-flex align-items-center" style="letter-spacing: 1.5px;">
+                                    <i class="bi bi-people-fill me-2 fs-5"></i>Formule & Nombre de participants
+                                </label>
+                                <div class="row g-2" id="participant-options">
+                                    {% if prestation.prix %}
+                                        <div class="col-12 col-sm-4">
+                                            <div class="formula-card p-3 text-center cursor-pointer transition-hover position-relative active-formula" 
+                                                 data-price="{{ prestation.prix }}" data-personnes="1" 
+                                                 style="background-color: rgba(184, 154, 99, 0.2); border: 2px solid var(--meta-gold); cursor: pointer;">
+                                                <input class="form-check-input visually-hidden" type="radio" name="nbPersonnes" id="formule1" value="1" checked>
+                                                <div class="fw-bold text-ivory small text-uppercase mb-1"><i class="bi bi-person me-1"></i>Individuel</div>
+                                                <div class="text-gold fw-bold fs-5">{{ prestation.prix }} €</div>
+                                                <div class="small text-sage" style="font-size: 0.75rem;">1 personne</div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if prestation.prixCouple %}
+                                        <div class="col-12 col-sm-4">
+                                            <div class="formula-card p-3 text-center cursor-pointer transition-hover position-relative" 
+                                                 data-price="{{ prestation.prixCouple }}" data-personnes="2" 
+                                                 style="background-color: rgba(74, 79, 65, 0.3); border: 1px solid rgba(184, 154, 99, 0.3); cursor: pointer;">
+                                                <input class="form-check-input visually-hidden" type="radio" name="nbPersonnes" id="formule2" value="2" {% if not prestation.prix %}checked{% endif %}>
+                                                <div class="fw-bold text-ivory small text-uppercase mb-1"><i class="bi bi-people me-1"></i>Couple / Duo</div>
+                                                <div class="text-gold fw-bold fs-5">{{ prestation.prixCouple }} €</div>
+                                                <div class="small text-sage" style="font-size: 0.75rem;">2 personnes</div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if prestation.prixGroupe %}
+                                        <div class="col-12 col-sm-4">
+                                            <div class="formula-card p-3 text-center cursor-pointer transition-hover position-relative" 
+                                                 data-price="{{ prestation.prixGroupe }}" data-personnes="3" 
+                                                 style="background-color: rgba(74, 79, 65, 0.3); border: 1px solid rgba(184, 154, 99, 0.3); cursor: pointer;">
+                                                <input class="form-check-input visually-hidden" type="radio" name="nbPersonnes" id="formule3" value="3">
+                                                <div class="fw-bold text-ivory small text-uppercase mb-1"><i class="bi bi-diagram-3 me-1"></i>Groupe</div>
+                                                <div class="text-gold fw-bold fs-5">{{ prestation.prixGroupe }} €</div>
+                                                <div class="small text-sage" style="font-size: 0.75rem;">3+ personnes</div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
                         {# Bouton d'action Réserver / Info Accompagnement en cours #}
                         {% if app.user and app.user.hasActivePrestation(prestation) %}
-                            <div class="mt-5 p-4" style="background-color: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.35); border-left: 4px solid #E5C78D;">
+                            <div class="mt-4 p-4" style="background-color: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.35); border-left: 4px solid #E5C78D;">
                                 <div class="d-flex align-items-center gap-3 mb-2">
                                     <i class="bi bi-info-circle-fill fs-4" style="color: #E5C78D;"></i>
                                     <h3 class="m-0 text-gold fs-6 text-uppercase" style="letter-spacing: 1.5px; font-family: var(--font-title), serif;">Accompagnement déjà en cours</h3>
@@ -112,11 +159,12 @@
                                 </a>
                             </div>
                         {% else %}
-                            <div class="mt-5 pt-4" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
-                                <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
-                                   class="btn w-100 py-3 fw-bold text-uppercase transition-hover" 
+                            <div class="mt-4 pt-3" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
+                                <a id="btn-reserver-prestation" href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
+                                   class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
                                    style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
-                                    Réserver cette séance
+                                    <span>Réserver cette séance</span>
+                                    <span id="btn-price-preview" class="badge bg-dark text-gold ms-2 px-2 py-1" style="border: 1px solid var(--meta-gold); font-size: 0.9rem;">{{ prestation.prix }} €</span>
                                 </a>
                             </div>
                         {% endif %}
@@ -128,4 +176,47 @@
         </div>
     </div>
 </div>
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formulaCards = document.querySelectorAll('.formula-card');
+    const dynamicPriceDisplay = document.getElementById('dynamic-price-display');
+    const btnPricePreview = document.getElementById('btn-price-preview');
+    const btnReserver = document.getElementById('btn-reserver-prestation');
+    const baseReservationUrl = "{{ path('app_reservation_new', {'id': prestation.id}) }}";
+
+    formulaCards.forEach(card => {
+        card.addEventListener('click', function() {
+            formulaCards.forEach(c => {
+                c.classList.remove('active-formula');
+                c.style.backgroundColor = 'rgba(74, 79, 65, 0.3)';
+                c.style.border = '1px solid rgba(184, 154, 99, 0.3)';
+                const input = c.querySelector('input[type="radio"]');
+                if (input) input.checked = false;
+            });
+
+            this.classList.add('active-formula');
+            this.style.backgroundColor = 'rgba(184, 154, 99, 0.25)';
+            this.style.border = '2px solid var(--meta-gold)';
+            const currentRadio = this.querySelector('input[type="radio"]');
+            if (currentRadio) currentRadio.checked = true;
+
+            const selectedPrice = this.getAttribute('data-price');
+            const selectedPersonnes = this.getAttribute('data-personnes');
+
+            if (dynamicPriceDisplay) {
+                dynamicPriceDisplay.innerHTML = selectedPrice + ' €';
+            }
+            if (btnPricePreview) {
+                btnPricePreview.innerText = selectedPrice + ' €';
+            }
+            if (btnReserver) {
+                btnReserver.href = baseReservationUrl + '?personnes=' + selectedPersonnes;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

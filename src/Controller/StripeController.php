@@ -48,22 +48,31 @@ class StripeController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
+        $montant = (float) ($reservationData['montant'] ?? $prestation->getPrix());
+        $nombrePersonnes = (int) ($reservationData['nombre_personnes'] ?? 1);
+        $libelleLigne = $prestation->getNom();
+        if ($prestation->hasTarificationVariable()) {
+            $libelleLigne .= ' (' . $prestation->getLibelleFormule($nombrePersonnes) . ')';
+        }
+
         $checkout_session = Session::create([
             'payment_method_types' => ['card'],
             'customer_email' => $user->getEmail(),
             'metadata' => [
                 'user_id' => $user->getId(),
                 'prestation_id' => $prestation->getId(),
-                'date_rendez_vous' => $reservationData['date_rendez_vous']
+                'date_rendez_vous' => $reservationData['date_rendez_vous'],
+                'nombre_personnes' => $nombrePersonnes,
+                'montant' => $montant,
             ],
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
-                        'name' => $prestation->getNom(),
+                        'name' => $libelleLigne,
                         'description' => 'Accompagnement - Metamorphysis',
                     ],
-                    'unit_amount' => $prestation->getPrix() * 100, 
+                    'unit_amount' => (int) round($montant * 100), 
                 ],
                 'quantity' => 1,
             ]],
@@ -94,6 +103,8 @@ class StripeController extends AbstractController
             $prestation = $prestationRepository->find($reservationData['prestation_id'] ?? null);
             $dateRendezVousStr = $reservationData['date_rendez_vous'] ?? null;
             $dateRendezVous = $dateRendezVousStr ? new \DateTime($dateRendezVousStr) : null;
+            $nombrePersonnes = (int) ($reservationData['nombre_personnes'] ?? 1);
+            $montant = (float) ($reservationData['montant'] ?? ($prestation ? $prestation->calculerPrix($nombrePersonnes) : 0));
 
             if ($prestation) {
                 // Idempotence : vérifier si la séance 1 existe déjà
@@ -112,6 +123,8 @@ class StripeController extends AbstractController
                     $premiereSeance->setDuree($prestation->getDuree() ?? 60);
                     $premiereSeance->setDateRendezVous($dateRendezVous);
                     $premiereSeance->setStatut('En attente de validation');
+                    $premiereSeance->setNombrePersonnes($nombrePersonnes);
+                    $premiereSeance->setMontantPaye($montant);
 
                     if ($dateRendezVous) {
                         $lienVisio = $dailyCoService->createRoom($dateRendezVous);
@@ -131,6 +144,8 @@ class StripeController extends AbstractController
                         $seanceSuivante->setDuree($prestation->getDuree() ?? 60);
                         $seanceSuivante->setDateRendezVous(null);
                         $seanceSuivante->setStatut('Non planifiée');
+                        $seanceSuivante->setNombrePersonnes($nombrePersonnes);
+                        $seanceSuivante->setMontantPaye($montant);
                         $entityManager->persist($seanceSuivante);
                     }
 
@@ -140,7 +155,7 @@ class StripeController extends AbstractController
                     $bookingMailer->sendPendingBookingToClient($premiereSeance, true);
 
                     // 2. Email Admin (Notification paiement validé & séance en attente)
-                    $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $prestation->getPrix());
+                    $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $montant);
                 }
             }
         }

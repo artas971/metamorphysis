@@ -71,6 +71,11 @@ class StripeWebhookController extends AbstractController
                         }
                     }
 
+                    $nombrePersonnes = (int) ($session->metadata->nombre_personnes ?? 1);
+                    $montant = isset($session->metadata->montant) 
+                        ? (float) $session->metadata->montant 
+                        : ($session->amount_total ? ((float) $session->amount_total / 100) : $prestation->getPrix());
+
                     // --- 1ÈRE SÉANCE : CRÉATION & VISIO ---
                     $premiereSeance = new Seance();
                     $premiereSeance->setUser($user);
@@ -79,6 +84,8 @@ class StripeWebhookController extends AbstractController
                     $premiereSeance->setDuree($prestation->getDuree() ?? 60);
                     $premiereSeance->setDateRendezVous($dateRendezVous);
                     $premiereSeance->setStatut('En attente de validation');
+                    $premiereSeance->setNombrePersonnes($nombrePersonnes);
+                    $premiereSeance->setMontantPaye($montant);
 
                     // GÉNÉRATION ET ENREGISTREMENT DU LIEN DAILY.CO
                     if ($dateRendezVous) {
@@ -100,6 +107,8 @@ class StripeWebhookController extends AbstractController
                         $seanceSuivante->setDuree($prestation->getDuree() ?? 60);
                         $seanceSuivante->setDateRendezVous(null); 
                         $seanceSuivante->setStatut('Non planifiée');
+                        $seanceSuivante->setNombrePersonnes($nombrePersonnes);
+                        $seanceSuivante->setMontantPaye($montant);
                         
                         $entityManager->persist($seanceSuivante);
                     }
@@ -108,7 +117,7 @@ class StripeWebhookController extends AbstractController
 
                     // --- ENVOI DES MAILS (Avec facture PDF jointe dès le paiement) ---
                     $bookingMailer->sendPendingBookingToClient($premiereSeance, true);
-                    $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $prestation->getPrix());
+                    $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $montant);
                 }
             }
         }

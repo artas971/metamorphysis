@@ -37,9 +37,18 @@ class ReservationController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
+        $nombrePersonnes = (int) ($request->query->get('personnes') ?? $request->request->get('personnes', 1));
+        if ($nombrePersonnes < 1) {
+            $nombrePersonnes = 1;
+        }
+
+        $montant = $prestation->calculerPrix($nombrePersonnes);
+
         $premiereSeance = new Seance();
         $premiereSeance->setPrestation($prestation);
         $premiereSeance->setDuree($prestation->getDuree() ?? 60); // Sécurité durée
+        $premiereSeance->setNombrePersonnes($nombrePersonnes);
+        $premiereSeance->setMontantPaye($montant);
 
         $form = $this->createForm(ReservationType::class, $premiereSeance);
         $form->handleRequest($request);
@@ -56,7 +65,9 @@ class ReservationController extends AbstractController
             $session = $request->getSession();
             $session->set('reservation_en_cours', [
                 'prestation_id' => $prestation->getId(),
-                'date_rendez_vous' => $dateRendezVous->format('Y-m-d H:i:s') 
+                'date_rendez_vous' => $dateRendezVous->format('Y-m-d H:i:s'),
+                'nombre_personnes' => $nombrePersonnes,
+                'montant' => $montant,
             ]);
 
             return $this->redirectToRoute('app_stripe_checkout'); 
@@ -66,6 +77,8 @@ class ReservationController extends AbstractController
             'form' => $form->createView(),
             'prestation' => $prestation,
             'seance' => clone $premiereSeance,
+            'nombrePersonnes' => $nombrePersonnes,
+            'montant' => $montant,
         ]);
     }
 
