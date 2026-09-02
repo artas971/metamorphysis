@@ -1,0 +1,75 @@
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Nouveau Paiement & Demande de RDV en attente — Metamorphysis Admin{% endblock %}
+
+{% block content %}
+    <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid rgba(184, 154, 99, 0.25); padding-bottom: 15px;">
+        🔔 Nouveau paiement & demande de rendez-vous
+    </h2>
+
+    <p style="font-size: 15px; color: #D8D0BE; line-height: 1.7; margin-top: 20px;">
+        Bonjour Louisa, un nouveau paiement a été validé et une demande de séance est en attente de votre validation.
+    </p>
+
+    {# Encadré Client & Prestation #}
+    <div style="background-color: #1a1a17; padding: 25px; border-radius: 4px; margin: 25px 0; border: 1px solid rgba(184, 154, 99, 0.3); border-left: 4px solid #B89A63;">
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Client</strong><br>
+            <span style="color: #FFFFF0; font-size: 16px; font-weight: 500;">{{ client.prenom|capitalize }} {{ client.nom|upper }}</span><br>
+            <span style="color: #8F8876; font-size: 13px;">✉️ {{ client.email }}</span>
+            {% if client.telephone %}
+                <span style="color: #8F8876; font-size: 13px; margin-left: 10px;">📞 {{ client.telephone }}</span>
+            {% endif %}
+        </p>
+        
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Prestation & Séance</strong><br>
+            <span style="color: #FFFFF0; font-size: 15px;">{{ prestation.nom }}</span>
+            <span style="color: #B89A63; font-size: 13px;">(Séance n°{{ seance.numero }})</span>
+            {% if montant is defined and montant is not null %}
+                <br><span style="color: #28a745; font-size: 13px; font-weight: bold;">💳 Montant réglé : {{ montant|number_format(2, ',', ' ') }} €</span>
+            {% elseif prestation.prix %}
+                <br><span style="color: #28a745; font-size: 13px; font-weight: bold;">💳 Montant réglé : {{ prestation.prix|number_format(2, ',', ' ') }} €</span>
+            {% endif %}
+        </p>
+
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Date et Heure demandées</strong><br>
+            <strong style="color: #B89A63; font-size: 16px;">
+                {% if seance.dateRendezVous %}
+                    {{ seance.dateRendezVous|date('d/m/Y à H:i') }}
+                {% else %}
+                    Non planifiée
+                {% endif %}
+            </strong>
+        </p>
+
+        <p style="margin: 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Statut actuel</strong><br>
+            <span style="display: inline-block; background-color: rgba(255, 193, 7, 0.15); color: #E5C78D; border: 1px solid rgba(255, 193, 7, 0.4); padding: 3px 10px; font-size: 12px; border-radius: 3px; font-weight: bold; margin-top: 4px;">
+                ⏳ EN ATTENTE DE VALIDATION
+            </span>
+        </p>
+    </div>
+
+    {% if seance.lienVisio %}
+        <div style="background-color: rgba(74, 79, 65, 0.15); border: 1px solid rgba(184, 154, 99, 0.2); padding: 18px; border-radius: 4px; margin: 20px 0; text-align: center;">
+            <p style="margin: 0 0 8px 0; color: #8F8876; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Lien Visioconférence Daily.co généré</p>
+            <a href="{{ seance.lienVisio }}" target="_blank" style="color: #B89A63; font-size: 13px; word-break: break-all; text-decoration: underline;">
+                {{ seance.lienVisio }}
+            </a>
+        </div>
+    {% endif %}
+
+    {# Bouton d'action direct vers EasyAdmin #}
+    <div style="text-align: center; margin: 35px 0 20px 0;">
+        <a href="http://127.0.0.1:8000/admin/seance" target="_blank" 
+           style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
+            Accéder aux Séances dans EasyAdmin
+        </a>
+    </div>
+
+    <p style="font-size: 13px; color: #8F8876; text-align: center; margin-top: 25px;">
+        Connectez-vous pour passer le statut de la séance à <strong>« Confirmé »</strong> afin d'envoyer la confirmation et la facture au client.
+    </p>
+{% endblock %}

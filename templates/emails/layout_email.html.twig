@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Metamorphysis{% endblock %}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0A0A09; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #D8D0BE;">
+
+    {# Fond global #}
+    <div style="background-color: #0A0A09; padding: 40px 15px; width: 100%; box-sizing: border-box; text-align: center;">
+        
+        {# Conteneur central luxe #}
+        <div style="max-width: 600px; margin: 0 auto; background-color: #141414; border: 1px solid rgba(184, 154, 99, 0.35); border-radius: 4px; overflow: hidden; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+            
+            {# En-tête : Logo & Slogan #}
+            <div style="background-color: #0d0d0c; padding: 35px 25px 25px 25px; text-align: center; border-bottom: 1px solid rgba(184, 154, 99, 0.25);">
+                <div style="display: inline-block; margin-bottom: 8px;">
+                    <span style="font-size: 24px; color: #B89A63; letter-spacing: 4px; text-transform: uppercase; font-weight: 300;">METAMORPHYSIS</span>
+                </div>
+                <div style="font-size: 11px; color: #8F8876; letter-spacing: 2px; text-transform: uppercase;">
+                    Accompagnement & Relation Humaine
+                </div>
+            </div>
+
+            {# Corps du message #}
+            <div style="padding: 35px 30px; color: #D8D0BE; line-height: 1.7; font-size: 15px;">
+                {% block content %}{% endblock %}
+            </div>
+
+            {# Signature & Pied de page #}
+            <div style="background-color: #0d0d0c; text-align: center; padding: 25px 20px; font-size: 12px; color: #6D685C; border-top: 1px solid rgba(184, 154, 99, 0.15); line-height: 1.6;">
+                <p style="margin: 0 0 5px 0; color: #8F8876;"><strong>Louisa Chouihi</strong> — Consultante en Relation Humaine</p>
+                <p style="margin: 0 0 10px 0;">Cabinet Metamorphysis &bull; Séances en visioconférence sécurisée</p>
+                <p style="margin: 0; font-size: 11px; color: #524F47;">&copy; {{ 'now'|date('Y') }} Metamorphysis. Tous droits réservés.</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

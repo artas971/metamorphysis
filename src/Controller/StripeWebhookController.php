@@ -25,7 +25,7 @@ class StripeWebhookController extends AbstractController
         PrestationRepository $prestationRepository, 
         SeanceRepository $seanceRepository,
         EntityManagerInterface $entityManager, 
-        MailerInterface $mailer,
+        \App\Service\BookingMailerService $bookingMailer,
         DailyCoService $dailyCoService
     ): Response
     {
@@ -106,23 +106,9 @@ class StripeWebhookController extends AbstractController
 
                     $entityManager->flush();
 
-                    // --- ENVOI DU MAIL ---
-                    try {
-                        $email = (new TemplatedEmail())
-                            ->from('noreply@metamorphysis.com')
-                            ->to('Metamorphysisconsulting@gmail.com')
-                            ->subject('Nouvelle réservation payée : ' . $prestation->getNom())
-                            ->htmlTemplate('emails/nouvelle_reservation.html.twig')
-                            ->context([
-                                'seance' => $premiereSeance,
-                                'client' => $user,
-                                'prestation' => $prestation
-                            ]);
-
-                        $mailer->send($email);
-                    } catch (\Exception $e) {
-                        // En cas de problème SMTP, ne pas faire échouer le webhook
-                    }
+                    // --- ENVOI DES MAILS ---
+                    $bookingMailer->sendPendingBookingToClient($premiereSeance);
+                    $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $prestation->getPrix());
                 }
             }
         }

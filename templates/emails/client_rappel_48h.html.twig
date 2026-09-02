@@ -1,0 +1,75 @@
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Rappel : Votre séance Metamorphysis dans 48h{% endblock %}
+
+{% block content %}
+    <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid rgba(184, 154, 99, 0.25); padding-bottom: 15px;">
+        🌿 Votre séance d'accompagnement a lieu dans 48h
+    </h2>
+
+    <p style="font-size: 16px; color: #FFFFF0; margin-top: 20px;">
+        Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }}</strong>,
+    </p>
+
+    <p style="color: #D8D0BE; line-height: 1.7;">
+        Ce message pour vous rappeler que votre prochain rendez-vous d'accompagnement pour 
+        <strong style="color: #FFFFF0;">{{ prestation.nom }}</strong> aura lieu dans <strong>48 heures</strong>.
+    </p>
+
+    {# Encadré Récapitulatif #}
+    <div style="background-color: #1a1a17; padding: 25px; border-radius: 4px; margin: 25px 0; border: 1px solid rgba(184, 154, 99, 0.3); border-left: 4px solid #B89A63;">
+        <p style="margin: 0 0 10px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Soin prévu</strong><br>
+            <span style="color: #FFFFF0; font-size: 16px; font-weight: 500;">{{ prestation.nom }}</span>
+            <span style="color: #B89A63; font-size: 13px;">(Séance n°{{ seance.numero }})</span>
+        </p>
+        
+        <p style="margin: 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Date et Heure</strong><br>
+            <strong style="color: #B89A63; font-size: 18px;">
+                {{ seance.dateRendezVous|date('d/m/Y à H:i') }}
+            </strong>
+        </p>
+    </div>
+
+    {# Bloc Visio : Élément majeur #}
+    <div style="background-color: #1d1819; border: 1px solid rgba(184, 154, 99, 0.4); padding: 30px 25px; border-radius: 4px; margin: 30px 0; text-align: center;">
+        <h3 style="color: #B89A63; margin: 0 0 12px 0; font-size: 15px; text-transform: uppercase; letter-spacing: 2px;">
+            Votre Salle de Soin en Ligne
+        </h3>
+        <p style="color: #D8D0BE; font-size: 14px; line-height: 1.6; margin-bottom: 25px;">
+            Vous pourrez rejoindre directement votre séance en visioconférence sécurisée avec Louisa via ce bouton :
+        </p>
+
+        {% if seance.lienVisio %}
+            <a href="{{ seance.lienVisio }}" target="_blank" 
+               style="display: inline-block; padding: 16px 32px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; box-shadow: 0 4px 15px rgba(184, 154, 99, 0.3);">
+                🎥 Rejoindre la Visio
+            </a>
+            <p style="margin: 15px 0 0 0; font-size: 12px; color: #8F8876;">
+                Lien direct : <a href="{{ seance.lienVisio }}" target="_blank" style="color: #B89A63; text-decoration: underline;">{{ seance.lienVisio }}</a>
+            </p>
+        {% else %}
+            <a href="http://127.0.0.1:8000/mon-compte" target="_blank" 
+               style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
+                Accéder à mon Espace Client
+            </a>
+        {% endif %}
+    </div>
+
+    {# Conseils de préparation #}
+    <div style="background-color: rgba(74, 79, 65, 0.15); border: 1px solid rgba(184, 154, 99, 0.2); padding: 20px; border-radius: 4px; margin: 25px 0;">
+        <p style="margin: 0 0 10px 0; color: #B89A63; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
+            💡 Pour préparer au mieux votre séance :
+        </p>
+        <ul style="margin: 0; padding-left: 20px; color: #D8D0BE; font-size: 13.5px; line-height: 1.7;">
+            <li>Installez-vous dans un endroit calme et propice à l'introspection.</li>
+            <li>Privilégiez des écouteurs pour une meilleure immersion sonore.</li>
+            <li>Prévoyez un verre d'eau et quelques minutes d'avance pour vous poser avant le début.</li>
+        </ul>
+    </div>
+
+    <p style="font-size: 13px; color: #8F8876; text-align: center; margin-top: 25px;">
+        Si vous avez un empêchement, merci de nous prévenir au plus vite depuis votre espace client.
+    </p>
+{% endblock %}

@@ -1,22 +1,41 @@
-<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0A0A09; padding: 40px 20px; margin: 0; text-align: center;">
-    
-    <div style="background-color: #1a1a1a; max-width: 600px; margin: 0 auto; border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 8px; overflow: hidden; text-align: left;">
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Annulation de séance par un client — Metamorphysis Admin{% endblock %}
+
+{% block content %}
+    <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid rgba(184, 154, 99, 0.25); padding-bottom: 15px;">
+        ⚠️ Annulation de séance par un client
+    </h2>
+
+    <p style="font-size: 15px; color: #D8D0BE; line-height: 1.7; margin-top: 20px;">
+        Bonjour Louisa, un client vient d'annuler sa séance programmée. Le créneau a été libéré sur votre calendrier.
+    </p>
+
+    <div style="background-color: #1a1a17; padding: 25px; border-radius: 4px; margin: 25px 0; border: 1px solid rgba(220, 53, 69, 0.3); border-left: 4px solid #dc3545;">
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Client</strong><br>
+            <span style="color: #FFFFF0; font-size: 16px; font-weight: 500;">{{ client.prenom|capitalize }} {{ client.nom|upper }}</span><br>
+            <span style="color: #8F8876; font-size: 13px;">✉️ {{ client.email }}</span>
+        </p>
         
-        <div style="background-color: #0A0A09; padding: 30px; text-align: center; border-bottom: 1px solid rgba(220, 53, 69, 0.2);">
-            <h1 style="color: #dc3545; margin: 0; font-size: 20px; letter-spacing: 3px; text-transform: uppercase; font-weight: 400;">⚠️ ALERTE ANNULATION</h1>
-        </div>
-        
-        <div style="padding: 40px 30px; color: #D8D0BE;">
-            <p style="font-size: 16px; line-height: 1.6;">Le client <strong style="color: #FFFFF0;">{{ client.prenom|capitalize }} {{ client.nom|upper }}</strong> vient d'annuler sa séance prévue.</p>
-            
-            <div style="background-color: #2A1A1E; padding: 25px; border-radius: 6px; margin: 30px 0; border: 1px solid rgba(220, 53, 69, 0.2);">
-                <p style="margin: 0 0 10px 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Prestation</strong><br><span style="color: #FFFFF0;">{{ prestation.nom }} (Séance n°{{ seance.numero }})</span></p>
-                <p style="margin: 0; font-size: 15px;"><strong style="color: #727763; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">Date libérée dans l'agenda</strong><br><strong style="color: #dc3545; font-size: 16px;">{% if ancienneDate %}{{ ancienneDate|date('d/m/Y à H:i') }}{% else %}Non renseignée{% endif %}</strong></p>
-            </div>
-            
-            <p style="font-size: 14px; color: #727763; line-height: 1.6; text-align: center; margin-top: 40px;">
-                Cet horaire est désormais à nouveau disponible pour d'autres clients. L'ancienne salle Daily.co a été désactivée.
-            </p>
-        </div>
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Prestation & Séance</strong><br>
+            <span style="color: #FFFFF0; font-size: 15px;">{{ prestation.nom }}</span>
+            <span style="color: #B89A63; font-size: 13px;">(Séance n°{{ seance.numero }})</span>
+        </p>
+
+        <p style="margin: 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Date qui était prévue</strong><br>
+            <strong style="color: #dc3545; text-decoration: line-through; font-size: 16px;">
+                {% if ancienneDate %}{{ ancienneDate|date('d/m/Y à H:i') }}{% else %}Non renseignée{% endif %}
+            </strong>
+        </p>
     </div>
-</div>
+
+    <div style="text-align: center; margin: 35px 0 20px 0;">
+        <a href="http://127.0.0.1:8000/admin/seance" target="_blank" 
+           style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
+            Consulter les Séances dans EasyAdmin
+        </a>
+    </div>
+{% endblock %}

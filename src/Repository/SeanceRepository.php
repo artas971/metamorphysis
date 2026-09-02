@@ -18,8 +18,28 @@ class SeanceRepository extends ServiceEntityRepository
     // src/Repository/SeanceRepository.php
 
     /**
+     * Récupère les séances confirmées qui ont lieu dans les prochaines 47 à 49 heures (Fenêtre 48h).
+     */
+    public function findSeancesIn48Hours(): array
+    {
+        $maintenant = new \DateTime();
+        
+        $debut = (clone $maintenant)->modify('+47 hours');
+        $fin = (clone $maintenant)->modify('+49 hours');
+
+        return $this->createQueryBuilder('s')
+            ->where('s.dateRendezVous >= :debut')
+            ->andWhere('s.dateRendezVous < :fin')
+            ->andWhere('s.statut = :statut') // On ne rappelle que les séances confirmées
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->setParameter('statut', 'Confirmé')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Récupère les séances confirmées qui ont lieu dans les prochaines 24 à 25 heures.
-     * (Idéal pour une commande Cron qui tourne toutes les heures).
      */
     public function findSeancesIn24Hours(): array
     {

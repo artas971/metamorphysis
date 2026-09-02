@@ -86,7 +86,7 @@ class ReservationController extends AbstractController
         Seance $seance, 
         Request $request, 
         EntityManagerInterface $entityManager, 
-        MailerInterface $mailer,
+        \App\Service\BookingMailerService $bookingMailer,
         DailyCoService $dailyCoService 
     ): Response {
         if ($seance->getUser() !== $this->getUser()) {
@@ -136,39 +136,13 @@ class ReservationController extends AbstractController
 
             $entityManager->flush();
 
-            /** @var User|null $user */
-            $user = $this->getUser();
+            // 1. Email Client (Demande de RDV bien enregistrée, en attente de confirmation par Louisa)
+            $bookingMailer->sendPendingBookingToClient($seance);
 
-            $emailAdmin = (new TemplatedEmail())
-                ->from('noreply@metamorphysis.com')
-                ->to('Metamorphysisconsulting@gmail.com')
-                ->subject('Nouvelle demande : Séance ' . $seance->getNumero() . ' - ' . $seance->getPrestation()->getNom())
-                ->htmlTemplate('emails/nouvelle_reservation.html.twig')
-                ->context([
-                    'seance' => $seance,
-                    'client' => $user,
-                    'prestation' => $seance->getPrestation()
-                ]);
+            // 2. Email Admin (Notification pour Louisa qu'une séance est demandée)
+            $bookingMailer->sendNewBookingPaidToAdmin($seance);
 
-            if (!$user || !$user->getEmail()) {
-                throw $this->createAccessDeniedException('Impossible d\'envoyer l\'email de confirmation : utilisateur non connecté ou adresse email manquante.');
-            }
-
-            $emailClient = (new TemplatedEmail())
-                ->from('noreply@metamorphysis.com')
-                ->to($user->getEmail())
-                ->subject('Confirmation de votre séance - ' . $seance->getPrestation()->getNom())
-                ->htmlTemplate('emails/client_confirmation_seance.html.twig')
-                ->context([
-                    'seance' => $seance,
-                    'client' => $user,
-                    'prestation' => $seance->getPrestation()
-                ]);
-
-            $mailer->send($emailAdmin);
-            $mailer->send($emailClient);
-
-            $this->addFlash('success', 'Votre séance n°' . $seance->getNumero() . ' a été planifiée avec succès.');
+            $this->addFlash('success', 'Votre séance n°' . $seance->getNumero() . ' a été enregistrée avec succès. Vous recevrez un e-mail de confirmation dès sa validation.');
             return $this->redirectToRoute('app_account');
         }
 
@@ -181,7 +155,12 @@ class ReservationController extends AbstractController
 
     #[Route('/seance/annuler/{id}', name: 'app_seance_annuler', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function annuler(Seance $seance, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function annuler(
+        Seance $seance, 
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        \App\Service\BookingMailerService $bookingMailer
+    ): Response
     {
         if ($seance->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette séance.');
@@ -206,39 +185,9 @@ class ReservationController extends AbstractController
 
         $entityManager->flush();
 
-        /** @var User|null $user */
-        $user = $this->getUser();
-
-        if ($user && $user->getEmail()) {
-            // Email au client
-            $emailClient = (new TemplatedEmail())
-                ->from('noreply@metamorphysis.com')
-                ->to($user->getEmail())
-                ->subject('Annulation de votre séance - ' . $seance->getPrestation()->getNom())
-                ->htmlTemplate('emails/client_annulation_seance.html.twig')
-                ->context([
-                    'seance' => $seance,
-                    'client' => $user,
-                    'prestation' => $seance->getPrestation(),
-                    'ancienneDate' => $ancienneDate
-                ]);
-
-            // Email à l'Admin
-            $emailAdmin = (new TemplatedEmail())
-                ->from('noreply@metamorphysis.com')
-                ->to('Metamorphysisconsulting@gmail.com')
-                ->subject('⚠️ Annulation Client : Séance ' . $seance->getNumero() . ' - ' . $user->getNom())
-                ->htmlTemplate('emails/admin_annulation_seance.html.twig')
-                ->context([
-                    'seance' => $seance,
-                    'client' => $user,
-                    'prestation' => $seance->getPrestation(),
-                    'ancienneDate' => $ancienneDate
-                ]);
-
-            $mailer->send($emailClient);
-            $mailer->send($emailAdmin);
-        }
+        // Envoi des e-mails d'annulation
+        $bookingMailer->sendCancellationToClient($seance, $ancienneDate);
+        $bookingMailer->sendCancellationToAdmin($seance, $ancienneDate);
 
         $this->addFlash('success', 'Votre séance a été annulée avec succès. Vous pouvez la replanifier dès maintenant dans votre espace.');
         return $this->redirectToRoute('app_account');

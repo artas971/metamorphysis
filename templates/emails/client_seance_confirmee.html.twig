@@ -1,0 +1,64 @@
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Votre rendez-vous est confirmé ! — Metamorphysis{% endblock %}
+
+{% block content %}
+    <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid rgba(184, 154, 99, 0.25); padding-bottom: 15px;">
+        ✨ Votre rendez-vous est confirmé
+    </h2>
+
+    <p style="font-size: 16px; color: #FFFFF0; margin-top: 20px;">
+        Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }}</strong>,
+    </p>
+
+    <p style="color: #D8D0BE; line-height: 1.7;">
+        Excellente nouvelle ! Votre rendez-vous pour l'accompagnement <strong style="color: #FFFFF0;">{{ prestation.nom }}</strong> a été officiellement validé et confirmé par <strong>Louisa Chouihi</strong>.
+    </p>
+
+    {# Encadré Récapitulatif #}
+    <div style="background-color: #1a1a17; padding: 25px; border-radius: 4px; margin: 25px 0; border: 1px solid rgba(184, 154, 99, 0.3); border-left: 4px solid #28a745;">
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Accompagnement</strong><br>
+            <span style="color: #FFFFF0; font-size: 16px; font-weight: 500;">{{ prestation.nom }}</span>
+            <span style="color: #B89A63; font-size: 13px;">(Séance n°{{ seance.numero }})</span>
+        </p>
+        
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Date et Heure du Rendez-vous</strong><br>
+            <strong style="color: #B89A63; font-size: 17px;">
+                {{ seance.dateRendezVous|date('d/m/Y à H:i') }}
+            </strong>
+        </p>
+
+        <p style="margin: 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Statut</strong><br>
+            <span style="display: inline-block; background-color: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid rgba(40, 167, 69, 0.4); padding: 3px 10px; font-size: 12px; border-radius: 3px; font-weight: bold; margin-top: 4px;">
+                ✓ CONFIRMÉ
+            </span>
+        </p>
+    </div>
+
+    {# Information Rappel 48h #}
+    <div style="background-color: rgba(74, 79, 65, 0.2); border: 1px solid rgba(184, 154, 99, 0.2); padding: 20px; border-radius: 4px; margin: 25px 0;">
+        <p style="margin: 0; font-size: 14px; color: #D8D0BE; line-height: 1.6;">
+            🔗 <strong>Lien de visioconférence :</strong> Vous recevrez un e-mail de rappel <strong>48 heures avant votre séance</strong> contenant votre lien d'accès direct et sécurisé pour rejoindre votre consultation en ligne.
+        </p>
+    </div>
+
+    <p style="font-size: 14px; color: #8F8876; line-height: 1.6;">
+        📄 <em>Votre facture d'accompagnement est disponible en pièce jointe de cet e-mail.</em>
+    </p>
+
+    {# Bouton d'action #}
+    <div style="text-align: center; margin: 35px 0 20px 0;">
+        <a href="http://127.0.0.1:8000/mon-compte" target="_blank" 
+           style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
+            Accéder à mon Espace Client
+        </a>
+    </div>
+
+    <p style="font-size: 14px; color: #8F8876; text-align: center; margin-top: 25px;">
+        Au plaisir de vous accompagner sur ce chemin de clarté et de transformation.<br>
+        <strong style="color: #FFFFF0;">Louisa Chouihi</strong>
+    </p>
+{% endblock %}

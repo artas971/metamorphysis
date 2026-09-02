@@ -1,0 +1,66 @@
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Demande de rendez-vous enregistrée — Metamorphysis{% endblock %}
+
+{% block content %}
+    <h2 style="color: #FFFFF0; margin-top: 0; font-weight: 300; font-size: 20px; border-bottom: 1px solid rgba(184, 154, 99, 0.25); padding-bottom: 15px;">
+        Votre demande de rendez-vous a bien été reçue
+    </h2>
+
+    <p style="font-size: 16px; color: #FFFFF0; margin-top: 20px;">
+        Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }}</strong>,
+    </p>
+
+    <p style="color: #D8D0BE; line-height: 1.7;">
+        Nous avons le plaisir de vous confirmer que votre demande de séance pour l'accompagnement 
+        <strong style="color: #FFFFF0;">{{ prestation.nom }}</strong> a bien été enregistrée.
+    </p>
+
+    {# Encadré Récapitulatif #}
+    <div style="background-color: #1a1a17; padding: 25px; border-radius: 4px; margin: 25px 0; border: 1px solid rgba(184, 154, 99, 0.3); border-left: 4px solid #B89A63;">
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Accompagnement</strong><br>
+            <span style="color: #FFFFF0; font-size: 16px; font-weight: 500;">{{ prestation.nom }}</span>
+            <span style="color: #B89A63; font-size: 13px;">(Séance n°{{ seance.numero }})</span>
+        </p>
+        
+        <p style="margin: 0 0 12px 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Date et Heure souhaitées</strong><br>
+            <strong style="color: #B89A63; font-size: 16px;">
+                {% if seance.dateRendezVous %}
+                    {{ seance.dateRendezVous|date('d/m/Y à H:i') }}
+                {% else %}
+                    À convenir
+                {% endif %}
+            </strong>
+        </p>
+
+        <p style="margin: 0; font-size: 14px;">
+            <strong style="color: #8F8876; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Statut de votre demande</strong><br>
+            <span style="display: inline-block; background-color: rgba(255, 193, 7, 0.15); color: #E5C78D; border: 1px solid rgba(255, 193, 7, 0.4); padding: 3px 10px; font-size: 12px; border-radius: 3px; font-weight: bold; margin-top: 4px;">
+                ⏳ EN ATTENTE DE VALIDATION
+            </span>
+        </p>
+    </div>
+
+    {# Message Explicatif Validation par Louisa #}
+    <div style="background-color: rgba(74, 79, 65, 0.2); border: 1px solid rgba(184, 154, 99, 0.2); padding: 20px; border-radius: 4px; margin: 25px 0;">
+        <p style="margin: 0; font-size: 14px; color: #D8D0BE; line-height: 1.6;">
+            💡 <strong>Prochaine étape :</strong> Votre créneau est actuellement en cours d'examen. 
+            <strong style="color: #FFFFF0;">Louisa Chouihi</strong> validera personnellement votre rendez-vous sous peu. 
+            Vous recevrez un e-mail de confirmation dès la validation effectuée.
+        </p>
+    </div>
+
+    {# Bouton d'action #}
+    <div style="text-align: center; margin: 35px 0 20px 0;">
+        <a href="http://127.0.0.1:8000/mon-compte" target="_blank" 
+           style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
+            Consulter mon Espace Client
+        </a>
+    </div>
+
+    <p style="font-size: 14px; color: #8F8876; text-align: center; margin-top: 25px;">
+        Pour toute question ou demande particulière, vous pouvez nous contacter directement en répondant à cet e-mail.
+    </p>
+{% endblock %}

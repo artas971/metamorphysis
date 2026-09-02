@@ -76,7 +76,8 @@ class StripeController extends AbstractController
         PrestationRepository $prestationRepository,
         SeanceRepository $seanceRepository,
         EntityManagerInterface $entityManager,
-        DailyCoService $dailyCoService
+        DailyCoService $dailyCoService,
+        \App\Service\BookingMailerService $bookingMailer
     ): Response {
         $sessionSymfony = $request->getSession();
         $reservationData = $sessionSymfony->get('reservation_en_cours');
@@ -129,13 +130,19 @@ class StripeController extends AbstractController
                     }
 
                     $entityManager->flush();
+
+                    // 1. Email Client (Demande de RDV bien enregistrée, en attente de validation par Louisa)
+                    $bookingMailer->sendPendingBookingToClient($premiereSeance);
+
+                    // 2. Email Admin (Notification paiement validé & séance en attente)
+                    $bookingMailer->sendNewBookingPaidToAdmin($premiereSeance, $prestation->getPrix());
                 }
             }
         }
 
         $sessionSymfony->remove('reservation_en_cours');
 
-        $this->addFlash('success', 'Merci pour votre confiance. Votre parcours d\'accompagnement est officiellement réservé.');
+        $this->addFlash('success', 'Merci pour votre confiance. Votre paiement a été validé et votre demande de rendez-vous a bien été prise en compte.');
 
         return $this->redirectToRoute('app_account');
     }
