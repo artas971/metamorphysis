@@ -8,7 +8,7 @@
     </h2>
 
     <p style="font-size: 16px; color: #FFFFF0; margin-top: 20px;">
-        Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }}</strong>,
+        Bonjour <strong style="color: #B89A63;">{{ client.prenom|capitalize }} {{ client.nom|upper }}</strong>,
     </p>
 
     <p style="color: #D8D0BE; line-height: 1.7;">
@@ -53,16 +53,22 @@
     </div>
 
     {% if hasInvoice|default(false) %}
-        <p style="font-size: 13.5px; color: #8F8876; line-height: 1.6; margin-top: 20px;">
-            📄 <em>Votre facture d'achat acquittée est disponible en pièce jointe de cet e-mail. Vous pouvez également la retrouver et la télécharger à tout moment depuis votre espace client.</em>
-        </p>
+        <div style="background-color: rgba(184, 154, 99, 0.08); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 4px; padding: 22px 20px; text-align: center; margin: 25px 0;">
+            <p style="margin: 0 0 15px 0; color: #D8D0BE; font-size: 14px; line-height: 1.5;">
+                📄 Votre facture d'achat acquittée est disponible en pièce jointe ou via ce bouton :
+            </p>
+            <a href="http://127.0.0.1:8000/mon-compte/facture/{{ seance.id }}" target="_blank" 
+               style="display: inline-block; padding: 12px 24px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1px; font-size: 12px;">
+                Télécharger ma Facture (PDF)
+            </a>
+        </div>
     {% endif %}
 
     {# Bouton d'action #}
-    <div style="text-align: center; margin: 35px 0 20px 0;">
+    <div style="text-align: center; margin: 30px 0 20px 0;">
         <a href="http://127.0.0.1:8000/mon-compte" target="_blank" 
-           style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
-            Consulter mon Espace Client
+           style="display: inline-block; padding: 13px 26px; background-color: transparent; border: 1px solid #B89A63; color: #B89A63; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 12px;">
+            Accéder à mon Espace Client
         </a>
     </div>
 
