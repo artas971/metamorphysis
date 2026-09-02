@@ -1,5 +1,5 @@
 -- Metamorphysis Database Dump
--- Generated on 2026-09-02 11:11:57
+-- Generated on 2026-09-02 11:19:12
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -352,9 +352,10 @@ CREATE TABLE `user` (
   `telephone` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table `user`
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `prenom`, `nom`, `telephone`) VALUES ('6', 'artas971@gmail.com', '[\"ROLE_ADMIN\", \"ROLE_USER\"]', '$2y$13$yj744CfO5wQQpb/Da50jae7QnKIDF/tubxntcpVJfno6TGTn21ur.', 'Admin', 'Metamorphysis', NULL);
+INSERT INTO `user` (`id`, `email`, `roles`, `password`, `prenom`, `nom`, `telephone`) VALUES ('7', 'metamorphysisconsulting@gmail.com', '[\"ROLE_ADMIN\", \"ROLE_USER\"]', '$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC', 'Louisa', 'Chouihi', '0600000000');
 
 SET FOREIGN_KEY_CHECKS = 1;
