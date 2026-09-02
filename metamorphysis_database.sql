@@ -313,7 +313,7 @@ CREATE TABLE `seance` (
 
 LOCK TABLES `seance` WRITE;
 /*!40000 ALTER TABLE `seance` DISABLE KEYS */;
-INSERT INTO `seance` VALUES (54,1,45,'2026-08-31 13:38:15','Effectuée',9,9,NULL,'2026-09-02 13:38:15',1,NULL),(56,1,45,'2026-09-05 13:41:58','Annulé',9,10,NULL,'2026-09-02 13:41:58',1,NULL),(57,1,45,'2026-09-03 14:00:00','Confirmé',9,8,'https://metamorphysis.daily.co/hCPAYYN66lYwruA0VynM','2026-09-02 13:46:51',1,50);
+INSERT INTO `seance` VALUES (57,1,45,'2026-09-03 14:00:00','Confirmé',9,8,'https://metamorphysis.daily.co/hCPAYYN66lYwruA0VynM','2026-09-02 13:46:51',1,50);
 /*!40000 ALTER TABLE `seance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -436,7 +436,7 @@ CREATE TABLE `user` (
   `telephone` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -445,7 +445,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (6,'artas971@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$5AIZk3SeBdplXjXCFmL/YOmN/qyv5TYteanm4WaoTAyzxCZ6RZxTC','Admin','Metamorphysis',NULL),(7,'metamorphysisconsulting@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC','Louisa','Chouihi','0600000000'),(8,'artas971@hotmail.fr','[]','$2y$13$644eBmummfQ3RI/920iW0.InQ82yw2r5x67WC4LJgRcXcG8Ymqgwa','floyd','george','oUNxTIzw4PuJaThHBxs0kWZDSnhVbndQQTErRXVLdzQ4T3lhTUE9PQ=='),(9,'client.test@gmail.com','[\"ROLE_USER\"]','$2y$13$UnvixU/w0qZolNNBszOxxuE1lnO9UktS9ECE1IV.cyV/oxN6sK8yO','Jean','Dupont','nrjoLBa/XyvunnfwTZM5klBTSHdhNzNkSlNjUGM3T05BZ3hlRWc9PQ=='),(10,'client.annule@gmail.com','[\"ROLE_USER\"]','$2y$13$gFQ/LtczqF9msPsSr67.OucmNVgPhpAyR4RJPLXQLrbtcCd.2vuFe','Sophie','Martin','eR+Gg7Eb/a45xuDYvhAv8Vd4Z1B6QXUvMmlrUGlIazdHQVdPM3c9PQ==');
+INSERT INTO `user` VALUES (6,'artas971@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$5AIZk3SeBdplXjXCFmL/YOmN/qyv5TYteanm4WaoTAyzxCZ6RZxTC','Admin','Metamorphysis',NULL),(7,'metamorphysisconsulting@gmail.com','[\"ROLE_ADMIN\", \"ROLE_USER\"]','$2y$13$ITswhuwaOJdbDg/keximyuSF0dehreo.xrfTfpZXVTF.KIjIzBMaC','Louisa','Chouihi','0600000000'),(8,'artas971@hotmail.fr','[\"ROLE_USER\"]','$2y$13$644eBmummfQ3RI/920iW0.InQ82yw2r5x67WC4LJgRcXcG8Ymqgwa','floyd','george','Ev3tW0m40lyCQXiOB88IfW5oSVovVkI1TkpDRUtlV3lMVXZZZXc9PQ==');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -458,4 +458,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-02 15:58:41
+-- Dump completed on 2026-09-02 16:01:38
