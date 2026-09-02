@@ -96,7 +96,16 @@ class PlanningService
         $limite = \DateTime::createFromInterface($date);
         $limite->setTime((int)$fermeture->format('H'), (int)$fermeture->format('i'));
 
+        $maintenant = new \DateTime();
+        $delaiMin6h = (clone $maintenant)->modify('+6 hours');
+
         while ($actuel < $limite) {
+            // RÈGLE MÉTIER : Impossible de réserver moins de 6 heures à l'avance
+            if ($actuel < $delaiMin6h) {
+                $actuel->modify("+{$pas} minutes");
+                continue;
+            }
+
             // Heure de fin réelle de la séance
             $finSoin = clone $actuel;
             $finSoin->modify("+{$dureePrestation} minutes");

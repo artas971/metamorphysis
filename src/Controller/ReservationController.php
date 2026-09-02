@@ -56,6 +56,14 @@ class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $dateRendezVous = $premiereSeance->getDateRendezVous();
             
+            if ($dateRendezVous) {
+                $delaiMin6h = (new \DateTime())->modify('+6 hours');
+                if ($dateRendezVous < $delaiMin6h) {
+                    $this->addFlash('danger', 'Les rendez-vous doivent être réservés au moins 6 heures à l\'avance.');
+                    return $this->redirectToRoute('app_reservation_new', ['id' => $prestation->getId(), 'personnes' => $nombrePersonnes]);
+                }
+            }
+
             $lockKey = 'lock_' . $dateRendezVous->format('Y-m-d_H-i');
             $cache->get($lockKey, function (ItemInterface $item) {
                 $item->expiresAfter(180);
@@ -102,6 +110,12 @@ class ReservationController extends AbstractController
             $nouvelleDate = $seance->getDateRendezVous();
             
             if ($nouvelleDate) {
+                $delaiMin6h = (new \DateTime())->modify('+6 hours');
+                if ($nouvelleDate < $delaiMin6h) {
+                    $this->addFlash('danger', 'Les rendez-vous doivent être programmés au moins 6 heures à l\'avance.');
+                    return $this->redirectToRoute('app_seance_planifier', ['id' => $seance->getId()]);
+                }
+
                 $debutJournee = (clone $nouvelleDate)->setTime(0, 0, 0);
                 $finJournee = (clone $nouvelleDate)->setTime(23, 59, 59);
 
