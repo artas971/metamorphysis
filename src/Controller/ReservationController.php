@@ -48,6 +48,13 @@ class ReservationController extends AbstractController
         /** @var User|null $user */
         $user = $this->getUser();
 
+        // 1. Prérequis strict : Consultation Initiale préalable obligatoire
+        if ($user && !$user->canBookPrestation($prestation)) {
+            $this->addFlash('warning', 'Afin d\'adapter au mieux votre accompagnement, vous devez préalablement réaliser une Consultation Initiale avant de pouvoir réserver d\'autres types de soins.');
+            return $this->redirectToRoute('app_prestation_show', ['slug' => 'consultation-initiale']);
+        }
+
+        // 2. Accompagnement déjà en cours
         if ($user && $user->hasActivePrestation($prestation)) {
             $this->addFlash('warning', 'Vous suivez déjà un accompagnement en cours pour la prestation "' . $prestation->getNom() . '". Vous devez terminer vos séances actuelles avant de pouvoir reprendre ce même type de prestation.');
             return $this->redirectToRoute('app_account');

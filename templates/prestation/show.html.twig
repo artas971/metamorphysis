@@ -128,8 +128,23 @@
                             </div>
                         {% endif %}
 
-                        {# Bouton d'action Réserver / Info Accompagnement en cours #}
-                        {% if app.user and app.user.hasActivePrestation(prestation) %}
+                        {# Bouton d'action Réserver / Info Accompagnement en cours / Info Consultation Initiale requise #}
+                        {% if app.user and not app.user.canBookPrestation(prestation) %}
+                            <div class="mt-4 p-4" style="background-color: rgba(184, 154, 99, 0.1); border: 1px solid rgba(184, 154, 99, 0.4); border-left: 4px solid var(--meta-gold);">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <i class="bi bi-shield-lock-fill fs-4" style="color: var(--meta-gold);"></i>
+                                    <h3 class="m-0 text-gold fs-6 text-uppercase" style="letter-spacing: 1.5px; font-family: var(--font-title), serif;">Consultation Initiale Préalable Requise</h3>
+                                </div>
+                                <p class="text-ivory small mb-3" style="line-height: 1.6; opacity: 0.95; color: var(--meta-ivory);">
+                                    Afin d'adapter ce parcours sur-mesure à votre histoire et vos objectifs, vous devez préalablement réaliser votre <strong>Consultation Initiale</strong> avec Louisa Chouihi.
+                                </p>
+                                <a href="{{ path('app_prestation_show', {'slug': 'consultation-initiale'}) }}" 
+                                   class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
+                                   style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0; font-size: 0.85rem;">
+                                    <i class="bi bi-calendar-check me-1"></i>Réserver ma Consultation Initiale
+                                </a>
+                            </div>
+                        {% elseif app.user and app.user.hasActivePrestation(prestation) %}
                             <div class="mt-4 p-4" style="background-color: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.35); border-left: 4px solid #E5C78D;">
                                 <div class="d-flex align-items-center gap-3 mb-2">
                                     <i class="bi bi-info-circle-fill fs-4" style="color: #E5C78D;"></i>

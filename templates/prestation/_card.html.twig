@@ -68,7 +68,14 @@
                                                                                 
         {# 2.6 Actions Boutons #}
         <div class="d-flex flex-column gap-2 mt-auto w-100 pt-2">
-            {% if app.user and app.user.hasActivePrestation(prestation) %}
+            {% if app.user and not app.user.canBookPrestation(prestation) %}
+                <a href="{{ path('app_prestation_show', {'slug': 'consultation-initiale'}) }}" 
+                   class="btn w-100 text-uppercase rounded-0 py-2 transition-hover" 
+                   style="background-color: rgba(184, 154, 99, 0.15); border: 1px solid rgba(184, 154, 99, 0.5); color: var(--meta-gold); font-size: 0.72rem; letter-spacing: 1.2px; font-weight: 600;"
+                   title="Une Consultation Initiale préalable est requise pour accéder à cette prestation">
+                    <i class="bi bi-lock me-1"></i> CONSULTATION INITIALE REQUISE
+                </a>
+            {% elseif app.user and app.user.hasActivePrestation(prestation) %}
                 <a href="{{ path('app_account') }}" 
                    class="btn w-100 text-uppercase rounded-0 py-2 transition-hover" 
                    style="background-color: rgba(184, 154, 99, 0.2); border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.73rem; letter-spacing: 1.5px; font-weight: 600;"

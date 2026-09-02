@@ -276,6 +276,17 @@ class Prestation
         return $this->hasTarificationVariable();
     }
 
+    public function isConsultationInitiale(): bool
+    {
+        $slug = $this->getSlug();
+        if ($slug && str_contains($slug, 'consultation-initiale')) {
+            return true;
+        }
+
+        $nom = mb_strtolower($this->nom ?? '');
+        return str_contains($nom, 'consultation initiale') || str_contains($nom, 'bilan initial');
+    }
+
     /**
      * Retourne les détails complets (prix, titre, sous-titre) pour un palier donné
      */

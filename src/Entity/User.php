@@ -265,4 +265,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return false;
     }
+
+    /**
+     * Vérifie si le client a déjà réalisé (ou fait valider par l'admin) sa Consultation Initiale.
+     * Statuts valides : 'Effectuée' ou 'Confirmé'.
+     */
+    public function hasCompletedConsultationInitiale(): bool
+    {
+        if (in_array('ROLE_ADMIN', $this->roles, true)) {
+            return true;
+        }
+
+        foreach ($this->seances as $seance) {
+            $prestation = $seance->getPrestation();
+            if ($prestation && $prestation->isConsultationInitiale()) {
+                $statut = $seance->getStatut();
+                if (in_array($statut, ['Effectuée', 'Confirmé'], true)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Vérifie si l'utilisateur est autorisé à réserver la prestation donnée.
+     * La Consultation Initiale est toujours réservable en premier.
+     * Tout autre type d'accompagnement requiert d'avoir préalablement validé une Consultation Initiale.
+     */
+    public function canBookPrestation(?Prestation $prestation): bool
+    {
+        if (!$prestation) {
+            return false;
+        }
+
+        if ($prestation->isConsultationInitiale()) {
+            return true;
+        }
+
+        return $this->hasCompletedConsultationInitiale();
+    }
 }
