@@ -95,6 +95,13 @@ class SeanceCrudController extends AbstractCrudController
                 $this->bookingMailer->sendBookingConfirmedToClient($entityInstance);
                 return;
             }
+
+            if ($originalStatut !== 'Annulé' && $entityInstance->getStatut() === 'Annulé') {
+                $ancienneDate = $originalData['dateRendezVous'] ?? $entityInstance->getDateRendezVous();
+                parent::updateEntity($entityManager, $entityInstance);
+                $this->bookingMailer->sendCancellationToClient($entityInstance, $ancienneDate);
+                return;
+            }
         }
 
         parent::updateEntity($entityManager, $entityInstance);

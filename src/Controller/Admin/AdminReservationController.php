@@ -52,4 +52,20 @@ class AdminReservationController extends AbstractController
         $this->addFlash('success', 'La séance n°' . $seance->getNumero() . ' a été confirmée et un e-mail avec le lien de visioconférence et la facture a été envoyé au client.');
         return $this->redirectToRoute('app_admin_reservations');
     }
+
+    #[Route('/reservation/{id}/annuler', name: 'app_admin_reservation_annuler')]
+    public function annuler(
+        Seance $seance, 
+        EntityManagerInterface $em,
+        \App\Service\BookingMailerService $bookingMailer
+    ): Response {
+        $ancienneDate = $seance->getDateRendezVous();
+        $seance->setStatut('Annulé');
+        $em->flush();
+
+        $bookingMailer->sendCancellationToClient($seance, $ancienneDate);
+
+        $this->addFlash('info', 'La séance n°' . $seance->getNumero() . ' de ' . $seance->getUser()->getPrenom() . ' a été annulée. Le client peut désormais réserver à nouveau ce type de consultation.');
+        return $this->redirectToRoute('app_admin_reservations');
+    }
 }
