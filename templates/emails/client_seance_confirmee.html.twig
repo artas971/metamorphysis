@@ -48,11 +48,29 @@
         </p>
     </div>
 
-    {# Information Rappel 48h #}
-    <div style="background-color: rgba(74, 79, 65, 0.2); border: 1px solid rgba(184, 154, 99, 0.2); padding: 20px; border-radius: 4px; margin: 25px 0;">
-        <p style="margin: 0; font-size: 14px; color: #D8D0BE; line-height: 1.6;">
-            🔗 <strong>Lien de visioconférence :</strong> Vous recevrez un e-mail de rappel <strong>48 heures avant votre séance</strong> contenant votre lien d'accès direct et sécurisé pour rejoindre votre consultation en ligne.
+    {# Bloc Lien de Visioconférence Direct #}
+    <div style="background-color: #1a1a17; border: 1px solid rgba(184, 154, 99, 0.4); border-left: 4px solid #B89A63; padding: 25px 20px; border-radius: 4px; margin: 25px 0; text-align: center;">
+        <h3 style="color: #B89A63; margin: 0 0 10px 0; font-size: 15px; text-transform: uppercase; letter-spacing: 2px;">
+            🎥 Votre Salle de Consultation en Ligne
+        </h3>
+        <p style="color: #D8D0BE; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+            Voici votre lien d'accès direct et sécurisé pour rejoindre votre consultation en visioconférence le jour de votre rendez-vous :
         </p>
+
+        {% if seance.lienVisio %}
+            <a href="{{ seance.lienVisio }}" target="_blank" 
+               style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px; box-shadow: 0 4px 15px rgba(184, 154, 99, 0.25);">
+                Rejoindre ma Consultation
+            </a>
+            <p style="margin: 15px 0 0 0; font-size: 12px; color: #8F8876; word-break: break-all;">
+                Lien direct : <a href="{{ seance.lienVisio }}" target="_blank" style="color: #B89A63; text-decoration: underline;">{{ seance.lienVisio }}</a>
+            </p>
+        {% else %}
+            <a href="http://127.0.0.1:8000/mon-compte" target="_blank" 
+               style="display: inline-block; padding: 14px 28px; background-color: #B89A63; color: #0A0A09; text-decoration: none; font-weight: bold; border-radius: 2px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px;">
+                Accéder à mon Espace Client
+            </a>
+        {% endif %}
     </div>
 
     {# Bloc Facture PDF #}

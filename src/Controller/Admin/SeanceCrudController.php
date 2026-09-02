@@ -21,6 +21,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class SeanceCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private \App\Service\BookingMailerService $bookingMailer,
+        private \App\Service\DailyCoService $dailyCoService
+    ) {}
+
     public static function getEntityFqcn(): string
     {
         return Seance::class;
@@ -71,6 +76,28 @@ class SeanceCrudController extends AbstractCrudController
 
         $referer = $context->getRequest()->headers->get('referer');
         return $this->redirect($referer ?: $this->generateUrl('admin'));
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Seance) {
+            $originalData = $entityManager->getUnitOfWork()->getOriginalEntityData($entityInstance);
+            $originalStatut = $originalData['statut'] ?? null;
+
+            if ($originalStatut !== 'Confirmé' && $entityInstance->getStatut() === 'Confirmé') {
+                if (!$entityInstance->getLienVisio() && $entityInstance->getDateRendezVous()) {
+                    $lien = $this->dailyCoService->createRoom($entityInstance->getDateRendezVous());
+                    if ($lien) {
+                        $entityInstance->setLienVisio($lien);
+                    }
+                }
+                parent::updateEntity($entityManager, $entityInstance);
+                $this->bookingMailer->sendBookingConfirmedToClient($entityInstance);
+                return;
+            }
+        }
+
+        parent::updateEntity($entityManager, $entityInstance);
     }
 
     // 3. Configuration des champs affichés

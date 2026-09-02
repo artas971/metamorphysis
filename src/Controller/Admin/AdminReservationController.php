@@ -33,14 +33,23 @@ class AdminReservationController extends AbstractController
     public function valider(
         Seance $seance, 
         EntityManagerInterface $em,
-        \App\Service\BookingMailerService $bookingMailer
+        \App\Service\BookingMailerService $bookingMailer,
+        \App\Service\DailyCoService $dailyCoService
     ): Response {
         $seance->setStatut('Confirmé');
+
+        if (!$seance->getLienVisio() && $seance->getDateRendezVous()) {
+            $lien = $dailyCoService->createRoom($seance->getDateRendezVous());
+            if ($lien) {
+                $seance->setLienVisio($lien);
+            }
+        }
+
         $em->flush();
 
         $bookingMailer->sendBookingConfirmedToClient($seance);
 
-        $this->addFlash('success', 'La séance n°' . $seance->getNumero() . ' a été confirmée et un e-mail avec facture a été envoyé au client.');
+        $this->addFlash('success', 'La séance n°' . $seance->getNumero() . ' a été confirmée et un e-mail avec le lien de visioconférence et la facture a été envoyé au client.');
         return $this->redirectToRoute('app_admin_reservations');
     }
 }
