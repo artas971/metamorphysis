@@ -17,27 +17,40 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             {# Carte translucide avec bordure or et flou #}
-            <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card, 8px);">
+            <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 0;">
                 <div class="card-body p-4 p-md-5">
                     
-                    <div class="text-center mb-5 border-bottom pb-3" style="border-color: rgba(184, 154, 99, 0.2) !important;">
+                    <div class="text-center mb-4 border-bottom pb-3" style="border-color: rgba(184, 154, 99, 0.2) !important;">
                         {# Titre en Or #}
                         <h2 class="fw-bold text-uppercase typo-titre" style="color: #B89A63; letter-spacing: 2px;">Modifier mon profil</h2>
                     </div>
 
+                    {# Encadré d'information sur la modification des coordonnées #}
+                    <div class="mb-4 p-3 text-start" style="background-color: rgba(10, 10, 9, 0.45); border: 1px solid rgba(184, 154, 99, 0.4); border-left: 3px solid var(--meta-gold);">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-info-circle-fill fs-5 mt-1" style="color: var(--meta-gold);"></i>
+                            <div>
+                                <p class="small mb-1 fw-bold text-uppercase" style="color: var(--meta-gold); letter-spacing: 1px;">Mise à jour de vos coordonnées</p>
+                                <p class="small mb-0" style="color: var(--meta-ivory); opacity: 0.92; line-height: 1.55;">
+                                    Seul votre <strong>numéro de téléphone</strong> est directement modifiable depuis cet espace. Si vous souhaitez modifier d'autres informations (votre nom, votre prénom ou votre adresse e-mail), veuillez en faire la demande directement lors de votre prochain rendez-vous.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     {{ form_start(form) }}
                         
-                        {# Champ Email (Bloqué) #}
+                        {# Champ Email (Lecture seule / Bloqué) #}
                         <div class="mb-4 text-start">
                             {{ form_label(form.email, null, {'label_attr': {'class': 'form-label fw-bold text-uppercase small', 'style': 'color: #FFFFF0; letter-spacing: 1px;'}}) }}
                             
                             {{ form_widget(form.email, {'attr': {
                                 'class': 'form-control p-3',
-                                'style': 'background-color: rgba(10, 10, 9, 0.3) !important; color: rgba(255, 255, 240, 0.6) !important; border: 1px solid rgba(184, 154, 99, 0.2) !important; border-radius: var(--radius-input, 4px);'
+                                'style': 'background-color: rgba(10, 10, 9, 0.3) !important; color: rgba(255, 255, 240, 0.6) !important; border: 1px solid rgba(184, 154, 99, 0.2) !important; border-radius: 0;'
                             }}) }}
                             
                             <div class="mt-2 small fst-italic" style="color: #FFFFF0; opacity: 0.7;">
-                                <i class="bi bi-info-circle me-1" style="color: #B89A63;"></i> Pour des raisons de sécurité, l'adresse email de connexion ne peut pas être modifiée.
+                                <i class="bi bi-lock-fill me-1" style="color: #B89A63;"></i> L'adresse e-mail de connexion ne peut pas être modifiée directement en ligne.
                             </div>
                         </div>
 
@@ -52,8 +65,8 @@
                             <div class="text-danger mt-1 small">{{ form_errors(form.telephone) }}</div>
                         </div>
 
-                        {# Bouton d'enregistrement corrigé : Fond sobre & Texte en Or #}
-                        <button type="submit" class="btn btn-outline-gold w-100 fw-bold py-3 rounded-0 text-uppercase" style="letter-spacing: 1px;">
+                        {# Bouton d'enregistrement : Fond pourpre sobre & Texte en Or #}
+                        <button type="submit" class="btn btn-outline-gold w-100 fw-bold py-3 rounded-0 text-uppercase transition-hover" style="letter-spacing: 1px;">
                             Enregistrer les modifications
                         </button>
                         
@@ -69,7 +82,7 @@
                     {# Bouton vers le changement de mot de passe #}
                     <div class="text-center">
                         <p class="small mb-3" style="color: #FFFFF0; opacity: 0.85;">Vous souhaitez modifier votre mot de passe de connexion ?</p>
-                        <a href="{{ path('app_password_change') }}" class="btn btn-outline-gold w-100 rounded-0 py-2 text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">
+                        <a href="{{ path('app_password_change') }}" class="btn btn-outline-gold w-100 rounded-0 py-2 text-uppercase transition-hover" style="letter-spacing: 1px; font-size: 0.85rem;">
                             <i class="bi bi-shield-lock me-2"></i> Changer mon mot de passe
                         </a>
                     </div>
