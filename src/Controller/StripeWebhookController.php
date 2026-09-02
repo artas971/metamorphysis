@@ -71,10 +71,18 @@ class StripeWebhookController extends AbstractController
                         }
                     }
 
-                    $nombrePersonnes = (int) ($session->metadata->nombre_personnes ?? 1);
-                    $montant = isset($session->metadata->montant) 
-                        ? (float) $session->metadata->montant 
-                        : ($session->amount_total ? ((float) $session->amount_total / 100) : $prestation->getPrix());
+                    $minPersonnes = $prestation->getMinPersonnes();
+                    $maxPersonnes = $prestation->getMaxPersonnes();
+                    $nombrePersonnes = (int) ($sessionStripe->metadata->nombre_personnes ?? $minPersonnes);
+                    if ($nombrePersonnes < $minPersonnes) {
+                        $nombrePersonnes = $minPersonnes;
+                    } elseif ($nombrePersonnes > $maxPersonnes) {
+                        $nombrePersonnes = $maxPersonnes;
+                    }
+
+                    $montant = isset($sessionStripe->metadata->montant) 
+                        ? (float) $sessionStripe->metadata->montant 
+                        : ($sessionStripe->amount_total ? ((float) $sessionStripe->amount_total / 100) : $prestation->calculerPrixTotal($nombrePersonnes));
 
                     // --- 1ÈRE SÉANCE : CRÉATION & VISIO ---
                     $premiereSeance = new Seance();
