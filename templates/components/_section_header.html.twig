@@ -1,0 +1,52 @@
+{% set decor = section.titreLigneDecor|default('none') %}
+
+{% if decor == 'none' %}
+    {% if section.titre or section.sousTitre %}
+        <header class="mb-5 text-center">
+            {% if section.sousTitre %}
+                <span class="text-uppercase fw-bold d-block mb-2 builder-subtitle" style="color: var(--meta-{{ section.sousTitreCouleur|default('gold') }});">
+                    {{ section.sousTitre }}
+                </span>
+            {% endif %}
+            {% if section.titre %}
+                <h2 class="fw-light mt-2 mb-3 builder-title" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); line-height: 1.3;">
+                    {{ section.titre }}
+                </h2>
+            {% endif %}
+            {% if section.contenu and disposition is defined and disposition != 'texte_centre' %}
+                <div class="lead mx-auto builder-content" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.9; max-width: 650px;">
+                    {{ section.contenu|format_paragraphs(section.texteCouleur|default('ivory'))|raw }}
+                </div>
+            {% endif %}
+        </header>
+    {% endif %}
+{% else %}
+    {% if section.titre or section.sousTitre %}
+        <div class="d-flex align-items-center gap-3 mb-5 {% if decor == 'avant_apres' %}justify-content-center{% endif %}">
+            {% if decor in ['avant', 'avant_apres'] %}
+                <div class="flex-grow-1" style="height: 1px; background: rgba(var(--meta-gold-rgb, 184, 154, 99), 0.35);" aria-hidden="true"></div>
+            {% endif %}
+            <div>
+                {% if section.titre %}
+                    <h2 class="text-uppercase typo-titre h5 mb-0" style="letter-spacing: 2.5px; font-size: 1.15rem; font-weight: 500; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">
+                        {{ section.titre }}
+                    </h2>
+                {% endif %}
+                {% if section.sousTitre %}
+                    <div class="fw-bold mt-1" style="letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
+                        {{ section.sousTitre }}
+                    </div>
+                {% endif %}
+            </div>
+            {% if decor in ['apres', 'avant_apres'] %}
+                <div class="flex-grow-1" style="height: 1px; background: rgba(var(--meta-gold-rgb, 184, 154, 99), 0.35);" aria-hidden="true"></div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if section.contenu and disposition is defined and disposition != 'texte_centre' %}
+        <div class="col-12 content-premium text-center mb-5" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
+            {{ section.contenu|format_paragraphs(section.texteCouleur|default('ivory'))|raw }}
+        </div>
+    {% endif %}
+{% endif %}

@@ -47,13 +47,13 @@
                             
                             {{ form_widget(form.telephone, {'attr': {
                                 'class': 'form-control p-3',
-                                'style': 'background-color: rgba(10, 10, 9, 0.6) !important; color: #FFFFF0 !important; border: 1px solid rgba(184, 154, 99, 0.4) !important; border-radius: var(--radius-input, 4px);'
+                                'style': 'background-color: rgba(10, 10, 9, 0.6) !important; color: #FFFFF0 !important; border: 1px solid rgba(184, 154, 99, 0.4) !important; border-radius: 0;'
                             }}) }}
                             <div class="text-danger mt-1 small">{{ form_errors(form.telephone) }}</div>
                         </div>
 
                         {# Bouton d'enregistrement corrigé : Fond sobre & Texte en Or #}
-                        <button type="submit" class="btn btn-outline-gold w-100 fw-bold py-3 rounded-pill text-uppercase" style="letter-spacing: 1px;">
+                        <button type="submit" class="btn btn-outline-gold w-100 fw-bold py-3 rounded-0 text-uppercase" style="letter-spacing: 1px;">
                             Enregistrer les modifications
                         </button>
                         
@@ -69,7 +69,7 @@
                     {# Bouton vers le changement de mot de passe #}
                     <div class="text-center">
                         <p class="small mb-3" style="color: #FFFFF0; opacity: 0.85;">Vous souhaitez modifier votre mot de passe de connexion ?</p>
-                        <a href="{{ path('app_password_change') }}" class="btn btn-outline-gold w-100 rounded-pill py-2 text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">
+                        <a href="{{ path('app_password_change') }}" class="btn btn-outline-gold w-100 rounded-0 py-2 text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">
                             <i class="bi bi-shield-lock me-2"></i> Changer mon mot de passe
                         </a>
                     </div>

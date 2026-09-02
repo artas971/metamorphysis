@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À Propos | Louisa Chouihi - Metamorphysis{% endblock %}
+{% block meta_description %}Découvrez le parcours et l'approche de Louisa Chouihi, consultante en relation humaine et praticienne en analyse transactionnelle chez Metamorphysis.{% endblock %}
+
+{% block body %}
+<div class="container position-relative my-4">
+    <div class="position-relative" style="border-radius: 0 !important; background-color: transparent;">
+        
+        <!-- BLOC 1 : PRÉSENTATION LOUISA CHOUIHI (SANS CADRE, PHOTO COLLÉE À DROITE, MAINS VISIBLES) -->
+        <section class="w-100 position-relative" style="padding-top: 48px; padding-bottom: 290px; padding-left: 48px; padding-right: 0px; box-sizing: border-box;">
+            <div class="row align-items-start g-4 g-lg-5 justify-content-between me-0">
+                
+                <!-- COLONNE GAUCHE : TEXTES -->
+                <div class="col-lg-6 order-2 order-lg-1 content-premium text-start pt-lg-2" style="z-index: 2;">
+                    <h1 class="typo-titre fw-light mb-2" style="font-size: 2.8rem; line-height: 1.15; letter-spacing: 3px; color: var(--meta-gold);">
+                        CHOUIHI LOUISA
+                    </h1>
+                    <div class="mb-4" style="letter-spacing: 2.5px; font-size: 0.95rem; line-height: 1.5; text-transform: uppercase; font-weight: 500; color: var(--meta-gold-hover);">
+                        CONSULTANTE EN RELATION HUMAINE
+                    </div>
+                    <div class="content-premium mb-0" style="line-height: 1.8; font-size: 1.05rem; opacity: 0.92; color: var(--meta-ivory);">
+                        <h3 class="typo-titre text-gold h6 text-uppercase mb-2" style="letter-spacing: 2px; color: var(--meta-gold);">Ma Vision</h3>
+                        <p class="fw-light mb-3">
+                            Chaque être humain porte en lui les ressources nécessaires à sa transformation.
+                        </p>
+                        <p class="fw-light mb-4">
+                            Mon rôle est de vous aider à les retrouver, en mettant en lumière ce qui vous entrave et en vous accompagnant vers plus de clarté, de liberté et d'alignement.
+                        </p>
+                        
+                        <h3 class="typo-titre text-gold h6 text-uppercase mb-2" style="letter-spacing: 2px; color: var(--meta-gold);">Mon Approche</h3>
+                        <p class="fw-light mb-3">
+                            Je m'appuie sur l'analyse transactionnelle, une approche thérapeutique reconnue, pour décrypter vos schémas relationnels, comprendre vos mécanismes inconscients et initier un changement durable.
+                        </p>
+                        <p class="fw-light mb-0">
+                            Chaque accompagnement est personnalisé, respectueux et profondément humain.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- COLONNE DROITE : PHOTO SANS CADRE, COLLÉE À DROITE ET CITATION ANCRÉE À L'EXTRÊME DROITE -->
+                <div class="col-lg-6 order-1 order-lg-2 position-relative mt-4 mt-lg-0 pe-0" style="z-index: 1;">
+                    <div class="position-relative shadow-lg w-100" style="border-radius: 0;">
+                        <img src="{{ asset('uploads/pages/louisa-presentation-6a502f265cd20760387695.jpg') }}" 
+                             alt="Portrait Louisa Chouihi - Consultante Metamorphysis" 
+                             loading="lazy"
+                             decoding="async"
+                             class="img-fluid d-block shadow-sm w-100" 
+                             style="height: auto; object-fit: cover; border-radius: 0;">
+
+                        <!-- ENCART CITATION DIRECTEMENT ANCRÉ À L'EXTRÊME DROITE (RIGHT: 0PX, SOUS LES MAINS) -->
+                        <div class="quote-aside-box p-3 p-sm-4 p-xl-5 shadow-lg position-absolute" 
+                             role="region"
+                             aria-label="Citation"
+                             style="bottom: -260px !important; right: 0px !important; left: auto !important; position: absolute !important; margin-top: 0 !important; width: 75% !important; max-width: 440px !important; background-color: var(--meta-olive) !important; color: var(--meta-ivory) !important; border-radius: 0 !important; z-index: 10 !important;">
+                            <div class="quote-aside-header d-flex justify-content-between align-items-center" role="button" tabindex="0" aria-expanded="false" aria-controls="quote-content-static">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="typo-titre quote-aside-mark" aria-hidden="true" style="color: var(--meta-gold); line-height: 0.8; font-size: 2.5rem;">“</span>
+                                    <span class="d-lg-none typo-titre fw-bold text-uppercase" style="color: var(--meta-gold); font-size: 0.8rem; letter-spacing: 2px;">Citation</span>
+                                </div>
+                                <div class="quote-toggle-badge d-lg-none d-flex align-items-center gap-2 text-gold py-1 px-2 rounded-1" style="font-size: 0.75rem; letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.4); background: rgba(0, 0, 0, 0.15);">
+                                    <span class="quote-toggle-label">Afficher la citation</span>
+                                    <i class="bi bi-chevron-down quote-toggle-icon"></i>
+                                </div>
+                            </div>
+                            <div id="quote-content-static" class="quote-aside-body">
+                                <blockquote class="citation-scroll-container typo-titre mb-3 mb-xl-4 pe-2 pe-xl-3 mt-2 mt-lg-0" style="color: var(--meta-ivory) !important; line-height: 1.7; font-size: 0.95rem; text-align: justify; margin: 0; font-weight: 300;">
+                                    <div style="padding-bottom: 10px;">
+                                        Je suis avant tout passionnée et empreinte à l'entraide et au bien-être de l'autre. J'aime mon métier que je considère comme une vocation. Je prône l'exclusivité car chaque moment compte avec chaque personne ; chaque rencontre offre un moment de partage et de transmission. Parce que tout changement commence par une preuve de considération et à mon sens, elle passe avant tout par l'écoute.
+                                    </div>
+                                </blockquote>
+                                <div style="width: 40px; height: 1px; background-color: var(--meta-gold);" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}
+
+

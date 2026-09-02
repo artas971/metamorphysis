@@ -10,6 +10,11 @@
         {{ include('partials/logo2.html.twig') }}
     </a>
 
+    {# Titre METAMORPHYSIS généré plus bas sous le symbole #}
+    <h1 class="text-gold typo-titre text-uppercase fw-normal mb-3" style="font-size: 2.2rem; letter-spacing: 7px; color: var(--meta-gold);">
+        METAMORPHYSIS
+    </h1>
+
     {# Textes d'ouverture conformes à la capture V1 client #}
     <header class="intro-text-container px-4" style="max-width: 650px;">
         
@@ -45,11 +50,23 @@
             Ils se répètent jusqu'à être compris.
         </p>
 
+        {# Bouton ENTRER #}
+        <div class="my-4">
+            <a href="{{ path('app_accueil') }}" class="btn btn-outline-gold px-5 py-2 text-uppercase rounded-0 transition-hover" style="letter-spacing: 3px; font-size: 0.85rem; font-weight: 500;">
+                ENTRER
+            </a>
+        </div>
+
         {# Flèche vers le bas #}
-        <div class="mt-2">
+        <div class="mt-1">
             <a href="{{ path('app_accueil') }}" class="text-gold text-decoration-none fs-4 opacity-75 d-inline-block" style="transition: transform 0.3s ease;" title="Découvrir la suite">
                 ↓
             </a>
+        </div>
+
+        {# Texte sous la flèche #}
+        <div class="text-gold text-uppercase mt-2 typo-titre" style="font-size: 0.95rem; letter-spacing: 3px; opacity: 0.95;">
+            Se reconnecter à sa nature profonde
         </div>
 
     </header>

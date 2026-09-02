@@ -3,7 +3,6 @@
 {% block title %}Accueil - Metamorphysis{% endblock %}
 
 {% block body %}
-<main>
     {# SECTION 1 : HÉROS & PROCESSUS #}
     <section class="container py-5 mt-5" aria-labelledby="heading-processus">
         <header class="mb-5 text-center">
@@ -104,7 +103,7 @@
             </div>
 
             <div class="col-lg-7 mt-5 mt-lg-0">
-                <div class="d-flex shadow-lg" style="border-radius: 4px; overflow: hidden; width: 100%;">
+                <div class="d-flex shadow-lg" style="border-radius: 0; overflow: hidden; width: 100%;">
                     {# Ajout des attributs SEO essentiels sur l'image #}
                     <img src="{{ asset('images/fauteuils.jpg') }}" 
                          alt="Espace de consultation Metamorphysis" 
@@ -150,35 +149,7 @@
                 
                 {% for prestation in prestations %}
                     <article class="prestation-card-item">
-                        <div class="card h-100 rounded-0 text-center d-flex flex-column" style="background-color: transparent; border: 1px solid rgba(184, 154, 99, 0.3); padding: 2rem 1rem;">
-                            
-                            <div class="mb-4 mt-2 d-flex justify-content-center">
-                                <div class="rounded-circle border border-gold d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: rgba(184, 154, 99, 0.02);">
-                                    <i class="bi {{ prestation.icone|default('bi-person') }} text-gold fs-4" aria-hidden="true"></i>
-                                </div>
-                            </div>
-
-                            <h3 class="text-gold fs-6 text-uppercase mb-2" style="letter-spacing: 1px; font-family: var(--font-title), serif; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-                                {{ prestation.nom }}
-                            </h3>
-
-                            <hr class="mx-auto mb-4" style="width: 35px; height: 1px; background-color: var(--meta-gold); border: none; opacity: 0.4;" aria-hidden="true">
-
-                            {% set desc_clean = prestation.description|striptags|replace({'&nbsp;': ' '}) %}
-                            <p class="small flex-grow-1 px-1 mb-4" style="color: #FFFFF0; opacity: 0.85; font-size: 0.8rem; line-height: 1.5;">
-                                {{ desc_clean|length > 90 ? desc_clean|slice(0, 90) ~ '...' : desc_clean }}
-                            </p>
-
-                            <p class="text-gold small mb-4" style="letter-spacing: 1px; font-size: 0.85rem;">
-                                <strong>{{ prestation.prix }} €</strong> / {{ prestation.unitePrix|default('SÉANCE')|upper }}
-                            </p>
-
-                            <div class="mt-auto">
-                                <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" title="Découvrir la prestation {{ prestation.nom }}" class="d-inline-block w-100 text-gold small text-decoration-none text-uppercase py-2 transition-hover" style="letter-spacing: 1px; background-color: var(--meta-pourpre, #21141C);">
-                                    DÉCOUVRIR <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        </div>
+                        {% include 'prestation/_card.html.twig' with {'prestation': prestation} %}
                     </article>
                 {% endfor %}
                 
@@ -192,9 +163,9 @@
         </div>
 
         <aside class="d-flex flex-column flex-md-row align-items-md-center gap-4 p-4 mt-5" 
-             style="background: var(--grad-subtle); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: var(--radius-card, 8px);">
+             style="background: var(--grad-subtle); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 0;">
             
-            <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" 
+            <div class="border border-gold rounded-0 d-flex align-items-center justify-content-center p-2" 
                  style="width: 50px; height: 50px; flex-shrink: 0; background-color: rgba(10, 10, 9, 0.2);">
                 <i class="bi bi-flower1 text-gold fs-4" aria-hidden="true"></i>
             </div>
@@ -215,7 +186,6 @@
             </small>
         </footer>
     </section>
-</main>
 {% endblock %}
 
 {% block javascripts %}

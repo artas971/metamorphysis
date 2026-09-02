@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À vous | Metamorphysis{% endblock %}
+{% block meta_description %}Découvrez à qui s'adresse la démarche d'accompagnement Metamorphysis : pour qui elle est conçue et dans quels cas elle n'est pas adaptée.{% endblock %}
+
+{% block body %}
+<style>
+    @media (min-width: 992px) {
+        .olive-box-overlap {
+            margin-top: -65px !important;
+        }
+    }
+</style>
+
+<div class="container position-relative my-4">
+    <div class="position-relative" style="background-color: transparent; border-radius: 0 !important;">
+        
+        <!-- BLOC 1 : INTRODUCTION (TITRE GAUCHE, PHOTO DROITE COLLÉE À L'EXTRÊME DROITE) -->
+        <section class="w-100 position-relative" style="padding-top: 48px; padding-bottom: 48px; padding-left: 48px; padding-right: 0px; box-sizing: border-box; z-index: 1;">
+            <div class="row align-items-start g-4 g-lg-5 justify-content-between me-0">
+                
+                <!-- TITRE H1 (GAUCHE) -->
+                <div class="col-12 col-lg-6 content-premium text-start pt-lg-2" style="z-index: 2;">
+                    <h1 class="typo-titre fw-light mb-0" style="font-size: 2.8rem; line-height: 1.15; letter-spacing: 3px; color: var(--meta-gold);">
+                        À QUI S'ADRESSE CETTE DÉMARCHE
+                    </h1>
+                </div>
+
+                <!-- PHOTO CANAPÉ (DROITE, COLLÉE À L'EXTRÊME DROITE AVEC PE-0) -->
+                <div class="col-12 col-lg-6 position-relative mt-4 mt-lg-0 pe-0" style="z-index: 1;">
+                    <div class="position-relative w-100 shadow-lg" style="border-radius: 0;">
+                        <img src="{{ asset('uploads/pages/canape-taupe-6a7f1ba5a707a642826507.jpg') }}" 
+                             alt="À qui s'adresse cette démarche - Metamorphysis" 
+                             loading="lazy"
+                             decoding="async"
+                             class="img-fluid d-block shadow-sm" 
+                             style="width: 100%; height: auto; object-fit: cover; border-radius: 0;">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BLOC 2 : GRILLE COMPARATIVE 2 COLONNES (FOND VERT OLIVE AU-DESSUS DE LA PHOTO, Z-INDEX 5) -->
+        <section class="w-100 position-relative olive-box-overlap" style="padding-top: 48px; padding-bottom: 48px; padding-left: 48px; padding-right: 48px; margin-top: 0px; margin-bottom: 0px; box-sizing: border-box; background-color: var(--meta-olive); z-index: 5;">
+            <div class="w-100" style="background-color: transparent; border: none;">
+                <div class="row g-4 g-lg-5">
+                    
+                    <!-- COLONNE 1 : POUR QUI -->
+                    <div class="col-12 col-lg-6 position-relative">
+                        <div class="pe-lg-4">
+                            <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4; color: var(--meta-gold);">
+                                CETTE DÉMARCHE PEUT VOUS CORRESPONDRE SI...
+                            </h3>
+                            <div class="content-premium mb-0" style="line-height: 1.85; font-size: 1.05rem; color: var(--meta-ivory); font-weight: 500;">
+                                <p class="mb-2">→ Vous ressentez que les mêmes situations se répètent dans votre vie.</p>
+                                <p class="mb-2">→ Vous avez conscience d'un problème récurrent que vous n'arrivez pas à résoudre.</p>
+                                <p class="mb-2">→ Vous souhaitez comprendre vos schémas relationnels et émotionnels.</p>
+                                <p class="mb-2">→ Vous êtes prêt(e) à un travail de fond et à vous remettre en question.</p>
+                                <p class="mb-0">→ Vous aspirez à une transformation profonde et durable.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLONNE 2 : PAS ADAPTÉ -->
+                    <div class="col-12 col-lg-6 position-relative">
+                        <div class="ps-lg-4">
+                            <h3 class="text-gold typo-titre h5 text-uppercase mb-4" style="letter-spacing: 1.5px; line-height: 1.4; color: var(--meta-gold);">
+                                CETTE DÉMARCHE NE VOUS CONVIENDRA PROBABLEMENT PAS SI...
+                            </h3>
+                            <div class="content-premium mb-0" style="line-height: 1.85; font-size: 1.05rem; color: var(--meta-ivory); font-weight: 500;">
+                                <p class="mb-2">→ Vous cherchez des solutions rapides ou toutes faites.</p>
+                                <p class="mb-2">→ Vous attendez que quelqu'un d'autre change à votre place.</p>
+                                <p class="mb-2">→ Vous n'êtes pas prêt(e) à regarder ce qui gêne.</p>
+                                <p class="mb-2">→ Vous refusez toute remise en question.</p>
+                                <p class="mb-0">→ Vous préférez rester dans vos certitudes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOC 3 : BANDEAU CONCLUSION SIGNATURE -->
+        <section class="w-100 position-relative" style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; margin-top: 0px; margin-bottom: 0px; box-sizing: border-box; z-index: 5;">
+            <div class="d-flex align-items-center justify-content-between py-4 px-4 px-md-5 my-0 w-100 position-relative" style="background-color: transparent; border-top: 1px solid rgba(184, 154, 99, 0.25); border-bottom: 1px solid rgba(184, 154, 99, 0.25); border-radius: 0;">
+                <div class="d-none d-md-flex" style="width: 60px; height: 60px; flex-shrink: 0;" aria-hidden="true"></div>
+                <div class="text-center flex-grow-1 px-3">
+                    <div class="fs-4 typo-titre mb-0 text-center" style="letter-spacing: 1px; line-height: 1.8; color: var(--meta-ivory);">
+                        <p class="mb-0">Cette démarche demande du courage.<br>Mais c'est aussi là que tout commence.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center ms-4 rounded-circle" style="width: 60px; height: 60px; border: 1px solid var(--meta-gold); border-radius: 50% !important; flex-shrink: 0;">
+                    <span class="text-gold fs-3 typo-symbolic">M</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}
+
+
+

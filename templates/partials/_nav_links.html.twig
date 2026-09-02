@@ -1,7 +1,15 @@
 {# On boucle sur toutes les pages récupérées par le MenuController #}
 {% for page in pages %}
+    {% set target_url = path('app_page_show', {'slug': page.slug}) %}
+    {% if page.slug == 'accueil' %}
+        {% set target_url = path('app_accueil') %}
+    {% elseif page.slug == 'prestations' and page.sections|length == 0 %}
+        {% set target_url = path('app_prestation_index') %}
+    {% elseif page.slug == 'contact' and page.sections|length == 0 %}
+        {% set target_url = path('app_contact') %}
+    {% endif %}
     <li class="nav-item">
-        <a class="nav-link text-ivory nav-link-premium" href="{{ path('app_page_show', {'slug': page.slug}) }}">
+        <a class="nav-link text-ivory nav-link-premium" href="{{ target_url }}">
             {{ page.titre }}
         </a>
     </li>

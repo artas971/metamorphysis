@@ -1,0 +1,95 @@
+{{ include('components/_section_header.html.twig', {'section': section, 'disposition': 'grille_colonnes'}) }}
+
+{% set nb_cols = section.etapes|length %}
+
+{% if nb_cols == 2 %}
+    {# Panneau unique comparatif collé avec ligne séparatrice verticale #}
+    <div class="w-100" style="{% if section.couleurFond and section.couleurFond not in ['none', 'plum'] %}background-color: transparent; border: none;{% else %}background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 0; padding: clamp(1rem, 3vw, 2rem);{% endif %}">
+        <div class="row g-4 g-lg-5">
+            {% for col in section.etapes|sort((a, b) => a.id <=> b.id) %}
+                <div class="col-12 col-lg-6 position-relative">
+                    <div class="pe-lg-4 ps-lg-2">
+                        {% if col.icone %}
+                            <div class="mb-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 52px; height: 52px; background-color: rgba(10, 10, 9, 0.4);">
+                                    {% if col.icone ends with '.svg' %}
+                                        <img src="{{ asset('images/' ~ col.icone) }}" alt="" style="width: 34px; height: 34px; object-fit: contain; display: block;">
+                                    {% elseif col.icone in ['bi-brain', 'brain-svg', 'cerveau'] %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#B89A63" viewBox="0 0 512 512" aria-hidden="true"><path d="M208 0c-29.9 0-54.7 20.5-61.8 48.2-27.1 2.9-49.1 22.8-53.5 49.3-24.8 5.7-43.2 26.6-45.5 52.3-25.9 8.3-44.2 31.9-45.2 59.7-.6 18.2 6.5 35.8 19.3 48.6-8.9 14.9-11.4 33-6.5 50.1 5.6 19.4 19.8 35.1 38.3 42.4 2.2 24.3 18.6 44.9 41.5 52.3 4.2 25.1 24 45 49.6 48.8 6.4 25.3 28.5 44.3 55.8 46.3V0h-8zm96 512c27.3-2 49.4-21 55.8-46.3 25.6-3.8 45.4-23.7 49.6-48.8 22.9-7.4 39.3-28 41.5-52.3 18.5-7.3 32.7-23 38.3-42.4 4.9-17.1 2.4-35.2-6.5-50.1 12.8-12.8 19.9-30.4 19.3-48.6-1-27.8-19.3-51.4-45.2-59.7-2.3-25.7-20.7-46.6-45.5-52.3-4.4-26.5-26.4-46.4-53.5-49.3C350.7 20.5 325.9 0 296 0h-8v512h8z"/></svg>
+                                    {% else %}
+                                        <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if col.titre %}
+                            <h3 class="text-gold typo-titre h5 text-uppercase mb-3 mb-md-4 builder-subtitle {% if section.texteGras %}fw-bold{% endif %}" style="letter-spacing: 1.5px; line-height: 1.4; {% if section.texteGras %}font-weight: 800 !important;{% endif %}">{{ col.titre }}</h3>
+                        {% endif %}
+                        {% if col.texte %}
+                            <div class="content-premium mb-0 builder-content {% if section.texteGras %}fw-bold{% endif %}" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 500;{% endif %}">{{ col.texte|nl2br }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    {# Grille épurée pour 3, 4 ou 5 colonnes #}
+    <div class="row g-4 justify-content-center position-relative text-center pt-2">
+        {% if nb_cols == 4 %}
+            <div class="d-none d-lg-block position-absolute" style="top: 48px; left: 12.5%; width: 75%; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;" aria-hidden="true"></div>
+        {% endif %}
+
+        {% for col in section.etapes|sort((a, b) => a.id <=> b.id) %}
+            <article class="col-12 col-sm-6 {{ (nb_cols >= 5) ? 'col-lg' : ((nb_cols == 4) ? 'col-lg-3 col-md-6' : 'col-lg-4 col-md-6') }} position-relative z-1">
+                <div class="h-100 py-2 py-md-3 px-2 d-flex flex-column align-items-center text-center">
+                    {% if col.icone %}
+                        <div class="mb-3">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: clamp(56px, 12vw, 70px); height: clamp(56px, 12vw, 70px); background-color: var(--meta-olive); color: var(--meta-gold);">
+                                {% if col.icone ends with '.svg' %}
+                                    <img src="{{ asset('images/' ~ col.icone) }}" alt="" style="width: clamp(34px, 8vw, 44px); height: clamp(34px, 8vw, 44px); object-fit: contain; display: block;">
+                                {% elseif col.icone in ['bi-brain', 'brain-svg', 'cerveau'] %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B89A63" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+                                        <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/>
+                                        <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/>
+                                        <path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/>
+                                        <path d="M6.002 5.125A3 3 0 0 0 6.401 6.5"/>
+                                        <path d="M3.477 10.896a4 4 0 0 1 .585-.396"/>
+                                        <path d="M19.938 10.5a4 4 0 0 1 .585.396"/>
+                                        <path d="M6 18a4 4 0 0 1-1.967-.516"/>
+                                        <path d="M19.967 17.484A4 4 0 0 1 18 18"/>
+                                    </svg>
+                                {% elseif col.icone == 'bi-eye' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#B89A63" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>
+                                {% elseif col.icone == 'bi-diagram-3' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#B89A63" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v1a.5.5 0 0 1-1 0V8H2v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 1.5 7H7V6A1.5 1.5 0 0 1 5.5 4.5v-1zm-4 6A1.5 1.5 0 0 1 3.5 8h1A1.5 1.5 0 0 1 6 9.5v1A1.5 1.5 0 0 1 4.5 12h-1A1.5 1.5 0 0 1 2 10.5v-1zm10 0A1.5 1.5 0 0 1 13.5 8h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm-5 2A1.5 1.5 0 0 1 8.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 7 12.5v-1z"/></svg>
+                                {% elseif col.icone in ['bi-symmetry-vertical', 'confronter', 'miroir-face'] %}
+                                    {# Confronter : Face-à-face / Miroir de lucidité face à face #}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B89A63" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M7 4a5 5 0 0 0-4 4.8c0 2.5 1.5 4.6 3.6 5.3L6 18h2"/>
+                                        <path d="M17 4a5 5 0 0 1 4 4.8c0 2.5-1.5 4.6-3.6 5.3L18 18h-2"/>
+                                        <line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2 2" stroke-width="1.5"/>
+                                        <circle cx="8" cy="8.5" r="0.75" fill="#B89A63"/>
+                                        <circle cx="16" cy="8.5" r="0.75" fill="#B89A63"/>
+                                    </svg>
+                                {% elseif col.icone == 'bi-crosshair' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#B89A63" viewBox="0 0 16 16"><path d="M8.5.5a.5.5 0 0 0-1 0v.518A7.001 7.001 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7.001 7.001 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7.001 7.001 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7.001 7.001 0 0 0 8.5 1.018V.5zm-6.48 7A6.001 6.001 0 0 1 7.5 2.02v4.48a1.5 1.5 0 0 0-.98.98H2.02zm0 1h4.48a1.5 1.5 0 0 0 .98.98v4.48A6.001 6.001 0 0 1 2.02 8.5zm6.48 5.46V9.48a1.5 1.5 0 0 0 .98-.98h4.48a6.001 6.001 0 0 1-5.46 5.46zm5.46-6.46H9.48a1.5 1.5 0 0 0-.98-.98V2.02a6.001 6.001 0 0 1 5.46 5.46zM8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>
+                                {% else %}
+                                    <i class="bi {{ col.icone|default('bi-flower1') }} text-gold fs-3" aria-hidden="true"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <span class="typo-symbolic mb-1 d-block fw-bold" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); font-size: 1.1rem; letter-spacing: 2px;" aria-hidden="true">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</span>
+                    {% if col.titre %}
+                        <h3 class="fs-6 letter-spacing-1 mb-3 text-uppercase" style="color: var(--meta-{{ section.titreCouleur|default('gold-hover') }}); font-family: var(--font-body); font-weight: 500; letter-spacing: 1.5px;">{{ col.titre }}</h3>
+                    {% endif %}
+                    {% if col.texte %}
+                        <div class="content-premium mb-0" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.92; font-family: var(--font-body); {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 300;{% endif %} font-size: 0.92rem; line-height: 1.6;">{{ col.texte|nl2br }}</div>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% endif %}

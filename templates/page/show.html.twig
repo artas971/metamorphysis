@@ -9,946 +9,210 @@
 {% block twitter_description %}{{ page.metaDescription|default('Découvrez nos parcours d\'accompagnement sur-mesure.') }}{% endblock %}
 
 {% block body %}
-{# On englobe tout le contenu dynamique dans une balise MAIN pour la structure globale #}
-{% set fond_unifie = page.fondBlocsUnifie|default('individuel') %}
-{% set main_bg_class = '' %}
-{% if fond_unifie == 'pourpre' %}
-    {% set main_bg_class = 'bg-plum-premium' %}
-{% elseif fond_unifie == 'olive' %}
-    {% set main_bg_class = 'bg-olive-premium' %}
+
+{% if isDraftPreview|default(false) %}
+    <div class="bg-warning text-dark py-2 px-3 text-center fw-bold shadow position-sticky top-0 z-3" style="letter-spacing: 1px; font-size: 0.85rem; border-bottom: 2px solid #b89a63;">
+        <i class="bi bi-eye-slash-fill me-2"></i> MODE BROUILLON — Cette page est hors-ligne / non publiée (invisible pour le public)
+        <a href="{{ path('admin_page_edit', {'entityId': page.id}) }}" class="btn btn-sm btn-dark ms-3 py-0 px-2 text-gold" style="font-size: 0.75rem;">✏️ Modifier dans EasyAdmin</a>
+    </div>
 {% endif %}
 
-<main class="{{ main_bg_class }}">
+{% if page.slug == 'mentions-legales' %}
+    {# =========================================================================
+       LAYOUT GRILLE LUXE (2+1) : MENTIONS LÉGALES & CONFIDENTIALITÉ
+       Bloc 1 (Gauche) | Bloc 2 (Droite) | Bloc 3 (Pleine Largeur Centré Dessous)
+       Angles 100% droits (border-radius: 0), Cartes Vert Olive, Fond Pourpre Sombre
+       ========================================================================= #}
+    <div class="container py-4 my-3 pt-lg-4">
+        {% if page.afficherTitre %}
+            <header class="text-center mb-5">
+                <h1 class="font-serif-luxury text-gold fw-light mb-2 typo-titre gold-gradient-text" style="font-size: var(--fs-h1, 2.8rem); letter-spacing: 2px;">
+                    {{ page.titre }}
+                </h1>
+                <div class="mx-auto mt-3" style="width: 100px; height: 1px; background: linear-gradient(90deg, transparent, var(--meta-gold, #B89A63), transparent);"></div>
+            </header>
+        {% endif %}
 
-    {# --- AJOUT DYNAMIQUE : Titre de page H1 --- #}
+        {% set sections_sorted = page.sections|sort((a, b) => (a.ordre ?? 0) <=> (b.ordre ?? 0)) %}
+        {% set sec1 = sections_sorted[0] ?? null %}
+        {% set sec2 = sections_sorted[1] ?? null %}
+        {% set sec3 = sections_sorted[2] ?? null %}
+
+        <div class="row g-4 align-items-stretch">
+            {# BLOC 1 : MENTIONS LÉGALES (Moitié gauche de l'écran col-lg-6) #}
+            {% if sec1 %}
+                <div class="col-12 col-lg-6 d-flex">
+                    <section class="olive-card w-100 p-4 p-md-5 d-flex flex-column justify-content-between">
+                        <div>
+                            <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                                <h2 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">
+                                    {{ sec1.titre }}
+                                </h2>
+                                {% if sec1.sousTitre %}
+                                    <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2.5px; font-size: 0.75rem; color: var(--meta-gold, #B89A63);">
+                                        {{ sec1.sousTitre }}
+                                    </p>
+                                {% endif %}
+                            </header>
+                            <div class="content-premium text-ivory">
+                                {{ sec1.contenu|raw }}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            {% endif %}
+
+            {# BLOC 2 : POLITIQUE DE CONFIDENTIALITÉ (Moitié droite de l'écran col-lg-6) #}
+            {% if sec2 %}
+                <div class="col-12 col-lg-6 d-flex">
+                    <section class="olive-card w-100 p-4 p-md-5 d-flex flex-column justify-content-between">
+                        <div>
+                            <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                                <h2 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">
+                                    {{ sec2.titre }}
+                                </h2>
+                                {% if sec2.sousTitre %}
+                                    <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2.5px; font-size: 0.75rem; color: var(--meta-gold, #B89A63);">
+                                        {{ sec2.sousTitre }}
+                                    </p>
+                                {% endif %}
+                            </header>
+                            <div class="content-premium text-ivory">
+                                {{ sec2.contenu|raw }}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            {% endif %}
+
+            {# BLOC 3 : CONDITIONS D'ANNULATION (Pleine largeur col-12 sous les 2 premiers blocs) #}
+            {% if sec3 %}
+                <div class="col-12">
+                    <section class="olive-card w-100 p-4 p-md-5">
+                        <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                            <h2 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">
+                                {{ sec3.titre }}
+                            </h2>
+                            {% if sec3.sousTitre %}
+                                <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2.5px; font-size: 0.75rem; color: var(--meta-gold, #B89A63);">
+                                    {{ sec3.sousTitre }}
+                                </p>
+                            {% endif %}
+                        </header>
+                        <div class="content-premium text-ivory">
+                            {{ sec3.contenu|raw }}
+                        </div>
+                    </section>
+                </div>
+            {% endif %}
+
+            {# Blocs additionnels si ajoutés dans le Page Builder #}
+            {% for extra_sec in sections_sorted|slice(3) %}
+                <div class="col-12">
+                    <section class="olive-card w-100 p-4 p-md-5">
+                        {% if extra_sec.titre %}
+                            <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                                <h2 class="typo-titre text-gold fw-normal mb-1">{{ extra_sec.titre }}</h2>
+                                {% if extra_sec.sousTitre %}
+                                    <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2px; font-size: 0.75rem; color: var(--meta-gold);">{{ extra_sec.sousTitre }}</p>
+                                {% endif %}
+                            </header>
+                        {% endif %}
+                        <div class="content-premium text-ivory">
+                            {{ extra_sec.contenu|raw }}
+                        </div>
+                    </section>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    {# --- Titre de page H1 standard --- #}
     {% if page.afficherTitre %}
         <header class="container mt-5 pt-5 text-center">
             <h1 class="text-gold fw-bold mb-5 typo-titre">{{ page.titre }}</h1>
         </header>
     {% endif %}
 
-    {# LA BOUCLE DES BLOCS DYNAMIQUES #}
-    {% for section in page.sections|sort((a, b) => (a.position ?? 0) <=> (b.position ?? 0)) %}
-        
-        {# 1. Calcul de la classe de fond #}
-        {% if fond_unifie == 'pourpre' or fond_unifie == 'olive' %}
-            {% set classe_fond = 'bg-transparent' %}
-        {% else %}
-            {% set classe_fond = (section.couleurFond == 'olive') ? 'bg-olive-premium' : 'bg-plum-premium' %}
-        {% endif %}
-        
-        {# 2. La balise structurelle avec aria-labelledby et decalagePosY pour l'accessibilité & le chevauchement #}
-        <{{ section.baliseHtml|default('section') }} 
-            class="{{ classe_fond }} py-5 position-relative overflow-hidden" 
-            style="{% if section.decalagePosY %}margin-top: {{ section.decalagePosY }}px; z-index: 5;{% endif %}"
-            {% if section.titre and section.disposition not in ['presentation_expert', 'img_gauche', 'img_droite', 'bandeau_conclusion', 'processus'] %}aria-labelledby="section-heading-{{ loop.index }}"{% endif %}>
-            
-            <div class="container">
-            
-                {# TITRE DE SECTION (H2 dynamique) #}
-                {% if section.titre is defined and section.titre is not null and section.disposition not in ['presentation_expert', 'img_gauche', 'img_droite', 'bandeau_conclusion', 'processus', 'grille_colonnes', 'texte_centre', 'slider_prestations'] %}
-                    <header class="mb-5 text-center">
-                        <h2 id="section-heading-{{ loop.index }}" class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
-                            {{ section.titre }}
-                        </h2>
-                    </header>
-                {% endif %}
+    <div class="container position-relative mt-4 pt-lg-4 pb-4 mb-5">
+        {# Panneau unifié continu sans rupture entre les blocs (angles droits) #}
+        <div class="{% if page.fondBlocsUnifie == 'olive' %}bg-olive-premium shadow-lg{% endif %} position-relative" style="border-radius: 0 !important; {% if page.fondBlocsUnifie != 'olive' %}background-color: transparent;{% endif %}">
+            {# LA BOUCLE DES BLOCS DYNAMIQUES DU PAGE BUILDER #}
+            {% for section in page.sections|sort((a, b) => (a.ordre ?? 0) <=> (b.ordre ?? 0)) %}
+                
+                {% set is_banniere = (section.disposition == 'banniere') %}
+                {% set dispos_titre_integre = ['presentation_expert', 'img_gauche', 'img_droite', 'bandeau_conclusion', 'processus', 'grille_colonnes', 'texte_centre', 'slider_prestations', 'grille_mentions'] %}
+                
+                {% set p_top = (section.paddingHaut is not null) ? section.paddingHaut ~ 'px' : '3rem' %}
+                {% set p_bottom = (section.paddingBas is not null) ? section.paddingBas ~ 'px' : '3rem' %}
+                {% set p_left = (section.paddingGauche is not null) ? section.paddingGauche ~ 'px' : '3rem' %}
+                {% set p_right = (section.paddingDroite is not null) ? section.paddingDroite ~ 'px' : '3rem' %}
+                
+                {% set m_top = (section.margeHaut is not null and section.margeHaut != 0) ? section.margeHaut ~ 'px' : ((section.decalagePosY) ? section.decalagePosY ~ 'px' : '0px') %}
+                {% set m_bottom = (section.margeBas is not null and section.margeBas != 0) ? section.margeBas ~ 'px' : '0px' %}
+                {% set min_h = (section.hauteurMin is not null and section.hauteurMin > 0) ? section.hauteurMin ~ 'px' : 'auto' %}
+                {% set sec_zindex = (section.decalagePosY < 0 or (section.margeHaut is not null and section.margeHaut < 0)) ? (loop.index * 10 + 20) : (loop.index * 10) %}
 
-                {# --- DISPOSITION 1 : TEXTE CENTRÉ --- #}
-                {% if section.disposition == 'texte_centre' %}
-                    <div class="row justify-content-center">
-                        <div class="col-12 col-lg-10 text-center">
-                            {% if section.titre %}
-                                <h2 class="typo-titre fw-light mb-2" style="font-size: 2.8rem; letter-spacing: 2px; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
-                            {% endif %}
-                            {% if section.sousTitre %}
-                                <div class="mb-3" style="letter-spacing: 2.5px; font-size: 0.95rem; line-height: 1.5; text-transform: uppercase; font-weight: 500; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                    {{ section.sousTitre|nl2br }}
-                                </div>
-                            {% endif %}
-                            {% if section.titre or section.sousTitre %}
-                                <div class="mx-auto mb-4" style="width: 60px; height: 2px; background-color: var(--meta-gold);"></div>
-                            {% endif %}
-                            <div class="content-premium mb-0" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                {{ section.contenu|nl2br|raw }}
-                            </div>
-                        </div>
-                    </div>
-
-                {# --- DISPOSITION 2 : IMAGE À GAUCHE / TEXTE À DROITE --- #}
-                {% elseif section.disposition == 'img_gauche' %}
-                    {% set crop_style = '' %}
-                    {% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
-                        {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
-                    {% endif %}
-                    {% set z_img = (section.imageSuperposition == 'image_sur_texte') ? 10 : (section.imageZIndex|default(1)) %}
-                    {% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
-                    {% set cadre_color = section.imageCadreCouleur|default('plum') %}
-                    {% set b_top = section.imageCadreHaut|default(0) %}
-                    {% set b_bottom = section.imageCadreBas|default(0) %}
-                    {% set b_left = section.imageCadreGauche|default(0) %}
-                    {% set b_right = section.imageCadreDroite|default(0) %}
-                    {% set border_style = '' %}
-                    {% if cadre_color != 'none' and (b_top > 0 or b_bottom > 0 or b_left > 0 or b_right > 0) %}
-                        {% set border_style = 'border-style: solid; border-color: var(--meta-' ~ cadre_color ~ '); border-top-width: ' ~ b_top ~ 'px; border-bottom-width: ' ~ b_bottom ~ 'px; border-left-width: ' ~ b_left ~ 'px; border-right-width: ' ~ b_right ~ 'px;' %}
-                    {% endif %}
-                    
-                    <div class="row align-items-start g-4 g-lg-5 justify-content-between">
-                        <div class="col-lg-6 position-relative mt-4 mt-lg-0" style="z-index: {{ z_img }};">
-                            {% set img_url = media_url(section) %}
-                            {% if img_url %}
-                                {% if section.imageLien %}
-                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
-                                {% endif %}
-                                <img src="{{ img_url }}" 
-                                     alt="Illustration de la section {{ section.titre|default('') }}" 
-                                     loading="lazy"
-                                     class="img-fluid position-relative shadow-lg" 
-                                     style="box-sizing: border-box !important; object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {{ border_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                                {% if section.imageLien %}
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if section.citation %}
-                                {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
-                                {% set text_color = section.citationCouleurTexte|default('meta-ivory') %}
-                                <aside class="position-relative p-4 p-xl-5 d-none d-sm-block shadow-lg" 
-                                     style="
-                                        margin-top: {{ section.citationPosY|default('-150') }}px; 
-                                        left: {{ section.citationPosX|default('-10') }}%; 
-                                        width: {{ section.citationLargeur|default('90') }}%; 
-                                        background-color: var(--{{ bg_color }}); 
-                                        border-radius: 2px; 
-                                        z-index: 15;">
-                                    <div class="typo-titre" aria-hidden="true" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">“</div>
-                                    <blockquote class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
-                                         style="
-                                            --scroll-color: var(--{{ text_color }}); 
-                                            color: var(--{{ text_color }}); 
-                                            line-height: 1.6; 
-                                            font-size: 1rem; 
-                                            text-align: justify;
-                                            margin: 0;
-                                            {% if section.citationHauteurMax %}
-                                                max-height: {{ section.citationHauteurMax }}px; 
-                                                overflow-y: auto;
-                                                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                            {% endif %}
-                                         ">
-                                        <div style="padding-bottom: 30px;">
-                                            {{ section.citation|raw }}
-                                        </div>
-                                    </blockquote>
-                                    <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});" aria-hidden="true"></div>
-                                </aside>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6 content-premium text-start pt-lg-2" style="z-index: {{ z_txt }};">
-                            {% if section.titre %}
-                                <h2 class="typo-titre fw-light mb-2" style="font-size: 2.8rem; line-height: 1.15; letter-spacing: 3px; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
-                            {% endif %}
-                            {% if section.sousTitre %}
-                                <div class="mb-4" style="letter-spacing: 2.5px; font-size: 0.95rem; line-height: 1.5; text-transform: uppercase; font-weight: 500; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                    {{ section.sousTitre|nl2br }}
-                                </div>
-                            {% endif %}
-                            <div class="content-premium mb-0" style="line-height: 1.6; font-size: 1.05rem; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                {{ section.contenu|nl2br|raw }}
-                            </div>
-                        </div>
-                    </div>
-
-                {# --- DISPOSITION 3 : TEXTE À GAUCHE / IMAGE À DROITE --- #}
-                {% elseif section.disposition == 'img_droite' %}
-                    {% set crop_style = '' %}
-                    {% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
-                        {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
-                    {% endif %}
-                    {% set z_img = (section.imageSuperposition == 'image_sur_texte') ? 10 : (section.imageZIndex|default(1)) %}
-                    {% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
-                    {% set cadre_color = section.imageCadreCouleur|default('plum') %}
-                    {% set b_top = section.imageCadreHaut|default(0) %}
-                    {% set b_bottom = section.imageCadreBas|default(0) %}
-                    {% set b_left = section.imageCadreGauche|default(0) %}
-                    {% set b_right = section.imageCadreDroite|default(0) %}
-                    {% set border_style = '' %}
-                    {% if cadre_color != 'none' and (b_top > 0 or b_bottom > 0 or b_left > 0 or b_right > 0) %}
-                        {% set border_style = 'border-style: solid; border-color: var(--meta-' ~ cadre_color ~ '); border-top-width: ' ~ b_top ~ 'px; border-bottom-width: ' ~ b_bottom ~ 'px; border-left-width: ' ~ b_left ~ 'px; border-right-width: ' ~ b_right ~ 'px;' %}
-                    {% endif %}
-                    
-                    <div class="row align-items-start g-4 g-lg-5 justify-content-between">
-                        <div class="col-lg-6 order-2 order-lg-1 content-premium text-start pt-lg-2" style="z-index: {{ z_txt }};">
-                            {% if section.titre %}
-                                <h2 class="typo-titre fw-light mb-2" style="font-size: 2.8rem; line-height: 1.15; letter-spacing: 3px; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
-                            {% endif %}
-                            {% if section.sousTitre %}
-                                <div class="mb-4" style="letter-spacing: 2.5px; font-size: 0.95rem; line-height: 1.5; text-transform: uppercase; font-weight: 500; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                    {{ section.sousTitre|nl2br }}
-                                </div>
-                            {% endif %}
-                            <div class="content-premium mb-0" style="line-height: 1.6; font-size: 1.05rem; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                {{ section.contenu|nl2br|raw }}
-                            </div>
-                            {% if section.boutonLien and section.boutonTexte %}
-                                <div class="mt-4 pt-2">
-                                    <a href="{{ section.boutonLien }}" 
-                                       target="{{ section.boutonCible|default('_self') }}" 
-                                       class="btn btn-outline-gold px-4 py-2 text-uppercase rounded-0 transition-hover" 
-                                       style="letter-spacing: 2px; font-size: 0.8rem;">
-                                        {{ section.boutonTexte }} <i class="bi bi-star text-gold fs-5 align-middle ms-2" aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </div>
+                {% if is_banniere %}
+                    <section class="builder-section position-relative" 
+                        style="--sec-p-top: {{ p_top }}; --sec-p-bottom: {{ p_bottom }}; --sec-p-left: {{ p_left }}; --sec-p-right: {{ p_right }}; --sec-m-top: {{ m_top }}; --sec-m-bottom: {{ m_bottom }}; --sec-min-h: {{ min_h }}; z-index: {{ sec_zindex }};">
+                        {{ include('page/blocks/_' ~ section.disposition ~ '.html.twig', {'section': section, 'loop_index': loop.index}, ignore_missing = true) }}
+                    </section>
+                {% else %}
+                    <section class="builder-section position-relative" 
+                        style="--sec-p-top: {{ p_top }}; --sec-p-bottom: {{ p_bottom }}; --sec-p-left: {{ p_left }}; --sec-p-right: {{ p_right }}; --sec-m-top: {{ m_top }}; --sec-m-bottom: {{ m_bottom }}; --sec-min-h: {{ min_h }}; {% if section.couleurFond and section.couleurFond not in ['none', 'plum'] %}background-color: var(--meta-{{ section.couleurFond }});{% endif %} z-index: {{ sec_zindex }};"
+                        {% if section.titre and section.disposition not in dispos_titre_integre %}aria-labelledby="section-heading-{{ loop.index }}"{% endif %}>
                         
-                        <div class="col-lg-6 order-1 order-lg-2 position-relative mt-4 mt-lg-0" style="z-index: {{ z_img }};">
-                            {% set img_url = media_url(section) %}
-                            {% if img_url %}
-                                {% if section.imageLien %}
-                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
-                                {% endif %}
-                                <img src="{{ img_url }}" 
-                                     alt="Illustration de la section {{ section.titre|default('') }}" 
-                                     loading="lazy"
-                                     class="img-fluid position-relative shadow-lg" 
-                                     style="box-sizing: border-box !important; object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {{ border_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                                {% if section.imageLien %}
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if section.citation %}
-                                {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
-                                {% set text_color = section.citationCouleurTexte|default('meta-gold') %}
-                                <aside class="position-relative p-4 p-xl-5 d-none d-sm-block shadow-lg" 
-                                     style="
-                                        margin-top: {{ section.citationPosY|default('-150') }}px; 
-                                        left: {{ section.citationPosX|default('-10') }}%; 
-                                        width: {{ section.citationLargeur|default('90') }}%; 
-                                        background-color: var(--{{ bg_color }}); 
-                                        border-radius: 2px; 
-                                        z-index: 15;">
-                                    <div class="typo-titre" aria-hidden="true" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">“</div>
-                                    <blockquote class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
-                                         style="
-                                            --scroll-color: var(--{{ text_color }}); 
-                                            color: var(--{{ text_color }}); 
-                                            line-height: 1.6; 
-                                            font-size: 1rem; 
-                                            text-align: justify;
-                                            margin: 0;
-                                            {% if section.citationHauteurMax %}
-                                                max-height: {{ section.citationHauteurMax }}px; 
-                                                overflow-y: auto;
-                                                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                            {% endif %}
-                                         ">
-                                        <div style="padding-bottom: 30px;">
-                                            {{ section.citation|raw }}
-                                        </div>
-                                    </blockquote>
-                                    <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});" aria-hidden="true"></div>
-                                </aside>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                {# --- DISPOSITION 3.A : IMAGE AU CENTRE / TEXTES --- #}
-                {% elseif section.disposition == 'img_centre' %}
-                    {% set crop_style = '' %}
-                    {% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
-                        {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
-                    {% endif %}
-                    {% set cadre_color = section.imageCadreCouleur|default('plum') %}
-                    {% set b_top = section.imageCadreHaut|default(0) %}
-                    {% set b_bottom = section.imageCadreBas|default(0) %}
-                    {% set b_left = section.imageCadreGauche|default(0) %}
-                    {% set b_right = section.imageCadreDroite|default(0) %}
-                    {% set border_style = '' %}
-                    {% if cadre_color != 'none' and (b_top > 0 or b_bottom > 0 or b_left > 0 or b_right > 0) %}
-                        {% set border_style = 'border-style: solid; border-color: var(--meta-' ~ cadre_color ~ '); border-top-width: ' ~ b_top ~ 'px; border-bottom-width: ' ~ b_bottom ~ 'px; border-left-width: ' ~ b_left ~ 'px; border-right-width: ' ~ b_right ~ 'px;' %}
-                    {% endif %}
-                    
-                    <div class="row align-items-center g-4 g-lg-5 justify-content-center">
-                        {% if section.titre or section.sousTitre %}
-                            <div class="col-12 text-center mb-4">
-                                {% if section.titre %}
-                                    <h2 class="text-gold typo-titre fw-light mb-2" style="font-size: 2.8rem; letter-spacing: 2px;">{{ section.titre }}</h2>
-                                {% endif %}
-                                {% if section.sousTitre %}
-                                    <div class="text-gold fw-bold mb-3" style="letter-spacing: 2.5px; font-size: 0.95rem; text-transform: uppercase;">
-                                        {{ section.sousTitre|nl2br }}
-                                    </div>
-                                {% endif %}
-                                <div class="mx-auto" style="width: 60px; height: 2px; background-color: var(--meta-gold);"></div>
-                            </div>
-                        {% endif %}
-
-                        <div class="col-lg-6 position-relative text-center my-4">
-                            {% set img_url = media_url(section) %}
-                            {% if img_url %}
-                                {% if section.imageLien %}
-                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
-                                {% endif %}
-                                <img src="{{ img_url }}" 
-                                     alt="Illustration de la section {{ section.titre|default('') }}" 
-                                     loading="lazy"
-                                     class="img-fluid position-relative shadow-lg mx-auto" 
-                                     style="object-fit: cover; width: 100%; border-radius: 2px; transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); {{ crop_style }} {{ border_style }} {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% endif %}">
-                                {% if section.imageLien %}
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if section.citation %}
-                                {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
-                                {% set text_color = section.citationCouleurTexte|default('meta-gold') %}
-                                <aside class="position-relative p-4 p-xl-5 d-none d-sm-block shadow-lg mx-auto" 
-                                     style="
-                                        margin-top: {{ section.citationPosY|default('-150') }}px; 
-                                        left: {{ section.citationPosX|default('-5') }}%; 
-                                        width: {{ section.citationLargeur|default('90') }}%; 
-                                        background-color: var(--{{ bg_color }}); 
-                                        border-radius: 2px; 
-                                        z-index: 15;">
-                                    <div class="typo-titre" aria-hidden="true" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">“</div>
-                                    <blockquote class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
-                                         style="
-                                            --scroll-color: var(--{{ text_color }}); 
-                                            color: var(--{{ text_color }}); 
-                                            line-height: 1.6; 
-                                            font-size: 1rem; 
-                                            text-align: justify;
-                                            margin: 0;
-                                            {% if section.citationHauteurMax %}
-                                                max-height: {{ section.citationHauteurMax }}px; 
-                                                overflow-y: auto;
-                                                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                            {% endif %}
-                                         ">
-                                        <div style="padding-bottom: 30px;">
-                                            {{ section.citation|raw }}
-                                        </div>
-                                    </blockquote>
-                                    <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});" aria-hidden="true"></div>
-                                </aside>
-                            {% endif %}
-                        </div>
-
-                        {% if section.contenu %}
-                            <div class="col-lg-6 content-premium text-start" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                {{ section.contenu|nl2br|raw }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                {# --- DISPOSITION 9 : GRILLE DE COLONNES CÔTE À CÔTE --- #}
-                {% elseif section.disposition == 'grille_colonnes' %}
-                    {% set decor = section.titreLigneDecor|default('none') %}
-                    {% if decor == 'none' %}
-                        <header class="mb-5 text-center">
-                            {% if section.sousTitre %}
-                                <span class="text-uppercase fw-bold d-block mb-2" style="color: var(--meta-{{ section.sousTitreCouleur|default('gold') }}); letter-spacing: 3px; font-size: 0.85rem;">
-                                    {{ section.sousTitre }}
-                                </span>
-                            {% endif %}
-                            {% if section.titre %}
-                                <h2 class="fw-light mt-2 mb-3" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); font-size: 2.8rem; line-height: 1.3;">
+                        {# Titre de section standard si la disposition ne l'intègre pas dans son design #}
+                        {% if section.titre is defined and section.titre is not null and section.disposition not in dispos_titre_integre %}
+                            <header class="mb-4 text-center">
+                                <h2 id="section-heading-{{ loop.index }}" class="text-ivory fw-light mb-2" style="font-size: 2.5rem;">
                                     {{ section.titre }}
                                 </h2>
-                            {% endif %}
-                            {% if section.contenu %}
-                                <p class="lead mx-auto" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.9; font-size: 1.25rem; max-width: 650px;">
-                                    {{ section.contenu|nl2br|raw }}
-                                </p>
-                            {% endif %}
-                        </header>
-                    {% else %}
-                        {% if section.titre or section.sousTitre %}
-                            <div class="d-flex align-items-center gap-3 mb-5 {% if decor == 'avant_apres' %}justify-content-center{% endif %}">
-                                {% if decor in ['avant', 'avant_apres'] %}
-                                    <div class="flex-grow-1" style="height: 1px; background: rgba(184, 154, 99, 0.35);" aria-hidden="true"></div>
-                                {% endif %}
-                                <div>
-                                    {% if section.titre %}
-                                        <h2 class="text-uppercase typo-titre h5 mb-0" style="letter-spacing: 2.5px; font-size: 1.15rem; font-weight: 500; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">
-                                            {{ section.titre }}
-                                        </h2>
-                                    {% endif %}
-                                    {% if section.sousTitre %}
-                                        <div class="fw-bold mt-1" style="letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                            {{ section.sousTitre }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if decor in ['apres', 'avant_apres'] %}
-                                    <div class="flex-grow-1" style="height: 1px; background: rgba(184, 154, 99, 0.35);" aria-hidden="true"></div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-
-                        {% if section.contenu %}
-                            <div class="col-12 content-premium text-center mb-5" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                {{ section.contenu|nl2br|raw }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
-
-                    {% set nb_cols = section.etapes|length %}
-
-                    {% if nb_cols == 2 %}
-                        {# Panneau unique comparatif collé avec ligne séparatrice verticale (Exact Maquette V1) #}
-                        <div class="card-premium p-4 p-md-5 w-100 shadow-lg" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 8px;">
-                            <div class="row g-4 g-lg-5">
-                                {% for col in section.etapes %}
-                                    <div class="col-12 col-lg-6 {% if loop.first %}position-relative{% endif %}" style="{% if loop.first %}border-right: 1px solid rgba(184, 154, 99, 0.25);{% endif %}">
-                                        <div class="pe-lg-4 ps-lg-2">
-                                            {% if col.icone %}
-                                                <div class="mb-3">
-                                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 52px; height: 52px; background-color: rgba(10, 10, 9, 0.4);">
-                                                        {% if col.icone ends with '.svg' %}
-                                                            <img src="{{ asset('images/' ~ col.icone) }}" alt="" style="width: 34px; height: 34px; object-fit: contain; display: block;">
-                                                        {% else %}
-                                                            <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                            {% if col.titre %}
-                                                <h3 class="text-gold typo-titre h5 text-uppercase mb-4 {% if section.texteGras %}fw-bold{% endif %}" style="letter-spacing: 1.5px; line-height: 1.4; {% if section.texteGras %}font-weight: 800 !important;{% endif %}">{{ col.titre }}</h3>
-                                            {% endif %}
-                                            {% if col.texte %}
-                                                <div class="content-premium mb-0 {% if section.texteGras %}fw-bold{% endif %}" style="line-height: 1.7; font-size: 1.05rem; color: var(--meta-{{ section.texteCouleur|default('ivory') }}); {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 500;{% endif %}">{{ col.texte|nl2br }}</div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% else %}
-                        {# Grille épurée pour 3, 4 ou 5 colonnes (Exact Maquette V1 & V2) #}
-                        <div class="row g-4 justify-content-center position-relative text-center pt-2">
-                            {% if nb_cols == 4 %}
-                                <div class="d-none d-lg-block position-absolute" style="top: 48px; left: 12.5%; width: 75%; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;" aria-hidden="true"></div>
-                            {% endif %}
-
-                            {% for col in section.etapes %}
-                                <article class="col-12 col-sm-6 {{ (nb_cols >= 5) ? 'col-lg' : ((nb_cols == 4) ? 'col-lg-3 col-md-6' : 'col-lg-4 col-md-6') }} position-relative z-1">
-                                    <div class="h-100 py-3 px-2 d-flex flex-column align-items-center text-center">
-                                        {% if col.icone %}
-                                            <div class="mb-3">
-                                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-olive); color: var(--meta-gold);">
-                                                    {% if col.icone ends with '.svg' %}
-                                                        <img src="{{ asset('images/' ~ col.icone) }}" alt="" style="width: 38px; height: 38px; object-fit: contain; display: block;">
-                                                    {% elseif col.icone == 'bi-eye' %}
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>
-                                                    {% elseif col.icone == 'bi-search' %}
-                                                        <i class="bi bi-search text-gold fs-3" aria-hidden="true"></i>
-                                                    {% elseif col.icone == 'bi-flower1' %}
-                                                        <i class="bi bi-flower1 text-gold fs-3" aria-hidden="true"></i>
-                                                    {% elseif col.icone == 'bi-brightness-high' %}
-                                                        <i class="bi bi-brightness-high text-gold fs-3" aria-hidden="true"></i>
-                                                    {% elseif col.icone == 'bi-diagram-3' %}
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v1a.5.5 0 0 1-1 0V8H2v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 1.5 7H7V6A1.5 1.5 0 0 1 5.5 4.5v-1zm-4 6A1.5 1.5 0 0 1 3.5 8h1A1.5 1.5 0 0 1 6 9.5v1A1.5 1.5 0 0 1 4.5 12h-1A1.5 1.5 0 0 1 2 10.5v-1zm10 0A1.5 1.5 0 0 1 13.5 8h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm-5 2A1.5 1.5 0 0 1 8.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 7 12.5v-1z"/></svg>
-                                                    {% elseif col.icone == 'bi-symmetry-vertical' %}
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"><path d="M7 2.5a.5.5 0 0 0-.938-.24l-6 11A.5.5 0 0 0 .5 14h6a.5.5 0 0 0 .5-.5v-11zm7.938 10.76-6-11A.5.5 0 0 0 8 2.5v11a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .438-.74zM8 1v14h.5V1H8z"/></svg>
-                                                    {% elseif col.icone == 'bi-crosshair' %}
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"><path d="M8.5.5a.5.5 0 0 0-1 0v.518A7.001 7.001 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7.001 7.001 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7.001 7.001 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7.001 7.001 0 0 0 8.5 1.018V.5zm-6.48 7A6.001 6.001 0 0 1 7.5 2.02v4.48a1.5 1.5 0 0 0-.98.98H2.02zm0 1h4.48a1.5 1.5 0 0 0 .98.98v4.48A6.001 6.001 0 0 1 2.02 8.5zm6.48 5.46V9.48a1.5 1.5 0 0 0 .98-.98h4.48a6.001 6.001 0 0 1-5.46 5.46zm5.46-6.46H9.48a1.5 1.5 0 0 0-.98-.98V2.02a6.001 6.001 0 0 1 5.46 5.46zM8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>
-                                                    {% else %}
-                                                        <i class="bi {{ col.icone }} text-gold fs-3" aria-hidden="true"></i>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                        <span class="typo-symbolic mb-1 d-block fw-bold" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); font-size: 1.1rem; letter-spacing: 2px;" aria-hidden="true">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</span>
-                                        {% if col.titre %}
-                                            <h3 class="fs-6 letter-spacing-1 mb-3 text-uppercase" style="color: var(--meta-{{ section.titreCouleur|default('gold-hover') }}); font-family: var(--font-body); font-weight: 500; letter-spacing: 1.5px;">{{ col.titre }}</h3>
-                                        {% endif %}
-                                        {% if col.texte %}
-                                            <div class="content-premium mb-0" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.92; font-family: var(--font-body); {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 300;{% endif %} font-size: 0.92rem; line-height: 1.6;">{{ col.texte|nl2br }}</div>
-                                        {% endif %}
-                                    </div>
-                                </article>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                {# --- DISPOSITION 9.B : CONTENEUR HORIZONTAL FLEXBOX ROW --- #}
-                {% elseif section.disposition == 'flex_row' %}
-                    {% set decor = section.titreLigneDecor|default('none') %}
-                    {% if decor == 'none' %}
-                        {% if section.titre or section.sousTitre %}
-                            <header class="mb-5 text-center">
-                                {% if section.sousTitre %}
-                                    <span class="text-uppercase fw-bold d-block mb-2" style="color: var(--meta-{{ section.sousTitreCouleur|default('gold') }}); letter-spacing: 3px; font-size: 0.85rem;">
-                                        {{ section.sousTitre }}
-                                    </span>
-                                {% endif %}
-                                {% if section.titre %}
-                                    <h2 class="fw-light mt-2 mb-3" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); font-size: 2.8rem; line-height: 1.3;">
-                                        {{ section.titre }}
-                                    </h2>
-                                {% endif %}
-                                {% if section.contenu %}
-                                    <p class="lead mx-auto" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.9; font-size: 1.25rem; max-width: 650px;">
-                                        {{ section.contenu|nl2br|raw }}
-                                    </p>
-                                {% endif %}
                             </header>
                         {% endif %}
-                    {% else %}
-                        {% if section.titre or section.sousTitre %}
-                            <div class="d-flex align-items-center gap-3 mb-5 {% if decor == 'avant_apres' %}justify-content-center{% endif %}">
-                                {% if decor in ['avant', 'avant_apres'] %}
-                                    <div class="flex-grow-1" style="height: 1px; background: rgba(184, 154, 99, 0.35);" aria-hidden="true"></div>
-                                {% endif %}
-                                <div>
-                                    {% if section.titre %}
-                                        <h2 class="text-uppercase typo-titre h5 mb-0" style="letter-spacing: 2.5px; font-size: 1.15rem; font-weight: 500; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">
-                                            {{ section.titre }}
-                                        </h2>
-                                    {% endif %}
-                                    {% if section.sousTitre %}
-                                        <div class="fw-bold mt-1" style="letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                            {{ section.sousTitre }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {% if decor in ['apres', 'avant_apres'] %}
-                                    <div class="flex-grow-1" style="height: 1px; background: rgba(184, 154, 99, 0.35);" aria-hidden="true"></div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
 
-                        {% if section.contenu %}
-                            <div class="col-12 content-premium text-center mb-5" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                {{ section.contenu|nl2br|raw }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
+                        {# Rendu dynamique et isolé du bloc #}
+                        {{ include('page/blocks/_' ~ section.disposition ~ '.html.twig', {'section': section, 'loop_index': loop.index}, ignore_missing = true) }}
 
-                    {# Conteneur Flexbox Horizontal pour les sous-blocs #}
-                    <div class="d-flex flex-row flex-wrap align-items-stretch justify-content-start gap-4 w-100 py-3">
-                        {% for col in section.etapes %}
-                            <div class="flex-grow-1 p-4 shadow-sm transition-hover" 
-                                 style="flex-basis: calc(33.333% - 1.5rem); min-width: 260px; background-color: rgba(10, 10, 9, 0.25); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 4px; display: flex; flex-direction: column;">
-                                
-                                {% if col.icone %}
-                                    <div class="mb-3 d-flex align-items-center">
-                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 52px; height: 52px; background-color: var(--meta-olive); color: var(--meta-gold);">
-                                            {% if col.icone ends with '.svg' %}
-                                                <img src="{{ asset('images/' ~ col.icone) }}" alt="" style="width: 32px; height: 32px; object-fit: contain; display: block;">
-                                            {% else %}
-                                                <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endif %}
-
-                                {% if col.titre %}
-                                    <h3 class="fs-6 letter-spacing-1 text-uppercase mb-2" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); font-family: var(--font-body); font-weight: 500;">
-                                        {{ col.titre }}
-                                    </h3>
-                                {% endif %}
-
-                                {% if col.texte %}
-                                    <div class="content-premium mt-1 mb-0 flex-grow-1" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.9; font-size: 0.92rem; line-height: 1.6; {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 300;{% endif %}">
-                                        {{ col.texte|nl2br }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% else %}
-                            <div class="text-sage fst-italic w-100 text-center">Ajoutez des sous-blocs dans la liste des étapes/colonnes pour peupler cette rangée flexible.</div>
-                        {% endfor %}
-                    </div>
-
-                    {% if section.boutonLien and section.boutonTexte %}
-                        <div class="mt-4 pt-3 text-center w-100 position-relative" style="z-index: 10;">
-                            <a href="{{ section.boutonLien }}" 
-                               target="{{ section.boutonCible|default('_self') }}" 
-                               class="btn btn-outline-gold px-4 py-2 rounded-0 text-uppercase transition-hover" 
-                               style="letter-spacing: 2px; font-size: 0.85rem;">
-                                {{ section.boutonTexte }} <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    {% endif %}
-
-                {# --- DISPOSITION 10 : BANDEAU DE CONCLUSION & LOGO M --- #}
-                {% elseif section.disposition == 'bandeau_conclusion' %}
-                    <div class="d-flex align-items-center justify-content-between py-4 px-4 px-md-5 my-2" style="background-color: var(--meta-plum); border-top: 1px solid rgba(184, 154, 99, 0.25); border-bottom: 1px solid rgba(184, 154, 99, 0.25); border-radius: 4px;">
-                        <div class="text-start">
-                            {% if section.contenu %}
-                                <div class="fs-4 typo-titre mb-0" style="letter-spacing: 1px; line-height: 1.8; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">{{ section.contenu|nl2br|raw }}</div>
-                            {% else %}
-                                <p class="fs-4 mb-1 typo-titre" style="letter-spacing: 1px; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">Cette démarche demande du courage.</p>
-                                <p class="fs-4 mb-0 typo-titre" style="letter-spacing: 1px; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">Mais c'est aussi là que tout commence.</p>
+                        {# Rendu du bouton d'action CTA pour texte_centre / titre_seul #}
+                        {% if section.boutonTexte and section.disposition in ['texte_centre', 'titre_seul'] %}
+                            {% set btn_class = 'btn-gold-premium' %}
+                            {% if section.boutonStyle == 'outline' %}
+                                {% set btn_class = 'btn-outline-gold' %}
+                            {% elseif section.boutonStyle == 'sage' %}
+                                {% set btn_class = 'btn-sage-premium' %}
+                            {% elseif section.boutonStyle == 'plum' %}
+                                {% set btn_class = 'btn-plum-premium' %}
                             {% endif %}
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center ms-4" style="width: 60px; height: 60px; border: 1px solid var(--meta-gold); border-radius: 4px; flex-shrink: 0;">
-                            <span class="text-gold fs-3 typo-symbolic">M</span>
-                        </div>
-                    </div>
 
-                {# --- DISPOSITION 4 : BANNIÈRE PLEINE LARGEUR --- #}
-                {% elseif section.disposition == 'banniere' %}
-                    <div class="row justify-content-center">
-                        <div class="col-12 text-center mb-4">
-                            {% set img_url = media_url(section) %}
-                            {% if img_url %}
-                                {% if section.imageLien %}
-                                    <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
-                                {% endif %}
-                                <img src="{{ img_url }}" 
-                                     alt="Bannière illustrative" 
-                                     loading="lazy"
-                                     class="img-fluid w-100 shadow-lg" 
-                                     style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
-                                {% if section.imageLien %}
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        {% if section.titre or section.sousTitre or section.contenu %}
-                            <div class="col-lg-8 text-center">
-                                {% if section.titre %}
-                                    <h2 class="typo-titre fw-light mb-2" style="font-size: 2.8rem; letter-spacing: 2px; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
-                                {% endif %}
-                                {% if section.sousTitre %}
-                                    <div class="fw-bold mb-3" style="letter-spacing: 2.5px; font-size: 0.95rem; text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                        {{ section.sousTitre|nl2br }}
-                                    </div>
-                                {% endif %}
-                                {% if section.contenu %}
-                                    <div class="content-premium text-center" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
-                                        {{ section.contenu|nl2br|raw }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                {# --- DISPOSITION 5 : SLIDER DES PRESTATIONS --- #}
-                {% elseif section.disposition == 'slider_prestations' %}
-                    
-                    {% if section.titre or section.sousTitre or section.contenu %}
-                        <header class="mb-5 text-center">
-                            {% if section.titre %}
-                                <h2 class="typo-titre fw-light mb-2" style="font-size: 2.5rem; letter-spacing: 2px; color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
-                            {% endif %}
-                            {% if section.sousTitre %}
-                                <div class="fw-bold mb-3" style="letter-spacing: 2px; font-size: 0.95rem; text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
-                                    {{ section.sousTitre }}
-                                </div>
-                            {% endif %}
-                            {% if section.contenu %}
-                                <div class="content-premium mb-0" style="line-height: 1.6; opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">{{ section.contenu|nl2br|raw }}</div>
-                            {% endif %}
-                        </header>
-                    {% endif %}
-
-                    <div class="prestation-slider-container">
-                        <button class="slider-btn slider-btn-left" id="btn-prev-{{ loop.index }}" aria-label="Prestation précédente">
-                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
-                        </button>
-
-                        <div class="prestation-track" id="slider-track-{{ loop.index }}" role="region" aria-label="Carrousel des prestations">
-                            {% for prestation in section.prestations %}
-                                <article class="prestation-card-item">
-                                    <div class="card h-100 rounded-0 text-center d-flex flex-column" style="background-color: transparent; border: 1px solid rgba(184, 154, 99, 0.3); padding: 2rem 1rem;">
-                                        
-                                        <div class="mb-4 mt-2 d-flex justify-content-center">
-                                            <div class="rounded-circle border border-gold d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: rgba(184, 154, 99, 0.02);">
-                                                {% set ico = prestation.icone|default('bi-person') %}
-                                                {% if ico == 'bi-person' %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#B89A63" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>
-                                                {% elseif ico == 'bi-people' %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#B89A63" viewBox="0 0 16 16"><path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
-                                                {% elseif ico == 'bi-house-heart' %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#B89A63" viewBox="0 0 16 16"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/><path d="m8 6.257-.663-.663A1.91 1.91 0 0 0 6 5a2 2 0 0 0-2 2c0 .888.665 1.69 1.528 2.378.647.514 1.39 1.002 2.472 1.622 1.082-.62 1.825-1.108 2.472-1.622C11.335 8.69 12 7.888 12 7a2 2 0 0 0-2-2 1.91 1.91 0 0 0-1.337.594L8 6.257Z"/></svg>
-                                                {% elseif ico == 'bi-diagram-3' %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#B89A63" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v1a.5.5 0 0 1-1 0V8H2v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 1.5 7H7V6A1.5 1.5 0 0 1 5.5 4.5v-1zm-4 6A1.5 1.5 0 0 1 3.5 8h1A1.5 1.5 0 0 1 6 9.5v1A1.5 1.5 0 0 1 4.5 12h-1A1.5 1.5 0 0 1 2 10.5v-1zm10 0A1.5 1.5 0 0 1 13.5 8h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm-5 2A1.5 1.5 0 0 1 8.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 7 12.5v-1z"/></svg>
-                                                {% else %}
-                                                    <i class="bi {{ ico }} text-gold fs-4" aria-hidden="true"></i>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-
-                                        <h3 class="text-gold fs-6 text-uppercase mb-2" style="letter-spacing: 1px; font-family: var(--font-title), serif; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-                                            {{ prestation.nom }}
-                                        </h3>
-
-                                        <hr class="mx-auto mb-4" style="width: 35px; height: 1px; background-color: var(--meta-gold); border: none; opacity: 0.4;" aria-hidden="true">
-
-                                        {% set desc_clean = prestation.description|striptags|replace({'&nbsp;': ' '}) %}
-                                        <p class="small flex-grow-1 px-1 mb-4" style="color: #FFFFF0; opacity: 0.85; font-size: 0.8rem; line-height: 1.5;">
-                                            {{ desc_clean|length > 90 ? desc_clean|slice(0, 90) ~ '...' : desc_clean }}
-                                        </p>
-
-                                        <p class="text-gold small mb-4" style="letter-spacing: 1px; font-size: 0.85rem;">
-                                            <strong>{{ prestation.prix }} €</strong> / {{ prestation.unitePrix|default('SÉANCE')|upper }}
-                                        </p>
-
-                                        <div class="mt-auto">
-                                            <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" title="Découvrir la prestation {{ prestation.nom }}" class="d-inline-block w-100 text-gold small text-decoration-none text-uppercase py-2 transition-hover" style="letter-spacing: 1px; background-color: var(--meta-pourpre, #21141C);">
-                                                DÉCOUVRIR <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </article>
-                            {% else %}
-                                <div class="text-sage fst-italic w-100 text-center">Aucune prestation sélectionnée pour ce bloc.</div>
-                            {% endfor %}
-                        </div>
-
-                        <button class="slider-btn slider-btn-right" id="btn-next-{{ loop.index }}" aria-label="Prestation suivante">
-                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
-                        </button>
-                    </div>
-
-                    {% if section.citation %}
-                        <aside class="d-flex flex-column flex-md-row align-items-md-center gap-4 p-4 mt-5 shadow-lg" style="background: var(--grad-subtle); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: var(--radius-card, 8px);">
-                            <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0; background-color: rgba(10, 10, 9, 0.2);">
-                                <i class="bi bi-flower1 text-gold fs-4" aria-hidden="true"></i>
-                            </div>
-                            
-                            <p class="small mb-0 flex-grow-1 text-center text-md-start" style="color: #FFFFF0; opacity: 0.9; font-size: 0.95rem; line-height: 1.6;">
-                                {{ section.citation|raw }}
-                            </p>
-                            
-                            {% if section.boutonLien %}
-                                <a href="{{ section.boutonLien }}" class="text-gold small text-decoration-none text-uppercase ms-md-auto text-nowrap transition-hover fw-bold" style="letter-spacing: 1px;">
-                                    {{ section.boutonTexte|default('En savoir plus') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            <div class="mt-4 pt-2 text-center w-100 position-relative" style="z-index: 10;">
+                                <a href="{{ section.boutonLien|default('#') }}" 
+                                   target="{{ section.boutonCible|default('_self') }}" 
+                                   class="btn {{ btn_class }} px-4 py-2 rounded-0 fw-bold text-uppercase transition-hover" 
+                                   style="letter-spacing: 1.5px; font-size: 0.85rem;">
+                                    {{ section.boutonTexte }} <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                                 </a>
-                            {% endif %}
-                        </aside>
-                    {% endif %}
-
-                    {% if section.contenu %}
-                        <footer class="text-center mt-5">
-                            <small class="text-uppercase" style="color: #FFFFF0; opacity: 0.5; font-size: 0.65rem; letter-spacing: 1px;">
-                                {{ section.contenu|raw }}
-                            </small>
-                        </footer>
-                    {% endif %}
-
-                {# --- DISPOSITION 6 : INFO PRATIQUE --- #}
-                {% elseif section.disposition == 'info_pratique' %}
-                    
-                    {# Utilisation de la balise Aside pour du contenu annexe/pratique #}
-                    <aside class="mt-5 pt-3 d-flex flex-column flex-md-row align-items-md-center gap-4">
-                        <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0;">
-                            <i class="bi bi-flower1 text-gold fs-4" aria-hidden="true"></i>
-                        </div>
-                        
-                        <div class="text-sage small mb-0 w-100 d-flex flex-column flex-md-row align-items-md-center gap-3">
-                            {{ section.contenu|raw }}
-                        </div>
-                    </aside>
-                    
-                    {% if section.titre %}
-                    <div class="text-center mt-5">
-                        <span class="text-sage text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">{{ section.titre }}</span>
-                    </div>
-                    {% endif %}
-
-                {# --- DISPOSITION 7 : CHEMINEMENT --- #}
-                {% elseif section.disposition == 'cheminement' %}
-                    
-                    {% set nb_etapes = section.etapes|length %}
-                    
-                    {% if nb_etapes == 4 %}
-                        {% set col_class = 'col-lg-3' %}
-                        {% set line_left = '12.5%' %}
-                        {% set line_width = '75%' %}
-                    {% else %}
-                        {% set col_class = 'col-lg-4' %}
-                        {% set line_left = '16.66%' %}
-                        {% set line_width = '66.66%' %}
-                    {% endif %}
-
-                    <div class="row g-4 justify-content-center position-relative pt-4">
-                        <div class="d-none d-lg-block position-absolute" style="top: 59px; left: {{ line_left }}; width: {{ line_width }}; height: 1px; background: rgba(184, 154, 99, 0.3); z-index: 0;" aria-hidden="true"></div>
-                        
-                        {% for etape in section.etapes %}
-                            {# Article pour structurer chaque étape indépendamment #}
-                            <article class="col-12 col-md-6 {{ col_class }} text-center position-relative z-1">
-                                <div class="mb-3">
-                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 70px; height: 70px; background-color: var(--meta-black);">
-                                        <i class="bi {{ etape.icone }} text-gold fs-3" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                                <span class="text-gold typo-symbolic mb-1 d-block" aria-hidden="true">{{ loop.index < 10 ? '0' ~ loop.index : loop.index }}</span>
-                                {# Changement H4 vers H3 pour respecter la logique H2 -> H3 #}
-                                <h3 class="text-ivory fs-6 letter-spacing-1 mb-3">{{ etape.titre|upper }}</h3>
-                                <p class="text-sage small px-2">{{ etape.texte }}</p>
-                            </article>
-                        {% endfor %}
-                    </div>
-
-                {# --- DISPOSITION 8 : PROFIL FONDATRICE / À PROPOS --- #}
-                {% elseif section.disposition == 'presentation_expert' %}
-                    <div class="row align-items-stretch g-5 py-4">
-                        
-                        <div class="col-lg-5 d-flex flex-column justify-content-start pt-lg-4 order-2 order-lg-1">
-                            <header class="mb-5">
-                                {# Utilisation de H2 pour ne pas concurrencer le H1 global de la page s'il est activé #}
-                                <h2 class="text-gold typo-titre text-uppercase mb-2" style="font-size: 3rem; letter-spacing: 2px; line-height: 1.1;">
-                                    {{ section.titre }}
-                                </h2>
-                                <p class="text-gold text-uppercase fw-bold" style="letter-spacing: 3px; font-size: 0.75rem;">
-                                    Consultante en relation humaine
-                                </p>
-                            </header>
-                            
-                            <div class="text-sage small content-premium" style="line-height: 1.8;">
-                                {{ section.contenu|raw }}
                             </div>
-                        </div>
+                        {% endif %}
 
-                        <div class="col-lg-6 offset-lg-1 mt-5 mt-lg-0 order-1 order-lg-2 mb-5">
-                            
-                            <div style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); transition: transform 0.3s ease;">
-                                {% set img_url = media_url(section) %}
-                                {% if img_url %}
-                                    {% if section.imageLien %}
-                                        <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
-                                    {% endif %}
-                                    <img src="{{ img_url }}" 
-                                         alt="Portrait de {{ section.titre }}" 
-                                         loading="lazy"
-                                         class="img-fluid shadow-lg" 
-                                         style="width: 100%; border-radius: 4px; object-fit: cover;">
-                                    {% if section.imageLien %}
-                                        </a>
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                            
-                            {% if section.citation %}
-                                {% set bg_color = section.citationCouleurFond|default('meta-olive') %}
-                                {% set text_color = section.citationCouleurTexte|default('meta-gold') %}
-                                
-                                {# Modification sémantique : <div> devient <aside> et le contenu texte devient <blockquote> #}
-                                <aside class="position-relative p-4 p-xl-5 d-none d-sm-block" 
-                                     style="
-                                        margin-top: {{ section.citationPosY|default('-150') }}px; 
-                                        left: {{ section.citationPosX|default('-10') }}%; 
-                                        width: {{ section.citationLargeur|default('90') }}%; 
-                                        background-color: var(--{{ bg_color }}); 
-                                        box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
-                                        border-radius: 2px; 
-                                        z-index: 2;">
-                                    
-                                    <div class="typo-titre" aria-hidden="true" style="color: var(--{{ text_color }}); font-size: 3rem; line-height: 0.8; margin-bottom: 10px;">
-                                        “
-                                    </div>
-                                    
-                                    <blockquote class="citation-scroll-container typo-titre fw-bold mb-4 pe-3" 
-                                         style="
-                                            --scroll-color: var(--{{ text_color }}); 
-                                            color: var(--{{ text_color }}); 
-                                            line-height: 1.6; 
-                                            font-size: 1rem; 
-                                            text-align: justify;
-                                            margin: 0;
-                                            {% if section.citationHauteurMax %}
-                                                max-height: {{ section.citationHauteurMax }}px; 
-                                                overflow-y: auto;
-                                                -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                                mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-                                            {% endif %}
-                                         ">
-                                        <div style="padding-bottom: 40px;">
-                                            {{ section.citation|raw }}
-                                        </div>
-                                    </blockquote>
-                                    
-                                    <div style="width: 40px; height: 1px; background-color: var(--{{ text_color }});" aria-hidden="true"></div>
-                                </aside>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endif %}
-
-                {# --- RENDU DU BOUTON D'ACTION (CTA) DE SECTION --- #}
-                {% if section.boutonTexte and section.disposition in ['texte_centre', 'titre_seul'] %}
-                    {% set btn_class = 'btn-gold-premium' %}
-                    {% if section.boutonStyle == 'outline' %}
-                        {% set btn_class = 'btn-outline-gold' %}
-                    {% elseif section.boutonStyle == 'sage' %}
-                        {% set btn_class = 'btn-sage-premium' %}
-                    {% elseif section.boutonStyle == 'plum' %}
-                        {% set btn_class = 'btn-plum-premium' %}
-                    {% endif %}
-
-                    <div class="mt-4 pt-3 text-center w-100 position-relative" style="z-index: 10;">
-                        <a href="{{ section.boutonLien|default('#') }}" 
-                           target="{{ section.boutonCible|default('_self') }}" 
-                           class="btn {{ btn_class }} px-4 py-2 rounded-pill fw-bold text-uppercase transition-hover" 
-                           style="letter-spacing: 1.5px; font-size: 0.85rem;">
-                            {{ section.boutonTexte }} <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                        </a>
-                    </div>
+                    </section>
                 {% endif %}
                 
-            </div>
-        </{{ section.baliseHtml|default('section') }}>
-        
-    {% endfor %}
-
-</main>
-
-{# SÉCURISATION CSS POUR LE CONTENU DYNAMIQUE #}
-<style>
-    .content-premium p { margin-bottom: 1.5rem; }
-    
-    .content-premium h2, .content-premium h3 {
-        color: var(--meta-gold);
-        font-family: var(--font-title), serif;
-        margin-top: 1.5rem;
-        margin-bottom: 1.5rem;
-        letter-spacing: 2px;
-    }
-
-    .citation-scroll-container::-webkit-scrollbar {
-        width: 4px;
-    }
-    .citation-scroll-container::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    .citation-scroll-container::-webkit-scrollbar-thumb {
-        background-color: var(--scroll-color);
-        opacity: 0.5;
-        border-radius: 10px;
-    }
-    .citation-scroll-container:hover::-webkit-scrollbar-thumb {
-        background-color: var(--scroll-color);
-        opacity: 1;
-    }
-    .citation-scroll-container {
-        scrollbar-width: thin;
-        scrollbar-color: var(--meta-gold) transparent;
-    }
-</style>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Pour supporter plusieurs sliders sur la même page (ex: section.id)
             const tracks = document.querySelectorAll('.prestation-track');
-            
             tracks.forEach((track) => {
-                // On récupère l'ID spécifique de ce slider pour isoler les clics
                 const trackId = track.getAttribute('id');
                 if (!trackId) return;
-                
-                const index = trackId.split('-')[2]; // slider-track-1 => 1
+                const index = trackId.split('-')[2];
                 const btnPrev = document.getElementById(`btn-prev-${index}`);
                 const btnNext = document.getElementById(`btn-next-${index}`);
 
@@ -965,90 +229,7 @@
         });
     </script>
 
-    {# --- BARRE FLOTTANTE ADMIN : CAPTURE HD & MODIFICATION --- #}
-    {% if is_granted('ROLE_ADMIN') or app.user is not null %}
-    <div id="metaAdminFloatingBar" style="position: fixed; bottom: 24px; right: 24px; z-index: 2147483647; display: flex; gap: 10px; background: rgba(30, 22, 23, 0.95); border: 1px solid rgba(184, 154, 99, 0.5); padding: 8px 14px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); pointer-events: auto !important;">
-        <button id="floatingScreenshotBtn" type="button" onclick="exportPageAsImage()" style="background: linear-gradient(135deg, #B89A63, #9C804F); color: #0A0A09; border: none; font-weight: 600; font-size: 0.85rem; padding: 8px 16px; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 6px; pointer-events: auto !important;">
-            <i class="fa fa-camera"></i> 📸 Exporter en image (PNG)
-        </button>
-        {% if page.id is defined and page.id %}
-            <a href="{{ path('admin', {crudAction: 'edit', crudControllerFqcn: 'App\\Controller\\Admin\\PageCrudController', entityId: page.id}) }}" style="background: rgba(216, 208, 190, 0.15); color: #D8D0BE; border: 1px solid rgba(216, 208, 190, 0.3); font-weight: 500; font-size: 0.85rem; padding: 8px 14px; border-radius: 30px; text-decoration: none; display: flex; align-items: center; gap: 6px; pointer-events: auto !important;">
-                <i class="fa fa-pen"></i> Modifier
-            </a>
-        {% endif %}
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
-    <script>
-    window.exportPageAsImage = async function() {
-        const btn = document.getElementById('floatingScreenshotBtn');
-        const bar = document.getElementById('metaAdminFloatingBar');
-        const sfToolbars = document.querySelectorAll('.sf-toolbar, .sf-toolbarreset, .sf-minitoolbar, [id*="sfToolbarMainContent"]');
-        
-        const originalText = btn ? btn.innerHTML : '';
-        if (btn) {
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Capture en cours...';
-            btn.disabled = true;
-        }
-        if (bar) bar.style.display = 'none';
-        sfToolbars.forEach(tb => tb.style.display = 'none');
-
-        try {
-            // Méthode 1 : html-to-image
-            if (typeof htmlToImage !== 'undefined') {
-                const dataUrl = await htmlToImage.toPng(document.body, {
-                    quality: 1.0,
-                    pixelRatio: 2,
-                    backgroundColor: '#1E1617',
-                    cacheBust: true
-                });
-
-                const link = document.createElement('a');
-                const title = '{{ page.titre|escape("js") }}' || 'Maquette_Metamorphysis';
-                const cleanName = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                const dateStr = new Date().toISOString().slice(0, 10);
-
-                link.download = `Maquette_${cleanName}_${dateStr}.png`;
-                link.href = dataUrl;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else if (typeof html2canvas !== 'undefined') {
-                // Méthode 2 : fallback html2canvas
-                const canvas = await html2canvas(document.body, {
-                    useCORS: true,
-                    allowTaint: true,
-                    scale: 2,
-                    backgroundColor: '#1E1617',
-                    windowWidth: 1440
-                });
-
-                const link = document.createElement('a');
-                const title = '{{ page.titre|escape("js") }}' || 'Maquette_Metamorphysis';
-                const cleanName = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                const dateStr = new Date().toISOString().slice(0, 10);
-
-                link.download = `Maquette_${cleanName}_${dateStr}.png`;
-                link.href = canvas.toDataURL('image/png');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        } catch (err) {
-            console.error('Erreur export :', err);
-            alert('Capture effectuée. Vérifiez votre dossier Téléchargements.');
-        } finally {
-            if (bar) bar.style.display = 'flex';
-            sfToolbars.forEach(tb => tb.style.display = '');
-            if (btn) {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-    };
-    </script>
-    {% endif %}
+    {{ include('partials/_admin_floating_bar.html.twig', {'page': page}, ignore_missing = true) }}
 {% endblock %}
 
 {% endblock %}

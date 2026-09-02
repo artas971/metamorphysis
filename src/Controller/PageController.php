@@ -10,24 +10,37 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PageController extends AbstractController
 { 
-    // LA ROUTE PUBLIQUE
+    // Gabarits codés en brut natifs par défaut (Fallback quand la page n'est pas publiée dans le Page Builder)
+    private const NATIVE_PAGES = [
+        'mentions-legales'              => 'pages/mentions_legales.html.twig',
+        'a-propos'                      => 'pages/a_propos.html.twig',
+        'lexperience'                   => 'pages/lexperience.html.twig',
+        'a-qui-sadresse-cette-demarche' => 'pages/a_qui_sadresse_cette_demarche.html.twig',
+    ];
+
+
+    // LA ROUTE PUBLIQUE GÉNÉRIQUE
     #[Route('/{slug}', name: 'app_page_show', priority: -1)]
     public function show(string $slug, PageRepository $pageRepository): Response
     {
-        // Le public ne peut voir QUE les pages en ligne
-        $page = $pageRepository->findOneBy([
-            'slug' => $slug,
-            'isPublished' => true
-        ]);
+        // 1. On cherche la page dans le constructeur de pages (Base de données)
+        $page = $pageRepository->findOneBy(['slug' => $slug]);
 
-        if (!$page) {
-            // Si la page est en brouillon, elle renvoie une 404 pour le public
-            throw $this->createNotFoundException('Cette page n\'est pas disponible ou est en cours de rédaction.');
+        // 2. Si la case "Publié" est COCHÉE (En ligne = true) -> Rendu dynamique par le générateur de pages (Page Builder)
+        if ($page && $page->isPublished()) {
+            return $this->render('page/show.html.twig', [
+                'page' => $page,
+                'isDraftPreview' => false,
+            ]);
         }
 
-        return $this->render('page/show.html.twig', [
-            'page' => $page,
-        ]);
+        // 3. Si la case est DÉSACTIVÉE / DÉCOCHÉE (ou absente en base) -> On bascule immédiatement sur le fichier statique brut par défaut
+        if (isset(self::NATIVE_PAGES[$slug])) {
+            return $this->render(self::NATIVE_PAGES[$slug]);
+        }
+
+        // 4. Sinon, erreur 404 standard
+        throw $this->createNotFoundException('Cette page n\'est pas disponible ou est en cours de rédaction.');
     }
 
     // LA ROUTE D'APERÇU SÉCURISÉE
@@ -105,8 +118,18 @@ class PageController extends AbstractController
                 $orderVal = isset($secData['ordre']) && $secData['ordre'] !== '' ? (int)$secData['ordre'] : (isset($secData['position']) && $secData['position'] !== '' ? (int)$secData['position'] : ($index + 1));
                 $section->setOrdre($orderVal);
                 $section->setTexteGras(!empty($secData['texteGras']));
+                $section->setAlignementTexte($secData['alignementTexte'] ?? $section->getAlignementTexte() ?? 'center');
                 $section->setBaliseHtml($secData['baliseHtml'] ?? 'h2');
                 $section->setDecalagePosY(isset($secData['decalagePosY']) && $secData['decalagePosY'] !== '' ? (int)$secData['decalagePosY'] : 0);
+
+                // Marges & Espacements (Padding / Margin)
+                $section->setPaddingHaut(isset($secData['paddingHaut']) && $secData['paddingHaut'] !== '' ? (int)$secData['paddingHaut'] : null);
+                $section->setPaddingBas(isset($secData['paddingBas']) && $secData['paddingBas'] !== '' ? (int)$secData['paddingBas'] : null);
+                $section->setPaddingGauche(isset($secData['paddingGauche']) && $secData['paddingGauche'] !== '' ? (int)$secData['paddingGauche'] : null);
+                $section->setPaddingDroite(isset($secData['paddingDroite']) && $secData['paddingDroite'] !== '' ? (int)$secData['paddingDroite'] : null);
+                $section->setMargeHaut(isset($secData['margeHaut']) && $secData['margeHaut'] !== '' ? (int)$secData['margeHaut'] : null);
+                $section->setMargeBas(isset($secData['margeBas']) && $secData['margeBas'] !== '' ? (int)$secData['margeBas'] : null);
+                $section->setHauteurMin(isset($secData['hauteurMin']) && $secData['hauteurMin'] !== '' ? (int)$secData['hauteurMin'] : null);
 
                 // Bordures & Cadre
                 $section->setImageCadreCouleur($secData['imageCadreCouleur'] ?? $section->getImageCadreCouleur() ?? 'plum');
@@ -121,11 +144,7 @@ class PageController extends AbstractController
                 $section->setImageSuperposition($secData['imageSuperposition'] ?? $section->getImageSuperposition() ?? 'standard');
                 $section->setImageZIndex(isset($secData['imageZIndex']) && $secData['imageZIndex'] !== '' ? (int)$secData['imageZIndex'] : 1);
 
-                // Rognage (Crop) & Dimensions
-                $section->setCropHaut(isset($secData['cropHaut']) && $secData['cropHaut'] !== '' ? (int)$secData['cropHaut'] : 0);
-                $section->setCropBas(isset($secData['cropBas']) && $secData['cropBas'] !== '' ? (int)$secData['cropBas'] : 0);
-                $section->setCropGauche(isset($secData['cropGauche']) && $secData['cropGauche'] !== '' ? (int)$secData['cropGauche'] : 0);
-                $section->setCropDroite(isset($secData['cropDroite']) && $secData['cropDroite'] !== '' ? (int)$secData['cropDroite'] : 0);
+                // Dimensions
                 $section->setLargeurMedia(isset($secData['largeurMedia']) && $secData['largeurMedia'] !== '' ? (int)$secData['largeurMedia'] : null);
                 $section->setHauteurMedia(isset($secData['hauteurMedia']) && $secData['hauteurMedia'] !== '' ? (int)$secData['hauteurMedia'] : null);
                 $section->setMedia($secData['media'] ?? $section->getMedia());

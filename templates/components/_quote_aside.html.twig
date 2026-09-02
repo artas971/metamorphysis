@@ -1,0 +1,55 @@
+{# Composant Citation Réutilisable #}
+{% set bg_color = (section.citationCouleurFond is not empty) ? section.citationCouleurFond : 'meta-olive' %}
+{% set text_color = (section.citationCouleurTexte is not empty) ? section.citationCouleurTexte : 'meta-ivory' %}
+{% set pos_x = (section.citationPosX is not null) ? section.citationPosX : (citation_pos_x is defined and citation_pos_x is not null ? citation_pos_x : -10) %}
+{% set pos_y = (section.citationPosY is not null) ? section.citationPosY : -120 %}
+{% set largeur = (section.citationLargeur is not null) ? section.citationLargeur : 85 %}
+{% set quote_id = section.id|default(random(1000, 9999)) %}
+
+<aside class="quote-aside-box p-3 p-sm-4 p-xl-5 shadow-lg" 
+     role="region"
+     aria-label="Citation"
+     style="
+        --quote-pos-y: {{ pos_y }}px; 
+        --quote-pos-x: {{ pos_x }}%; 
+        --quote-largeur: {{ largeur }}%; 
+        --quote-bg: var(--{{ bg_color }});">
+    
+    <!-- Entête interactif : toujours visible, bouton de déclenchement sur mobile/tablette -->
+    <div class="quote-aside-header d-flex justify-content-between align-items-center" role="button" tabindex="0" aria-expanded="false" aria-controls="quote-content-{{ quote_id }}">
+        <div class="d-flex align-items-center gap-2">
+            <span class="typo-titre quote-aside-mark" aria-hidden="true" style="color: var(--meta-gold); line-height: 0.8;">“</span>
+            <span class="d-lg-none typo-titre fw-bold text-uppercase" style="color: var(--meta-gold); font-size: 0.8rem; letter-spacing: 2px;">Citation</span>
+        </div>
+        
+        <!-- Badge interactif de déploiement (visible uniquement sur mobile et tablette) -->
+        <div class="quote-toggle-badge d-lg-none d-flex align-items-center gap-2 text-gold py-1 px-2 rounded-1" style="font-size: 0.75rem; letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.4); background: rgba(0, 0, 0, 0.15);">
+            <span class="quote-toggle-label">Afficher la citation</span>
+            <i class="bi bi-chevron-down quote-toggle-icon"></i>
+        </div>
+    </div>
+
+    <!-- Corps de la citation (Repliable sur mobile/tablette <992px, ouvert par défaut sur PC >=992px) -->
+    <div id="quote-content-{{ quote_id }}" class="quote-aside-body">
+        <blockquote class="citation-scroll-container typo-titre fw-bold mb-3 mb-xl-4 pe-2 pe-xl-3 mt-2 mt-lg-0" 
+             style="
+                --scroll-color: var(--meta-gold); 
+                color: var(--{{ text_color }}); 
+                line-height: 1.7; 
+                font-size: 0.95rem; 
+                text-align: justify;
+                margin: 0;
+                {% if section.citationHauteurMax %}
+                    max-height: {{ section.citationHauteurMax }}px; 
+                    overflow-y: auto;
+                    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+                {% endif %}
+             ">
+            <div style="padding-bottom: 10px;">
+                {{ section.citation|nl2br }}
+            </div>
+        </blockquote>
+        <div style="width: 40px; height: 1px; background-color: var(--meta-gold);" aria-hidden="true"></div>
+    </div>
+</aside>

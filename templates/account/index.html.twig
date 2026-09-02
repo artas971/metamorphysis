@@ -62,7 +62,7 @@
                     <hr class="my-4" style="border-color: rgba(184, 154, 99, 0.25);">
                     
                     <nav class="d-flex flex-column gap-2" aria-label="Gestion du compte">
-                        <a href="{{ path('app_account_edit') }}" title="Modifier mes informations personnelles" class="btn w-100 fw-bold rounded-pill text-uppercase transition-hover" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); letter-spacing: 1px; font-size: 0.85rem;">
+                        <a href="{{ path('app_account_edit') }}" title="Modifier mes informations personnelles" class="btn w-100 fw-bold rounded-0 text-uppercase transition-hover" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); letter-spacing: 1px; font-size: 0.85rem;">
                             <i class="bi bi-pencil-square me-2" aria-hidden="true"></i> Modifier mon profil
                         </a>
                         
@@ -76,7 +76,7 @@
         
         {# COLONNE DROITE : Historique (Contenu Principal = SECTION) #}
         <section class="col-md-8" aria-labelledby="parcours-heading">
-            <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card, 12px);">
+            <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 0;">
                 <div class="card-body p-4 p-md-5">
                     
                     <h2 id="parcours-heading" class="fw-bold mb-5 text-uppercase typo-titre h3" style="color: var(--meta-gold); letter-spacing: 2px;">
@@ -94,7 +94,7 @@
                                         <h3 class="fw-bold mb-2 mb-md-0 text-uppercase h5" style="color: var(--meta-ivory); font-family: var(--font-title, inherit); letter-spacing: 1px;">
                                             {{ parcours.prestation.nom }}
                                         </h3>
-                                        <span class="small fw-bold text-uppercase px-3 py-1 rounded-pill" style="background-color: rgba(184, 154, 99, 0.12); color: var(--meta-gold); letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.3);">
+                                        <span class="small fw-bold text-uppercase px-3 py-1 rounded-0" style="background-color: rgba(184, 154, 99, 0.12); color: var(--meta-gold); letter-spacing: 1px; border: 1px solid rgba(184, 154, 99, 0.3);">
                                             {{ parcours.planifiees }} / {{ parcours.total }} planifiée(s)
                                         </span>
                                     </div>
@@ -102,7 +102,7 @@
                                     {# Liste des séances du parcours #}
                                     <div class="d-flex flex-column gap-3">
                                         {% for seance in parcours.seances %}
-                                            <div class="d-flex flex-column flex-md-row align-items-md-center p-3 rounded shadow-sm" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.2);">
+                                            <div class="d-flex flex-column flex-md-row align-items-md-center p-3 rounded-0 shadow-sm" style="background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.2);">
                                                 
                                                 {# Bloc 1 : Numéro de séance #}
                                                 <div class="mb-2 mb-md-0 fw-bold text-uppercase small" style="color: var(--meta-sage); min-width: 110px; letter-spacing: 1px;">
@@ -121,17 +121,17 @@
                                                 {# Bloc 3 : Actions #}
                                                 <div class="d-flex flex-column gap-2 text-md-end" style="min-width: 150px;">
                                                     {% if seance.dateRendezVous %}
-                                                        <a href="{{ path('app_reservation_show', {'id': seance.id}) }}" title="Consulter les détails du rendez-vous" class="btn btn-sm rounded-pill w-100 transition-hover py-1" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.8rem; letter-spacing: 0.5px;">
+                                                        <a href="{{ path('app_reservation_show', {'id': seance.id}) }}" title="Consulter les détails du rendez-vous" class="btn btn-sm rounded-0 w-100 transition-hover py-1" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.8rem; letter-spacing: 0.5px;">
                                                             Détails
                                                         </a>
                                                         
                                                         <form method="post" action="{{ path('app_seance_annuler', {'id': seance.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ou reporter cette séance ?');">
-                                                            <button type="submit" aria-label="Annuler ou reporter la séance {{ seance.numero }}" class="btn btn-sm rounded-pill w-100 transition-hover py-1" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(216, 208, 190, 0.3); color: var(--meta-ivory); font-size: 0.75rem; letter-spacing: 0.5px;">
+                                                            <button type="submit" aria-label="Annuler ou reporter la séance {{ seance.numero }}" class="btn btn-sm rounded-0 w-100 transition-hover py-1" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(216, 208, 190, 0.3); color: var(--meta-ivory); font-size: 0.75rem; letter-spacing: 0.5px;">
                                                                 Annuler / Reporter
                                                             </button>
                                                         </form>
                                                     {% else %}
-                                                        <a href="{{ path('app_seance_planifier', {'id': seance.id}) }}" title="Planifier la séance {{ seance.numero }} du parcours {{ parcours.prestation.nom }}" class="btn btn-sm rounded-pill w-100 fw-bold transition-hover py-2 text-uppercase" style="background-color: var(--meta-gold); color: var(--meta-black) !important; letter-spacing: 1px; font-size: 0.8rem;">
+                                                        <a href="{{ path('app_seance_planifier', {'id': seance.id}) }}" title="Planifier la séance {{ seance.numero }} du parcours {{ parcours.prestation.nom }}" class="btn btn-sm rounded-0 w-100 fw-bold transition-hover py-2 text-uppercase" style="background-color: var(--meta-gold); color: var(--meta-black) !important; letter-spacing: 1px; font-size: 0.8rem;">
                                                             PLANIFIER
                                                         </a>
                                                     {% endif %}
@@ -150,7 +150,7 @@
                         <div class="text-center py-5">
                             <i class="bi bi-journal-x opacity-50 mb-3" aria-hidden="true" style="font-size: 3rem; color: var(--meta-gold);"></i>
                             <p class="fs-5 mb-4" style="color: var(--meta-ivory);">Vous n'avez pas encore initié de parcours d'accompagnement.</p>
-                            <a href="{{ path('app_prestation_index') }}" title="Découvrir l'ensemble des accompagnements Metamorphysis" class="btn fw-bold py-2 px-4 rounded-pill text-uppercase" style="background-color: var(--meta-gold); color: var(--meta-black) !important; letter-spacing: 1px;">
+                            <a href="{{ path('app_prestation_index') }}" title="Découvrir l'ensemble des accompagnements Metamorphysis" class="btn fw-bold py-2 px-4 rounded-0 text-uppercase" style="background-color: var(--meta-gold); color: var(--meta-black) !important; letter-spacing: 1px;">
                                 DÉCOUVRIR NOS PRESTATIONS
                             </a>
                         </div>

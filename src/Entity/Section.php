@@ -160,6 +160,31 @@ class Section
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $texteGras = false;
 
+    // --- MARGES & ESPACEMENTS DU BLOC ---
+    #[ORM\Column(nullable: true, options: ['default' => 48])]
+    private ?int $paddingHaut = 48;
+
+    #[ORM\Column(nullable: true, options: ['default' => 48])]
+    private ?int $paddingBas = 48;
+
+    #[ORM\Column(nullable: true, options: ['default' => 48])]
+    private ?int $paddingGauche = 48;
+
+    #[ORM\Column(nullable: true, options: ['default' => 48])]
+    private ?int $paddingDroite = 48;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $margeHaut = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $margeBas = 0;
+
+    #[ORM\Column(nullable: true, options: ['default' => null])]
+    private ?int $hauteurMin = null;
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'center'])]
+    private ?string $alignementTexte = 'center';
+
     /**
      * @var Collection<int, Prestation>
      */
@@ -274,6 +299,7 @@ class Section
             'img_droite'         => '🖼️ Texte à Gauche + Image',
             'img_centre'         => '🖼️ Image au Centre + Textes',
             'grille_colonnes'    => '📊 Grille Multi-Colonnes (2 à 5 colonnes)',
+            'grille_mentions'    => '⚖️ Grille Mentions Légales & Juridique (2 colonnes + 1 pleine largeur)',
             'banniere'           => '🌅 Bannière Pleine Largeur',
             'slider_prestations' => '🎠 Carrousel des Prestations',
             'bandeau_conclusion' => '🌸 Bandeau Signature & Logo M',
@@ -548,4 +574,29 @@ class Section
 
     public function getTitreLigneDecor(): ?string { return $this->titreLigneDecor ?? 'apres'; }
     public function setTitreLigneDecor(?string $titreLigneDecor): static { $this->titreLigneDecor = $titreLigneDecor ?? 'apres'; return $this; }
+
+    // --- GETTERS / SETTERS ESPACEMENTS & MARGES DU BLOC ---
+    public function getPaddingHaut(): ?int { return $this->paddingHaut ?? 48; }
+    public function setPaddingHaut(?int $paddingHaut): static { $this->paddingHaut = $paddingHaut; return $this; }
+
+    public function getPaddingBas(): ?int { return $this->paddingBas ?? 48; }
+    public function setPaddingBas(?int $paddingBas): static { $this->paddingBas = $paddingBas; return $this; }
+
+    public function getPaddingGauche(): ?int { return $this->paddingGauche ?? 48; }
+    public function setPaddingGauche(?int $paddingGauche): static { $this->paddingGauche = $paddingGauche; return $this; }
+
+    public function getPaddingDroite(): ?int { return $this->paddingDroite ?? 48; }
+    public function setPaddingDroite(?int $paddingDroite): static { $this->paddingDroite = $paddingDroite; return $this; }
+
+    public function getMargeHaut(): ?int { return $this->margeHaut ?? 0; }
+    public function setMargeHaut(?int $margeHaut): static { $this->margeHaut = $margeHaut; return $this; }
+
+    public function getMargeBas(): ?int { return $this->margeBas ?? 0; }
+    public function setMargeBas(?int $margeBas): static { $this->margeBas = $margeBas; return $this; }
+
+    public function getHauteurMin(): ?int { return $this->hauteurMin; }
+    public function setHauteurMin(?int $hauteurMin): static { $this->hauteurMin = $hauteurMin; return $this; }
+
+    public function getAlignementTexte(): ?string { return $this->alignementTexte ?? 'center'; }
+    public function setAlignementTexte(?string $alignementTexte): static { $this->alignementTexte = $alignementTexte ?? 'center'; return $this; }
 }

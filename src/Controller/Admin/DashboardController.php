@@ -6,8 +6,8 @@ use App\Controller\Admin\HoraireHebdomadaireCrudController;
 use App\Controller\Admin\IndisponibiliteCrudController;
 use App\Controller\Admin\PageCrudController;
 use App\Controller\Admin\PrestationCrudController;
-use App\Controller\Admin\SeanceCrudController; // Ajout du nouveau contrôleur
-use App\Controller\Admin\UserCrudController;  
+use App\Controller\Admin\SeanceCrudController;
+use App\Controller\Admin\UserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -31,10 +31,9 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         return $this->render('admin/dashboard.html.twig', [
-            // CORRECTION : Utilisation du SeanceCrudController pour la page d'accueil du dashboard
-            'url_reservations' => $this->adminUrlGenerator->setController(SeanceCrudController::class)->setAction('index')->generateUrl(),
-            'url_pages' => $this->adminUrlGenerator->setController(PageCrudController::class)->setAction('index')->generateUrl(),
-            'url_prestations' => $this->adminUrlGenerator->setController(PrestationCrudController::class)->setAction('index')->generateUrl(),
+            'url_reservations' => '/admin/seance',
+            'url_pages' => '/admin/page',
+            'url_prestations' => '/admin/prestation',
         ]);        
     }
 
@@ -50,27 +49,14 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
 
         yield MenuItem::section('Gestion du Cabinet');
-        
-        // CORRECTION : Génération dynamique et sécurisée de l'URL pour les Séances
-        yield MenuItem::linkToUrl('Suivi des Séances', 'fas fa-calendar-check', 
-            $this->adminUrlGenerator->setController(SeanceCrudController::class)->setAction('index')->generateUrl());       
-             
-        yield MenuItem::linkToUrl('Mes Prestations', 'fa-solid fa-gem', 
-            $this->adminUrlGenerator->setController(PrestationCrudController::class)->setAction('index')->generateUrl());
-            
-        yield MenuItem::linkToUrl('Contenu des Pages', 'fa-solid fa-file-lines', 
-            $this->adminUrlGenerator->setController(PageCrudController::class)->setAction('index')->generateUrl());
-            
-        yield MenuItem::linkToUrl('Clients', 'fa-solid fa-user-friends', 
-            $this->adminUrlGenerator->setController(UserCrudController::class)->setAction('index')->generateUrl());
+        yield MenuItem::linkToUrl('Suivi des Séances', 'fas fa-calendar-check', '/admin/seance');
+        yield MenuItem::linkToUrl('Mes Prestations', 'fa-solid fa-gem', '/admin/prestation');
+        yield MenuItem::linkToUrl('Contenu des Pages', 'fa-solid fa-file-lines', '/admin/page');
+        yield MenuItem::linkToUrl('Clients', 'fa-solid fa-user-friends', '/admin/user');
 
         yield MenuItem::section('Planning & Horaires');
-        
-        yield MenuItem::linkToUrl('Ma Semaine Type', 'fa-solid fa-clock', 
-            $this->adminUrlGenerator->setController(HoraireHebdomadaireCrudController::class)->setAction('index')->generateUrl());
-            
-        yield MenuItem::linkToUrl('Mes Congés & Fermetures', 'fa-solid fa-calendar-times', 
-            $this->adminUrlGenerator->setController(IndisponibiliteCrudController::class)->setAction('index')->generateUrl());
+        yield MenuItem::linkToUrl('Ma Semaine Type', 'fa-solid fa-clock', '/admin/horaire-hebdomadaire');
+        yield MenuItem::linkToUrl('Mes Congés & Fermetures', 'fa-solid fa-calendar-times', '/admin/indisponibilite');
 
         yield MenuItem::section('Site Web');
         yield MenuItem::linkToUrl('Retour au site public', 'fa-solid fa-arrow-left', '/');

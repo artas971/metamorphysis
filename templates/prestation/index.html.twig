@@ -22,78 +22,7 @@
             
             {% for prestation in prestations %}
                 <div class="prestation-card-item">
-                    {# 
-                      1. FOND DE CARTE : Translucide à 55% comme la page détails avec var(--meta-olive)
-                      2. BORDURES : Fine délimitation dorée subtile pour souligner la structure en transparence
-                    #}
-                    <div class="card shadow-lg h-100 overflow-hidden transition-hover text-center d-flex flex-column" 
-                         style="background-color: rgba(74, 79, 65, 0.55); border: 1px solid rgba(184, 154, 99, 0.2); border-radius: 8px; padding: 0 0 1.5rem 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
-                        
-                        {# 1. ZONE SUPÉRIEURE (Image ou Icône minimaliste élégante) #}
-                        {% if prestation.imageName %}
-                            <div style="height: 200px; width: 100%;">
-                                <img src="{{ vich_uploader_asset(prestation, 'imageFile') }}" 
-                                     class="w-100 h-100 object-fit-cover" 
-                                     alt="{{ prestation.nom }}">
-                            </div>
-                        {% else %}
-                            {# Alternative : Cercle doré centré sur le dégradé officiel fusionné Violet/Vert #}
-                            <div class="d-flex flex-column align-items-center justify-content-center" 
-                                 style="height: 200px; background: linear-gradient(135deg, var(--meta-plum) 0%, var(--meta-olive) 100%);">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                     style="width: 80px; height: 80px; border: 1px solid var(--meta-gold); background-color: rgba(10, 10, 9, 0.4);">
-                                    <i class="bi {{ prestation.icone|default('bi-person') }} text-gold" style="font-size: 2rem;"></i>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# 2. LE CONTENU DE LA CARTE #}
-                        <div class="card-body d-flex flex-column p-4 flex-grow-1">
-                            
-                            {# Titre #}
-                            <h3 class="text-gold fs-6 text-uppercase mb-3" style="letter-spacing: 2px; font-family: var(--font-title), serif;">
-                                {{ prestation.nom }}
-                            </h3>
-                            
-                            {# Le petit trait séparateur doré #}
-                            <div class="mx-auto mb-4" style="width: 30px; height: 1px; background-color: var(--meta-gold); opacity: 0.6;"></div>
-                            
-                            {# Condition pour la durée #}
-                            {% if prestation.duree %}
-                                <p class="text-sage small mb-4" style="font-size: 0.8rem; letter-spacing: 1px;">
-                                    <i class="bi bi-clock me-1"></i> {{ prestation.duree }} min
-                                </p>
-                            {% endif %}
-                            
-                            {# Description nettoyée #}
-                            {% set desc_clean = prestation.description|striptags|replace({'&nbsp;': ' '}) %}
-                            <p class="text-ivory mb-4 flex-grow-1 small" style="line-height: 1.6; font-size: 0.85rem;">
-                                {{ desc_clean|length > 90 ? desc_clean|slice(0, 90) ~ '...' : desc_clean }}
-                            </p>
-                            
-                            {# Prix et Unité #}
-                            <p class="text-gold fw-bold mb-4 text-uppercase" style="font-size: 1.1rem; letter-spacing: 1px;">
-                                {{ prestation.prix }} € 
-                                {% if prestation.unitePrix is defined and prestation.unitePrix %}
-                                    <span class="fs-6 fw-light text-lowercase" style="color: var(--meta-ivory);">/ {{ prestation.unitePrix }}</span>
-                                {% endif %}
-                            </p>
-                                                                                                    
-                            {# 3. LES ACTIONS BOUTONS #}
-                            <div class="d-flex flex-column gap-2 mt-auto w-100">
-                                <a href="{{ path('app_reservation_new', {'id': prestation.id}) }}" 
-                                   class="btn w-100 text-gold text-uppercase rounded-0 py-2 transition-hover" 
-                                   style="background-color: var(--meta-plum); border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.75rem; letter-spacing: 2px;">
-                                    RÉSERVER
-                                </a>
-                                <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}" 
-                                   class="btn w-100 text-gold text-uppercase rounded-0 py-2 transition-hover" 
-                                   style="background-color: var(--meta-plum); border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.75rem; letter-spacing: 2px;">
-                                    DÉTAILS
-                                </a> 
-                            </div>
-                        </div>
-                    </div>
+                    {% include 'prestation/_card.html.twig' with {'prestation': prestation} %}
                 </div>
             {% else %}
                 <div class="col-12 text-center text-ivory w-100 py-5">

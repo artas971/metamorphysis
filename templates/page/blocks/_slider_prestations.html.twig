@@ -1,0 +1,61 @@
+{% if section.titre or section.sousTitre or section.contenu %}
+    <header class="mb-4 mb-lg-5 text-center">
+        {% if section.titre %}
+            <h2 class="typo-titre fw-light mb-2 builder-title" style="color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
+        {% endif %}
+        {% if section.sousTitre %}
+            <div class="fw-bold mb-3 builder-subtitle" style="text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
+                {{ section.sousTitre }}
+            </div>
+        {% endif %}
+        {% if section.contenu %}
+            <div class="content-premium mb-0 builder-content" style="opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">{{ section.contenu|nl2br|raw }}</div>
+        {% endif %}
+    </header>
+{% endif %}
+
+<div class="prestation-slider-container">
+    <button class="slider-btn slider-btn-left" id="btn-prev-{{ loop_index|default(1) }}" aria-label="Prestation précédente">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+    </button>
+
+    <div class="prestation-track" id="slider-track-{{ loop_index|default(1) }}" role="region" aria-label="Carrousel des prestations">
+        {% for prestation in section.prestations %}
+            <article class="prestation-card-item">
+                {% include 'prestation/_card.html.twig' with {'prestation': prestation} %}
+            </article>
+        {% else %}
+            <div class="text-sage fst-italic w-100 text-center">Aucune prestation sélectionnée pour ce bloc.</div>
+        {% endfor %}
+    </div>
+
+    <button class="slider-btn slider-btn-right" id="btn-next-{{ loop_index|default(1) }}" aria-label="Prestation suivante">
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+    </button>
+</div>
+
+{% if section.citation %}
+    <aside class="d-flex flex-column flex-md-row align-items-md-center gap-4 p-4 mt-5 shadow-lg" style="background: var(--grad-subtle); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 0;">
+        <div class="border border-gold rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 50px; height: 50px; flex-shrink: 0; background-color: rgba(10, 10, 9, 0.2);">
+            <i class="bi bi-flower1 text-gold fs-4" aria-hidden="true"></i>
+        </div>
+        
+        <p class="small mb-0 flex-grow-1 text-center text-md-start" style="color: #FFFFF0; opacity: 0.9; font-size: 0.95rem; line-height: 1.6;">
+            {{ section.citation|raw }}
+        </p>
+        
+        {% if section.boutonLien %}
+            <a href="{{ section.boutonLien }}" class="text-gold small text-decoration-none text-uppercase ms-md-auto text-nowrap transition-hover fw-bold" style="letter-spacing: 1px;">
+                {{ section.boutonTexte|default('En savoir plus') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+            </a>
+        {% endif %}
+    </aside>
+{% endif %}
+
+{% if section.contenu %}
+    <footer class="text-center mt-5">
+        <small class="text-uppercase" style="color: #FFFFF0; opacity: 0.5; font-size: 0.65rem; letter-spacing: 1px;">
+            {{ section.contenu|raw }}
+        </small>
+    </footer>
+{% endif %}

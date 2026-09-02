@@ -1,0 +1,20 @@
+{% set align = section.alignementTexte|default('center') %}
+<div class="d-flex flex-column flex-md-row align-items-center justify-content-between py-4 px-3 px-md-5 my-0 w-100 position-relative gap-3 gap-md-0" style="{% if section.couleurFond and section.couleurFond not in ['none', 'plum'] %}background-color: var(--meta-{{ section.couleurFond }});{% else %}background-color: transparent;{% endif %} border-top: 1px solid rgba(184, 154, 99, 0.25); border-bottom: 1px solid rgba(184, 154, 99, 0.25); border-radius: 0;">
+    {# Espaceur d'équilibrage pour centrer le texte par rapport au logo M #}
+    {% if align == 'center' %}
+        <div class="d-none d-md-flex" style="width: 60px; height: 60px; flex-shrink: 0;" aria-hidden="true"></div>
+    {% endif %}
+
+    <div class="text-center text-md-{{ align }} {% if align == 'center' %}flex-grow-1 px-2 px-md-3{% endif %}">
+        {% if section.contenu %}
+            <div class="builder-subtitle typo-titre mb-0" style="letter-spacing: 1px; line-height: 1.8; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">{{ section.contenu|format_paragraphs(section.texteCouleur|default('ivory'))|raw }}</div>
+        {% else %}
+            <p class="builder-subtitle mb-1 typo-titre" style="letter-spacing: 1px; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">Cette démarche demande du courage.</p>
+            <p class="builder-subtitle mb-0 typo-titre" style="letter-spacing: 1px; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">Mais c'est aussi là que tout commence.</p>
+        {% endif %}
+    </div>
+
+    <div class="d-flex align-items-center justify-content-center ms-md-4 rounded-circle my-2 my-md-0" style="width: 60px; height: 60px; border: 1px solid var(--meta-gold); border-radius: 50% !important; flex-shrink: 0;">
+        <span class="text-gold fs-3 typo-symbolic">M</span>
+    </div>
+</div>

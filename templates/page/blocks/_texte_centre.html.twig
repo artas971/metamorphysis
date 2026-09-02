@@ -1,0 +1,18 @@
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10 text-center">
+        {% if section.titre %}
+            <h2 class="typo-titre fw-light mb-2 builder-title" style="color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
+        {% endif %}
+        {% if section.sousTitre %}
+            <div class="mb-3 builder-subtitle" style="text-transform: uppercase; font-weight: 500; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
+                {{ section.sousTitre|nl2br }}
+            </div>
+        {% endif %}
+        {% if section.titre or section.sousTitre %}
+            <div class="mx-auto mb-4" style="width: 60px; height: 2px; background-color: var(--meta-gold);"></div>
+        {% endif %}
+        <div class="content-premium mb-0 builder-content" style="opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
+            {{ section.contenu|format_paragraphs(section.texteCouleur|default('ivory'))|raw }}
+        </div>
+    </div>
+</div>

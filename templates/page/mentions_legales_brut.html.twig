@@ -1,0 +1,151 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Mentions Légales & Confidentialité - Metamorphysis{% endblock %}
+{% block meta_description %}Mentions Légales, Politique de Confidentialité RGPD et Conditions d'Annulation de Metamorphysis.{% endblock %}
+
+{% block body %}
+<div class="container py-4 my-2">
+    <header class="text-center mb-5">
+        <h1 class="font-serif-luxury text-gold fw-light mb-2 typo-titre gold-gradient-text" style="font-size: var(--fs-h1, 2.8rem); letter-spacing: 2px;">
+            Mentions Légales & Confidentialité
+        </h1>
+        <div class="mx-auto mt-3" style="width: 100px; height: 1px; background: linear-gradient(90deg, transparent, var(--meta-gold, #B89A63), transparent);"></div>
+    </header>
+
+    <div class="row g-4 align-items-stretch">
+        {# BLOC 1 : MENTIONS LÉGALES (Moitié gauche de l'écran col-lg-6) #}
+        <div class="col-12 col-lg-6 d-flex">
+            <section class="olive-card w-100 p-4 p-md-5 d-flex flex-column justify-content-between">
+                <div>
+                    <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                        <h2 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">
+                            Mentions Légales
+                        </h2>
+                        <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2.5px; font-size: 0.75rem; color: var(--meta-gold, #B89A63);">
+                            Éditeur du site & Hébergement
+                        </p>
+                    </header>
+
+                    <div class="content-premium text-ivory space-y-4" style="font-size: 0.95rem; line-height: 1.7;">
+                        <div>
+                            <h3 class="fw-bold text-gold text-uppercase mb-2" style="font-size: 0.85rem; letter-spacing: 1.5px;">Éditeur du site</h3>
+                            <p class="mb-1 text-ivory"><strong class="text-white">Lucian Clouard</strong> — Praticien en relation par l'hypnose spirituelle</p>
+                            <p class="mb-1 text-ivory d-flex align-items-center gap-2">
+                                <span class="text-gold opacity-75">E-mail :</span>
+                                <a href="mailto:metamorphysis.consulting@gmail.com" class="text-ivory text-decoration-underline" style="text-underline-offset: 4px;">metamorphysis.consulting@gmail.com</a>
+                            </p>
+                            <p class="mb-0 text-ivory d-flex align-items-center gap-2">
+                                <span class="text-gold opacity-75">Téléphone :</span>
+                                <span>07 44 91 85 97</span>
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-top" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                            <h3 class="fw-bold text-gold text-uppercase mb-2" style="font-size: 0.85rem; letter-spacing: 1.5px;">Hébergement du site</h3>
+                            <p class="mb-0 text-ivory" style="font-size: 0.92rem;">OVH SAS, 2 rue Kellermann, 59100 Roubaix, France</p>
+                        </div>
+
+                        <div class="pt-3 border-top" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                            <h3 class="fw-bold text-gold text-uppercase mb-2" style="font-size: 0.85rem; letter-spacing: 1.5px;">Propriété intellectuelle</h3>
+                            <p class="mb-0 text-ivory" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.92;">
+                                L'ensemble des contenus présents sur ce site (textes, images, logos, etc.) est protégé par le droit de la propriété intellectuelle. Toute reproduction ou diffusion sans autorisation préalable est strictement interdite.
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-top" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                            <h3 class="fw-bold text-gold text-uppercase mb-2" style="font-size: 0.85rem; letter-spacing: 1.5px;">Responsabilité</h3>
+                            <p class="mb-0 text-ivory fst-italic" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.88;">
+                                Les informations publiées sur ce site sont fournies à titre informatif et ne remplacent en aucun cas un avis médical, psychologique ou psychiatrique.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        {# BLOC 2 : POLITIQUE DE CONFIDENTIALITÉ (Moitié droite de l'écran col-lg-6) #}
+        <div class="col-12 col-lg-6 d-flex">
+            <section class="olive-card w-100 p-4 p-md-5 d-flex flex-column justify-content-between">
+                <div>
+                    <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                        <h2 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">
+                            Politique de Confidentialité
+                        </h2>
+                        <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2.5px; font-size: 0.75rem; color: var(--meta-gold, #B89A63);">
+                            Protection de vos données personnelles [RGPD]
+                        </p>
+                    </header>
+
+                    <div class="content-premium text-ivory space-y-3" style="font-size: 0.95rem; line-height: 1.7;">
+                        <p class="text-center fst-italic text-gold mb-3 typo-titre" style="font-size: 1.15rem; letter-spacing: 1px;">« Votre confidentialité est notre priorité. »</p>
+                        
+                        <p class="text-ivory mb-3" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.92;">
+                            Les données collectées via ce site (formulaires de contact, prise de rendez-vous ou échanges) sont utilisées exclusivement pour la gestion de votre demande et de votre accompagnement. Vos données ne seront <strong class="text-white fw-bold">ni revendues, ni cédées, ni délivrées</strong> à des tiers publicitaires.
+                        </p>
+
+                        <div class="pt-2 border-top" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                            <p class="text-ivory mb-0" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.88;">
+                                Ces informations sont conservées uniquement pendant la durée nécessaire avec finalité explicite de nos devoirs strictement confidentiels, liées notamment aux communications à caractère non obligatoire légal.
+                            </p>
+                        </div>
+
+                        <div class="p-3 mt-3 border" style="background-color: rgba(10, 10, 9, 0.35); border-color: rgba(184, 154, 99, 0.3) !important; border-radius: 0 !important;">
+                            <h3 class="fw-bold text-gold text-uppercase mb-1" style="font-size: 0.82rem; letter-spacing: 1.5px;">Vos droits (RGPD)</h3>
+                            <p class="text-ivory mb-0" style="font-size: 0.82rem; line-height: 1.6; opacity: 0.92;">
+                                Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation du traitement et d'opposition concernant vos données personnelles. Vous pouvez exercer ce droit à tout moment en nous contactant.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        {# BLOC 3 : CONDITIONS D'ANNULATION (Pleine largeur col-12 sous les 2 premiers blocs) #}
+        <div class="col-12">
+            <section class="olive-card w-100 p-4 p-md-5">
+                <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                    <h2 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">
+                        Conditions d'Annulation
+                    </h2>
+                    <p class="text-uppercase fw-semibold mb-0" style="letter-spacing: 2.5px; font-size: 0.75rem; color: var(--meta-gold, #B89A63);">
+                        Modalités relatives aux rendez-vous
+                    </p>
+                </header>
+
+                <div class="content-premium text-ivory">
+                    <div class="row g-4 text-ivory">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start gap-3 mb-3">
+                                <span class="text-gold typo-titre fw-bold" style="font-size: 1.4rem; line-height: 1;">01.</span>
+                                <p class="mb-0" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.92;">
+                                    Afin de garantir une bonne organisation des rendez-vous et le respect du temps de chacun, toute annulation ou demande de report doit être effectuée <strong class="text-white text-decoration-underline" style="text-decoration-color: rgba(184, 154, 99, 0.6) !important;">au moins 48 heures avant</strong> la date et l'heure prévues de la séance.
+                                </p>
+                            </div>
+                            <div class="d-flex align-items-start gap-3 pt-3 border-top" style="border-color: rgba(184, 154, 99, 0.2) !important;">
+                                <span class="text-gold typo-titre fw-bold" style="font-size: 1.4rem; line-height: 1;">02.</span>
+                                <p class="mb-0" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.92;">
+                                    En cas d'annulation effectuée moins de 48 heures avant le rendez-vous, des frais d'annulation seront appliqués. Si la séance a déjà été réglée, une partie ou la totalité du montant acquis au titre des frais de gestion et du temps consacré pourra être conservée.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 border-start-md" style="border-left: 1px solid rgba(184, 154, 99, 0.25);">
+                            <div class="d-flex align-items-start gap-3 mb-3 ps-md-3">
+                                <span class="text-gold typo-titre fw-bold" style="font-size: 1.4rem; line-height: 1;">03.</span>
+                                <p class="mb-0" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.92;">
+                                    En prenant rendez-vous, vous reconnaissez avoir pris connaissance et accepté l'ensemble de ces conditions générales.
+                                </p>
+                            </div>
+                            <div class="d-flex align-items-start gap-3 pt-3 ps-md-3 border-top" style="border-color: rgba(184, 154, 99, 0.2) !important;">
+                                <span class="text-gold typo-titre fw-bold" style="font-size: 1.4rem; line-height: 1;">04.</span>
+                                <p class="mb-0 fst-italic" style="font-size: 0.88rem; line-height: 1.65; opacity: 0.88;">
+                                    En cas de situation exceptionnelle ou de force majeure, n'hésitez pas à nous contacter dès que possible pour réexaminer votre situation avec toute la bienveillance requise.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

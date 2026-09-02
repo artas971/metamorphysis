@@ -1,0 +1,36 @@
+<div class="row justify-content-center">
+    <div class="col-12 text-center mb-4">
+        {% set img_url = media_url(section) %}
+        {% if img_url %}
+            {% if section.imageLien %}
+                <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none" title="Découvrir">
+            {% endif %}
+            <img src="{{ img_url }}" 
+                 alt="Bannière illustrative" 
+                 loading="lazy"
+                 decoding="async"
+                 class="img-fluid w-100 shadow-lg" 
+                 style="object-fit: cover; border-top: 2px solid var(--meta-gold); border-bottom: 2px solid var(--meta-gold); {% if section.hauteurMedia %}max-height: {{ section.hauteurMedia }}px;{% else %}max-height: 400px;{% endif %}">
+            {% if section.imageLien %}
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% if section.titre or section.sousTitre or section.contenu %}
+        <div class="col-lg-8 text-center">
+            {% if section.titre %}
+                <h2 class="typo-titre fw-light mb-2 builder-title" style="color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
+            {% endif %}
+            {% if section.sousTitre %}
+                <div class="fw-bold mb-3 builder-subtitle" style="text-transform: uppercase; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
+                    {{ section.sousTitre|nl2br }}
+                </div>
+            {% endif %}
+            {% if section.contenu %}
+                <div class="content-premium text-center builder-content" style="opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
+                    {{ section.contenu|format_paragraphs(section.texteCouleur|default('ivory'))|raw }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,47 @@
+{{ include('components/_section_header.html.twig', {'section': section, 'disposition': 'flex_row'}) }}
+
+{# Conteneur Flexbox Horizontal pour les sous-blocs #}
+<div class="d-flex flex-row flex-wrap align-items-stretch justify-content-start gap-4 w-100 py-3">
+    {% for col in section.etapes %}
+        <div class="flex-grow-1 p-4 shadow-sm transition-hover" 
+             style="flex-basis: calc(33.333% - 1.5rem); min-width: 260px; background-color: rgba(10, 10, 9, 0.25); border: 1px solid rgba(184, 154, 99, 0.25); border-radius: 0; display: flex; flex-direction: column;">
+            
+            {% if col.icone %}
+                <div class="mb-3 d-flex align-items-center">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle border border-gold" style="width: 52px; height: 52px; background-color: var(--meta-olive); color: var(--meta-gold);">
+                        {% if col.icone ends with '.svg' %}
+                            <img src="{{ asset('images/' ~ col.icone) }}" alt="" style="width: 32px; height: 32px; object-fit: contain; display: block;">
+                        {% else %}
+                            <i class="bi {{ col.icone }} text-gold fs-4" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if col.titre %}
+                <h3 class="fs-6 letter-spacing-1 text-uppercase mb-2" style="color: var(--meta-{{ section.titreCouleur|default('gold') }}); font-family: var(--font-body); font-weight: 500;">
+                    {{ col.titre }}
+                </h3>
+            {% endif %}
+
+            {% if col.texte %}
+                <div class="content-premium mt-1 mb-0 flex-grow-1" style="color: var(--meta-{{ section.texteCouleur|default('ivory') }}); opacity: 0.9; font-size: 0.92rem; line-height: 1.6; {% if section.texteGras %}font-weight: 700 !important;{% else %}font-weight: 300;{% endif %}">
+                    {{ col.texte|nl2br }}
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="text-sage fst-italic w-100 text-center">Ajoutez des sous-blocs dans la liste des étapes/colonnes pour peupler cette rangée flexible.</div>
+    {% endfor %}
+</div>
+
+{% if section.boutonLien and section.boutonTexte %}
+    <div class="mt-4 pt-3 text-center w-100 position-relative" style="z-index: 10;">
+        <a href="{{ section.boutonLien }}" 
+           target="{{ section.boutonCible|default('_self') }}" 
+           class="btn btn-outline-gold px-4 py-2 rounded-0 text-uppercase transition-hover" 
+           style="letter-spacing: 2px; font-size: 0.85rem;">
+            {{ section.boutonTexte }} <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+        </a>
+    </div>
+{% endif %}

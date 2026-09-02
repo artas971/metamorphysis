@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -105,46 +106,68 @@ class PageCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // 1. Vue TABLEAU LISTING (/admin/page) : Affichage compact et épuré
+        if ($pageName === Crud::PAGE_INDEX) {
+            return [
+                TextField::new('titre', '📄 Titre de la page'),
+                SlugField::new('slug', '🔗 Adresse URL (Slug)')->setTargetFieldName('titre'),
+                BooleanField::new('isPublished', '🌐 En Ligne')->renderAsSwitch(true),
+                BooleanField::new('afficherMenu', '🧭 Menu Haut')->renderAsSwitch(true),
+                IntegerField::new('ordreMenu', '🔢 Ordre'),
+                BooleanField::new('afficherFooter', '🦶 Footer')->renderAsSwitch(true),
+            ];
+        }
+
+        // 2. Vue FORMULAIRE DE MODIFICATION / CRÉATION (Page Builder)
         return [
             FormField::addFieldset('📌 Informations de la Page')->setIcon('fas fa-info-circle'),
 
             TextField::new('titre', 'Titre de la page')
-                ->setColumns('col-12 col-md-6')
+                ->setColumns(12)
                 ->setHelp('Ex: À propos, Nos Prestations, Informations...'),
             
             SlugField::new('slug', 'URL de la page (Slug)')
                 ->setTargetFieldName('titre')
-                ->setColumns('col-12 col-md-6')
+                ->setColumns(12)
                 ->setHelp('L\'adresse web (ex: <code>metamorphysis.com/a-propos</code>). Se génère tout seul.'),
 
             FormField::addFieldset('👁️ Affichage & Publication')->setIcon('fas fa-eye'),
 
             BooleanField::new('isPublished', 'Publier la page (Mettre en ligne)')
-                ->setColumns('col-12 col-md-4')
+                ->setColumns(12)
                 ->setHelp('<b>Coché = En ligne pour le public</b>. <b>Décoché = Mode Brouillon</b>.'),
 
-            BooleanField::new('afficherMenu', 'Afficher dans le menu du haut')
-                ->setColumns('col-12 col-md-4')
+            BooleanField::new('afficherMenu', 'Afficher dans le menu du haut (Navbar)')
+                ->setColumns(12)
                 ->setHelp('<b>Coché = Ajouter le lien dans la barre de navigation du haut (Navbar)</b>.'),
 
+            BooleanField::new('afficherFooter', 'Afficher dans le pied de page (Footer)')
+                ->setColumns(12)
+                ->setHelp('<b>Coché = Ajouter le lien en bas de page dans le Footer (ex: Mentions Légales)</b>.'),
+
+            IntegerField::new('ordreMenu', '🔢 Ordre d\'affichage dans le menu')
+                ->setColumns(12)
+                ->setHelp('💡 <code>1</code> = premier lien à gauche, <code>2</code> = deuxième lien, etc.')
+                ->setEmptyData(0),
+
             BooleanField::new('afficherTitre', 'Afficher le titre en haut de page')
-                ->setColumns('col-12 col-md-4')
+                ->setColumns(12)
                 ->setHelp('Décochez pour la page d\'Accueil.'),
 
-            ChoiceField::new('fondBlocsUnifie', '🎨 Harmonisation du fond des blocs')
-                ->setColumns('col-12 col-md-6')
+            ChoiceField::new('fondBlocsUnifie', '🎨 Arrière-plan global de la page')
+                ->setColumns(12)
                 ->setChoices([
-                    '🎨 Couleurs individuelles par bloc (Mode standard)'               => 'individuel',
-                    '🍷 Harmoniser : Tous les blocs en Pourpre Sombre continu (#2A1A1E)' => 'pourpre',
-                    '🌿 Harmoniser : Tous les blocs en Vert Olive continu (#4A4F41)'    => 'olive',
+                    '🍷 Dégradé Pourpre (Recommandé)' => 'pourpre',
+                    '🎨 Couleurs par bloc'           => 'individuel',
+                    '🟩 Vert Olive'                  => 'olive',
                 ])
                 ->setRequired(false)
-                ->setEmptyData('individuel')
-                ->setHelp('💡 <b>Astuce Dégradé :</b> Choisissez <i>Pourpre continu</i> ou <i>Vert Olive continu</i> pour que tous les blocs de cette page s\'enchaînent sans coupure ni démarcation visuelle.'),
+                ->setEmptyData('pourpre')
+                ->setHelp('💡 "Dégradé Pourpre" permet à tout le fond du site de s\'afficher de façon fluide et ininterrompue de haut en bas.'),
 
             TextareaField::new('metaDescription', 'Description pour Google (SEO)')
                 ->setColumns(12)
-                ->setHelp('💡 <b>Astuce référencement :</b> Rédigez 1 à 2 phrases courtes (max 150 caractères) décrivant le contenu de cette page. C\'est ce résumé qui s\'affichera sur Google !')
+                ->setHelp('💡 <b>Astuce référencement :</b> Rédigez 1 à 2 phrases courtes décrivant le contenu de cette page pour Google.')
                 ->setRequired(false),
 
             FormField::addFieldset('🧱 Constructeur de Blocs de Contenu (Page Builder)')->setIcon('fas fa-layer-group'),

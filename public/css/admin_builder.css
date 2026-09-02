@@ -65,18 +65,76 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.03) !important;
 }
 
+.builder-form-area .field-collection-item .accordion-header {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+}
+
 .builder-form-area .field-collection-item .accordion-button {
     font-weight: 700 !important;
     font-size: 1rem !important;
     color: #0f172a !important;
     background: #f1f5f9 !important;
-    padding: 14px 20px !important;
+    padding: 14px 60px 14px 20px !important; /* 60px de marge à droite pour laisser la place à la corbeille */
     border: none !important;
     border-top-left-radius: 9px !important;
     border-top-right-radius: 9px !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: flex-start !important;
     gap: 10px !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+    z-index: 1 !important;
+}
+
+.builder-form-area .field-collection-item .accordion-button:focus,
+.builder-form-area .field-collection-item .accordion-button:hover,
+.builder-form-area .field-collection-item .accordion-button:not(.collapsed) {
+    z-index: 2 !important;
+}
+
+/* Positionnement et visibilité absolue de la corbeille de suppression */
+.builder-form-area .field-collection-item .accordion-header .field-collection-item-action-delete,
+.builder-form-area .field-collection-item .accordion-header .field-collection-item-action,
+.builder-form-area .field-collection-item .accordion-header [data-ea-collection-remove-btn],
+.builder-form-area .field-collection-item .accordion-header button[title*="Supprimer"],
+.builder-form-area .field-collection-item .accordion-header .btn-link.text-danger {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10 !important;
+    padding: 6px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    transition: background-color 0.2s ease, transform 0.2s ease !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.builder-form-area .field-collection-item .accordion-header .field-collection-item-action-delete:hover,
+.builder-form-area .field-collection-item .accordion-header .field-collection-item-action:hover,
+.builder-form-area .field-collection-item .accordion-header .btn-link.text-danger:hover {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+    transform: translateY(-50%) scale(1.1) !important;
+}
+
+.builder-accordion-title {
+    font-weight: 600 !important;
+    font-size: 0.98rem !important;
+    color: #0f172a !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: inline-block !important;
+    max-width: 85% !important;
 }
 
 .builder-form-area .field-collection-item .accordion-body {
@@ -345,4 +403,93 @@
 .form-select option {
     padding: 8px 12px;
     font-size: 0.9rem;
+}
+
+/* ======================================================
+   HIÉRARCHIE VISUELLE ÉPURÉE DES VOLETS DE BLOCS
+   ====================================================== */
+.builder-form-area .form-fieldset {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 18px 22px !important;
+    margin-bottom: 22px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease !important;
+}
+
+.builder-form-area .form-fieldset:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+}
+
+.builder-form-area .form-fieldset legend,
+.builder-form-area .form-fieldset .form-fieldset-title {
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 14px !important;
+    border-bottom: 2px solid #f1f5f9 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+/* 1. Carte Général / Modèle */
+.builder-form-area .form-fieldset.builder-fieldset-general {
+    border-left: 5px solid #3b82f6 !important;
+    background: #f8faff !important;
+}
+
+/* 2. Carte Marges & Espacements (Mise en avant dorée claire) */
+.builder-form-area .form-fieldset.builder-fieldset-espacement {
+    border-left: 5px solid #B89A63 !important;
+    background: #fffdfa !important;
+}
+
+.builder-form-area .builder-fieldset-espacement legend,
+.builder-form-area .builder-fieldset-espacement .form-fieldset-title {
+    border-bottom-color: rgba(184, 154, 99, 0.25) !important;
+    color: #8c6e32 !important;
+}
+
+/* 3. Carte Textes */
+.builder-form-area .form-fieldset.builder-fieldset-texte {
+    border-left: 5px solid #8b5cf6 !important;
+    background: #faf8ff !important;
+}
+
+/* 4. Carte Photo */
+.builder-form-area .form-fieldset.builder-fieldset-image {
+    border-left: 5px solid #10b981 !important;
+    background: #f7fdfa !important;
+}
+
+/* 5. Carte Bouton */
+.builder-form-area .form-fieldset.builder-fieldset-cta {
+    border-left: 5px solid #f59e0b !important;
+    background: #fffdf7 !important;
+}
+
+/* 6. Carte Colonnes & Prestations */
+.builder-form-area .form-fieldset.builder-fieldset-colonnes,
+.builder-form-area .form-fieldset.builder-fieldset-prestations {
+    border-left: 5px solid #06b6d4 !important;
+    background: #f6fdff !important;
+}
+
+/* Style des labels et champs dans les formulaires */
+.builder-form-area .field-integer label,
+.builder-form-area .field-text label,
+.builder-form-area .field-choice label {
+    font-weight: 600 !important;
+    color: #334155 !important;
+    font-size: 0.9rem !important;
+}
+
+.builder-form-area input[type="number"] {
+    background: #ffffff !important;
+    font-weight: 600 !important;
+    color: #0f172a !important;
 }

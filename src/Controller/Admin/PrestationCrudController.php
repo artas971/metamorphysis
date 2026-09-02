@@ -32,6 +32,24 @@ class PrestationCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // 1. Vue TABLEAU LISTING (/admin/prestation) : Compact et lisible sans défilement
+        if ($pageName === Crud::PAGE_INDEX) {
+            return [
+                ImageField::new('imageName', '🖼️ Photo')
+                    ->setBasePath('/uploads/prestations'),
+                TextField::new('nom', '💆 Nom de la prestation'),
+                MoneyField::new('prix', '💶 Tarif')
+                    ->setCurrency('EUR')
+                    ->setStoredAsCents(false),
+                IntegerField::new('duree', '⏱️ Durée (min)'),
+                IntegerField::new('nombreSeances', '🎟️ Séances'),
+                IntegerField::new('ordre', '🔢 Ordre'),
+                BooleanField::new('estMisEnAvant', '⭐ En Vedette')
+                    ->renderAsSwitch(true),
+            ];
+        }
+
+        // 2. Vue FORMULAIRE DE CRÉATION / MODIFICATION
         return [
             TextField::new('nom', 'Nom de la prestation')
                 ->setRequired(true)
@@ -55,9 +73,6 @@ class PrestationCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setHelp('Ex: 45. Laissez vide si la durée n\'est pas fixe ou non applicable.'),
 
-            /* =========================================================================
-               NOUVEAU : Gestion du nombre de séances pour les parcours et forfaits
-               ========================================================================= */
             IntegerField::new('nombreSeances', 'Nombre de séances incluses')
                 ->setRequired(true)
                 ->setHelp('Indiquez 1 pour un soin unique, ou plus s\'il s\'agit d\'un forfait/parcours (ex: 3, 5, 10).'),
@@ -66,13 +81,8 @@ class PrestationCrudController extends AbstractCrudController
                 ->renderAsSwitch(true)
                 ->setHelp('Activez cette option pour pousser ce soin en priorité sur le site.'),
 
-            ImageField::new('imageName', 'Aperçu de la photo')
-                ->setBasePath('/uploads/prestations')
-                ->onlyOnIndex(),
-
             TextField::new('imageFile', 'Image illustrative du soin')
                 ->setFormType(VichImageType::class)
-                ->onlyOnForms()
                 ->setHelp('💡 Conseil design : Pour un rendu optimal sur les cartes, privilégiez une photo épurée au format portrait ou carré (ratio 4:5 ou 1:1).'),
                 
             ChoiceField::new('icone', 'Nombre de personnes (Icône)')
@@ -91,12 +101,10 @@ class PrestationCrudController extends AbstractCrudController
                 ->setHelp('Présentez brièvement le déroulé du soin pour l\'aperçu général.'),
  
             TextareaField::new('descriptionComplementaire', 'Description complète (Page Détails)')  
-                ->hideOnIndex()
                 ->setNumOfRows(10)
                 ->setHelp('Le texte détaillé du déroulé de la séance. Allez simplement à la ligne pour créer des paragraphes.'),
  
             UrlField::new('lienVideo', 'Lien Vidéo (YouTube, Vimeo, etc.)')
-                ->hideOnIndex()
                 ->setRequired(false)
                 ->setHelp('Collez ici l\'URL complète de la vidéo de présentation.'),
         ];

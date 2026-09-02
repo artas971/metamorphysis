@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Utilitaire Debounce pour la performance de saisie
+    function debounce(func, wait = 75) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
     // ======================================================
     // 1. GESTION DE L'APERÇU EN DIRECT (SPLIT-SCREEN PREVIEW)
     // ======================================================
@@ -13,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function applyResponsiveMode() {
             const container = document.querySelector('.builder-preview-body');
-            if (!container) return;
+            if (!container || container.clientWidth === 0) return;
             const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
+            const containerHeight = container.clientHeight || (window.innerHeight - 150);
 
             previewIframe.className = 'builder-preview-iframe mode-' + currentMode;
 
@@ -222,12 +231,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const fieldsetTexte = findFieldsetContainer(sectionEl, 'builder-fieldset-texte');
         const fieldsetImage = findFieldsetContainer(sectionEl, 'builder-fieldset-image');
+        const fieldsetImageAdv = findFieldsetContainer(sectionEl, 'builder-fieldset-image-advanced');
         const fieldsetCitation = findFieldsetContainer(sectionEl, 'builder-fieldset-citation');
         const fieldsetColonnes = findFieldsetContainer(sectionEl, 'builder-fieldset-colonnes');
         const fieldsetPrestations = findFieldsetContainer(sectionEl, 'builder-fieldset-prestations');
         const fieldsetCta = findFieldsetContainer(sectionEl, 'builder-fieldset-cta');
+        const fieldsetEspacement = findFieldsetContainer(sectionEl, 'builder-fieldset-espacement');
 
-        const isImage = ['img_gauche', 'img_droite', 'img_centre', 'banniere'].includes(disp);
+        const isImage = ['img_gauche', 'img_droite', 'img_centre', 'banniere', 'presentation_expert'].includes(disp);
         const isColonnes = (disp === 'grille_colonnes');
         const isFlexRow = (disp === 'flex_row');
         const isPrestations = (disp === 'slider_prestations');
@@ -237,10 +248,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Visibilité des Fieldsets
         if (fieldsetTexte) fieldsetTexte.style.display = '';
         if (fieldsetImage) fieldsetImage.style.display = isImage ? '' : 'none';
+        if (fieldsetImageAdv) fieldsetImageAdv.style.display = isImage ? '' : 'none';
         if (fieldsetCitation) fieldsetCitation.style.display = (isImage || isPrestations) ? '' : 'none';
         if (fieldsetColonnes) fieldsetColonnes.style.display = (isColonnes || isFlexRow) ? '' : 'none';
         if (fieldsetPrestations) fieldsetPrestations.style.display = isPrestations ? '' : 'none';
         if (fieldsetCta) fieldsetCta.style.display = (isTexteCentre || isImage || isPrestations || isFlexRow) ? '' : 'none';
+        if (fieldsetEspacement) fieldsetEspacement.style.display = '';
 
         // Visibilité granulaire des champs de texte
         if (isColonnes || isFlexRow) {
@@ -286,12 +299,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ======================================================
+    // 3. EN-TÊTE DYNAMIQUE DES BLOCS ACCORDÉON
+    // ======================================================
     const DISP_LABELS = {
         'texte_centre': '📄 Texte Centré',
         'img_gauche': '🖼️ Image à Gauche + Texte',
         'img_droite': '🖼️ Texte à Gauche + Image',
         'img_centre': '🖼️ Image au Centre + Textes',
+        'presentation_expert': '👑 Présentation Expert (Louisa Chouihi)',
         'grille_colonnes': '📊 Grille Multi-Colonnes (2 à 5 colonnes)',
+        'flex_row': '📦 Rangée Flexible / Conteneur Horizontal',
+        'grille_mentions': '⚖️ Grille Mentions Légales & Juridique',
         'banniere': '🌅 Bannière Pleine Largeur',
         'slider_prestations': '🎠 Carrousel des Prestations',
         'bandeau_conclusion': '🌸 Bandeau Signature & Logo M',
@@ -304,9 +323,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const select = itemEl.querySelector('select[name*="[disposition]"]');
         const isMainSection = !!select;
 
-        const headerBtn = itemEl.querySelector('.accordion-button, .accordion-header, [data-bs-toggle="collapse"]');
-        if (!headerBtn) return;
+        const button = itemEl.querySelector('button.accordion-button');
+        if (!button) return;
 
+        let fullText = '';
         if (isMainSection) {
             // Bloc principal (Section)
             const ordreInput = itemEl.querySelector('input[name*="[ordre]"], input[name*="[position]"]');
@@ -317,8 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const orderVal = ordreInput && ordreInput.value !== '' ? ordreInput.value : '0';
             const titreVal = titreInput && titreInput.value.trim() ? ' : ' + titreInput.value.trim() : '';
 
-            const titleSpan = headerBtn.querySelector('.accordion-title, span') || headerBtn;
-            titleSpan.textContent = `${label} (Position ${orderVal})${titreVal}`;
+            fullText = `${label} (Position ${orderVal})${titreVal}`;
         } else {
             // Sous-élément (Colonne du bloc Multi-Colonnes)
             const titreInput = itemEl.querySelector('input[name*="[titre]"]');
@@ -331,9 +350,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (pos !== -1) colIndex = pos + 1;
             }
 
-            const titleSpan = headerBtn.querySelector('.accordion-title, span') || headerBtn;
-            titleSpan.textContent = `🏛️ Colonne ${colIndex}${titreVal}`;
+            fullText = `🏛️ Colonne ${colIndex}${titreVal}`;
         }
+
+        // On préserve l'icône de pliage EasyAdmin (.form-collection-item-collapse-marker / svg / i)
+        const marker = button.querySelector('.form-collection-item-collapse-marker, svg, i');
+        let titleSpan = button.querySelector('.builder-accordion-title');
+
+        if (!titleSpan) {
+            titleSpan = document.createElement('span');
+            titleSpan.className = 'builder-accordion-title ms-2';
+            titleSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; display: inline-block; max-width: 90%;';
+            
+            button.textContent = '';
+            if (marker) button.appendChild(marker);
+            button.appendChild(titleSpan);
+        }
+
+        titleSpan.textContent = fullText;
     }
 
     function autoIncrementNewBlocks() {
@@ -385,10 +419,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    const debouncedUpdateAccordionHeader = debounce(function(container) {
+        updateAccordionHeader(container);
+    }, 75);
+
     document.addEventListener('input', function(e) {
         if (e.target && e.target.matches('input[name*="[ordre]"], input[name*="[position]"], input[name*="[titre]"]')) {
             const container = e.target.closest('.field-collection-item, form, [class*="field-collection"]') || document;
-            updateAccordionHeader(container);
+            debouncedUpdateAccordionHeader(container);
         }
     });
 

@@ -1,0 +1,67 @@
+{% set crop_style = '' %}
+{% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
+    {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
+{% endif %}
+{% set z_img = (section.imageSuperposition == 'image_sur_texte') ? 10 : (section.imageZIndex|default(1)) %}
+{% set z_txt = (section.imageSuperposition == 'texte_sur_image') ? 10 : 2 %}
+{% set cadre_color = section.imageCadreCouleur|default('plum') %}
+{% set b_top = section.imageCadreHaut|default(0) %}
+{% set b_bottom = section.imageCadreBas|default(0) %}
+{% set b_left = section.imageCadreGauche|default(0) %}
+{% set b_right = section.imageCadreDroite|default(0) %}
+{% set border_style = '' %}
+{% if cadre_color != 'none' and (b_top > 0 or b_bottom > 0 or b_left > 0 or b_right > 0) %}
+    {% set border_style = 'border-style: solid; border-color: var(--meta-' ~ cadre_color ~ '); border-top-width: ' ~ b_top ~ 'px; border-bottom-width: ' ~ b_bottom ~ 'px; border-left-width: ' ~ b_left ~ 'px; border-right-width: ' ~ b_right ~ 'px;' %}
+{% endif %}
+
+<div class="row align-items-start g-4 g-lg-5 justify-content-between {% if section.paddingGauche is not null and section.paddingGauche == 0 %}ms-0{% endif %}">
+    <div class="col-lg-6 position-relative mt-4 mt-lg-0 text-center text-lg-start {% if section.paddingGauche is not null and section.paddingGauche == 0 %}ps-0 ms-0{% else %}ms-lg-n5{% endif %}" style="z-index: {{ z_img }};">
+        <div class="position-relative w-100 d-inline-block text-start" 
+             style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); 
+                    transition: transform 0.3s ease;
+                    {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px;{% else %}max-width: 540px;{% endif %}">
+            {% set img_url = media_url(section) %}
+            {% if img_url %}
+                {% if section.imageLien %}
+                    <a href="{{ section.imageLien }}" class="d-inline-block transition-hover text-decoration-none w-100" title="Découvrir">
+                {% endif %}
+                <div class="d-inline-block position-relative shadow-lg text-start w-100" 
+                     style="background-color: {% if cadre_color != 'none' %}var(--meta-{{ cadre_color }}){% else %}transparent{% endif %}; 
+                            padding-top: {{ b_top }}px; 
+                            padding-bottom: {{ b_bottom }}px; 
+                            padding-left: {{ b_left }}px; 
+                            padding-right: {{ b_right }}px; 
+                            box-sizing: border-box; 
+                            border-radius: 0;">
+                    <img src="{{ img_url }}" 
+                         alt="Illustration de la section {{ section.titre|default('') }}" 
+                         loading="lazy"
+                         decoding="async"
+                         class="img-fluid d-block w-100" 
+                         style="height: auto; object-fit: cover; {{ crop_style }}">
+                </div>
+                {% if section.imageLien %}
+                    </a>
+                {% endif %}
+            {% endif %}
+
+            {% if section.citation %}
+                {{ include('components/_quote_aside.html.twig', {'section': section}) }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6 content-premium text-start pt-3 pt-lg-2" style="z-index: {{ z_txt }};">
+        {% if section.titre %}
+            <h2 class="typo-titre fw-light mb-2 builder-title" style="color: var(--meta-{{ section.titreCouleur|default('gold-hover') }});">{{ section.titre }}</h2>
+        {% endif %}
+        {% if section.sousTitre %}
+            <div class="mb-4 builder-subtitle" style="text-transform: uppercase; font-weight: 500; color: var(--meta-{{ section.sousTitreCouleur|default('ivory') }});">
+                {{ section.sousTitre|nl2br }}
+            </div>
+        {% endif %}
+        <div class="content-premium mb-0 builder-content" style="opacity: 0.92; color: var(--meta-{{ section.texteCouleur|default('ivory') }});">
+            {{ section.contenu|format_paragraphs(section.texteCouleur|default('ivory'))|raw }}
+        </div>
+    </div>
+</div>

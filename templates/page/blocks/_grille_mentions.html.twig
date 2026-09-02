@@ -1,0 +1,30 @@
+﻿{{ include('components/_section_header.html.twig', {'section': section, 'disposition': 'grille_mentions'}) }}
+
+<div class="row g-4 align-items-stretch">
+    {% for col in section.etapes %}
+        <div class="col-12 {% if loop.index <= 2 %}col-lg-6 d-flex{% else %}col-12{% endif %}">
+            <div class="olive-card w-100 p-4 p-md-5 d-flex flex-column justify-content-between">
+                <div>
+                    {% if col.titre %}
+                        <header class="text-center border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.25) !important;">
+                            <h3 class="typo-titre text-gold fw-normal mb-1" style="font-size: 1.85rem; letter-spacing: 1px;">{{ col.titre }}</h3>
+                        </header>
+                    {% endif %}
+                    {% if col.texte %}
+                        <div class="content-premium text-ivory" style="font-size: 0.95rem; line-height: 1.7;">
+                            {{ col.texte|raw }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="olive-card w-100 p-4 p-md-5">
+                <div class="content-premium text-ivory">
+                    {{ section.contenu|raw }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

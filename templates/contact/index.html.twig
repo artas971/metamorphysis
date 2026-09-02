@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             
-            <div class="card-premium shadow-lg overflow-hidden" style="background: linear-gradient(to bottom, rgba(74, 79, 65, 0.7), rgba(30, 32, 27, 0.9)); border: 1px solid rgba(184, 154, 99, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--radius-card, 8px);">
+            <div class="card-premium shadow-lg overflow-hidden" style="background: linear-gradient(to bottom, rgba(74, 79, 65, 0.7), rgba(30, 32, 27, 0.9)); border: 1px solid rgba(184, 154, 99, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 0;">
                 
                 {# ZONE SUPÉRIEURE : Le dégradé officiel fusionné Violet/Vert appliqué au titre #}
                 <div class="text-center py-5 px-4" style="background: linear-gradient(135deg, var(--meta-plum) 0%, var(--meta-olive) 100%); border-bottom: 1px solid rgba(184, 154, 99, 0.3);">
@@ -30,7 +30,7 @@
                             {{ form_label(form.nom, 'Votre Nom', {'label_attr': {'class': 'form-label fw-bold text-uppercase small', 'style': 'color: var(--meta-ivory); letter-spacing: 1px;'}}) }}
                             {{ form_widget(form.nom, {'attr': {
                                 'class': 'form-control text-white p-3 mt-2', 
-                                'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input, 4px); color: var(--meta-ivory) !important;',
+                                'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: 0; color: var(--meta-ivory) !important;',
                                 'value': default_nom,
                                 'readonly': is_readonly
                             }}) }}
@@ -42,7 +42,7 @@
                             {{ form_label(form.email, 'Votre Adresse Email', {'label_attr': {'class': 'form-label fw-bold text-uppercase small', 'style': 'color: var(--meta-ivory); letter-spacing: 1px;'}}) }}
                             {{ form_widget(form.email, {'attr': {
                                 'class': 'form-control text-white p-3 mt-2', 
-                                'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input, 4px); color: var(--meta-ivory) !important;',
+                                'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: 0; color: var(--meta-ivory) !important;',
                                 'value': default_email,
                                 'readonly': is_readonly
                             }}) }}
@@ -52,19 +52,19 @@
                         {# Champ Sujet #}
                         <div class="mb-4">
                             {{ form_label(form.sujet, 'Sujet de votre demande', {'label_attr': {'class': 'form-label fw-bold text-uppercase small', 'style': 'color: var(--meta-ivory); letter-spacing: 1px;'}}) }}
-                            {{ form_widget(form.sujet, {'attr': {'class': 'form-control text-white p-3 mt-2', 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input, 4px); color: var(--meta-ivory) !important;'}}) }}
+                            {{ form_widget(form.sujet, {'attr': {'class': 'form-control text-white p-3 mt-2', 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: 0; color: var(--meta-ivory) !important;'}}) }}
                             <div class="text-danger mt-1 small fw-bold">{{ form_errors(form.sujet) }}</div>
                         </div>
 
                         {# Champ Message #}
                         <div class="mb-5">
                             {{ form_label(form.message, 'Votre Message', {'label_attr': {'class': 'form-label fw-bold text-uppercase small', 'style': 'color: var(--meta-ivory); letter-spacing: 1px;'}}) }}
-                            {{ form_widget(form.message, {'attr': {'class': 'form-control text-white p-3 mt-2', 'rows': 5, 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: var(--radius-input, 4px); color: var(--meta-ivory) !important; resize: none;'}}) }}
+                            {{ form_widget(form.message, {'attr': {'class': 'form-control text-white p-3 mt-2', 'rows': 5, 'style': 'background-color: rgba(10, 10, 9, 0.6); border: 1px solid rgba(184, 154, 99, 0.4); border-radius: 0; color: var(--meta-ivory) !important; resize: none;'}}) }}
                             <div class="text-danger mt-1 small fw-bold">{{ form_errors(form.message) }}</div>
                         </div>
 
                         {# Bouton de validation premium #}
-                        <button type="submit" class="btn w-100 fw-bold py-3 rounded-pill text-uppercase transition-hover" style="background-color: var(--meta-gold); color: var(--meta-black); letter-spacing: 1px;">
+                        <button type="submit" class="btn w-100 fw-bold py-3 rounded-0 text-uppercase transition-hover" style="background-color: var(--meta-gold); color: var(--meta-black); letter-spacing: 1px;">
                             ENVOYER LE MESSAGE
                         </button>
 

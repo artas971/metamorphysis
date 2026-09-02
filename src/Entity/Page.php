@@ -36,6 +36,9 @@ class Page
     #[ORM\Column]
     private ?bool $afficherMenu = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private ?bool $afficherFooter = false;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $metaDescription = null;
 
@@ -44,6 +47,9 @@ class Page
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $fondBlocsUnifie = null; 
+
+    #[ORM\Column(type: 'integer', nullable: true, options: ['default' => 0])]
+    private ?int $ordreMenu = 0; 
 
     public function __construct()
     {
@@ -165,6 +171,28 @@ class Page
     public function setFondBlocsUnifie(?string $fondBlocsUnifie): static
     {
         $this->fondBlocsUnifie = $fondBlocsUnifie;
+        return $this;
+    }
+
+    public function getOrdreMenu(): ?int
+    {
+        return $this->ordreMenu;
+    }
+
+    public function setOrdreMenu(?int $ordreMenu): static
+    {
+        $this->ordreMenu = $ordreMenu;
+        return $this;
+    }
+
+    public function isAfficherFooter(): ?bool
+    {
+        return $this->afficherFooter;
+    }
+
+    public function setAfficherFooter(bool $afficherFooter): static
+    {
+        $this->afficherFooter = $afficherFooter;
         return $this;
     }
 }

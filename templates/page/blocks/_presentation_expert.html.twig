@@ -1,0 +1,65 @@
+{% set crop_style = '' %}
+{% if section.cropHaut or section.cropBas or section.cropGauche or section.cropDroite %}
+    {% set crop_style = 'clip-path: inset(' ~ section.cropHaut|default(0) ~ '% ' ~ section.cropDroite|default(0) ~ '% ' ~ section.cropBas|default(0) ~ '% ' ~ section.cropGauche|default(0) ~ '%);' %}
+{% endif %}
+{% set cadre_color = section.imageCadreCouleur|default('gold') %}
+{% set b_top = section.imageCadreHaut|default(0) %}
+{% set b_bottom = section.imageCadreBas|default(0) %}
+{% set b_left = section.imageCadreGauche|default(0) %}
+{% set b_right = section.imageCadreDroite|default(0) %}
+{% set has_cadre = (cadre_color != 'none' and (b_top > 0 or b_bottom > 0 or b_left > 0 or b_right > 0)) %}
+
+<div class="row align-items-stretch g-5 py-4">
+    <div class="col-lg-5 d-flex flex-column justify-content-start pt-lg-4 order-2 order-lg-1">
+        <header class="mb-4 mb-lg-5">
+            <h2 class="text-gold typo-titre text-uppercase mb-2 builder-title" style="line-height: 1.1;">
+                {{ section.titre }}
+            </h2>
+            <p class="text-gold text-uppercase fw-bold builder-subtitle" style="font-size: 0.8rem;">
+                Consultante en relation humaine
+            </p>
+        </header>
+        
+        <div class="content-premium builder-content" style="color: var(--meta-{{ section.texteCouleur|default('sage') }}); line-height: 1.8;">
+            {{ section.contenu|format_paragraphs(section.texteCouleur|default('sage'))|raw }}
+        </div>
+    </div>
+
+    <div class="col-lg-6 offset-lg-1 mt-5 mt-lg-0 order-1 order-lg-2 mb-5">
+        <div class="position-relative w-100" 
+             style="transform: translate({{ section.imagePosX|default('0') }}%, {{ section.imagePosY|default('0') }}px); 
+                    transition: transform 0.3s ease;
+                    {% if section.largeurMedia %}max-width: {{ section.largeurMedia }}px; margin-left: auto;{% endif %}">
+            {% set img_url = media_url(section) %}
+            {% if img_url %}
+                <div class="position-relative shadow-lg w-100" 
+                     style="{% if has_cadre %}
+                                background-color: var(--meta-{{ cadre_color }});
+                                padding-top: {{ b_top }}px;
+                                padding-bottom: {{ b_bottom }}px;
+                                padding-left: {{ b_left }}px;
+                                padding-right: {{ b_right }}px;
+                            {% endif %}
+                            box-sizing: border-box;
+                            border-radius: 0;">
+                    {% if section.imageLien %}
+                        <a href="{{ section.imageLien }}" class="d-block transition-hover text-decoration-none w-100 h-100" title="Découvrir">
+                    {% endif %}
+                    <img src="{{ img_url }}" 
+                         alt="Portrait de {{ section.titre|default('') }}" 
+                         loading="lazy"
+                         decoding="async"
+                         class="img-fluid d-block shadow-sm" 
+                         style="width: 100%; border-radius: 0; object-fit: cover; {{ crop_style }}">
+                    {% if section.imageLien %}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            {% if section.citation %}
+                {{ include('components/_quote_aside.html.twig', {'section': section, 'citation_pos_x': section.citationPosX|default('-10')}) }}
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -12,16 +12,22 @@ class PrestationController extends AbstractController
 {
     // 1. La route pour afficher TOUTES les prestations (tes cartes)
     #[Route('/prestations', name: 'app_prestation_index')]
-        public function index(PrestationRepository $prestationRepository): Response
-        {
-            return $this->render('prestation/index.html.twig', [
-                // On trie d'abord par 'estMisEnAvant' (les TRUE d'abord), puis par 'ordre' (du plus petit au plus grand)
-                'prestations' => $prestationRepository->findBy([], [
-                    'estMisEnAvant' => 'DESC',
-                    'ordre' => 'ASC'
-                ]),
+    public function index(PrestationRepository $prestationRepository, \App\Repository\PageRepository $pageRepository): Response
+    {
+        $page = $pageRepository->findOneBy(['slug' => 'prestations', 'isPublished' => true]);
+        if ($page) {
+            return $this->render('page/show.html.twig', [
+                'page' => $page,
             ]);
         }
+
+        return $this->render('prestation/index.html.twig', [
+            'prestations' => $prestationRepository->findBy([], [
+                'estMisEnAvant' => 'DESC',
+                'ordre' => 'ASC'
+            ]),
+        ]);
+    }
 
     // 2. La route pour afficher UNE SEULE prestation en détail
     // On utilise {id} car c'est ce qui existe dans ton entité
