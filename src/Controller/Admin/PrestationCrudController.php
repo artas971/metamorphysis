@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Prestation;
+use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -30,6 +32,12 @@ class PrestationCrudController extends AbstractCrudController
             ->setHelp('index', 'Gérez ici votre catalogue de soins. Les modifications sont instantanément répercutées sur votre site public.');
     }
 
+    public function configureAssets(Assets $assets): Assets
+    {
+        return $assets
+            ->addJsFile('js/admin_tarifs_dynamiques.js');
+    }
+
     public function configureFields(string $pageName): iterable
     {
         // 1. Vue TABLEAU LISTING (/admin/prestation) : Compact et lisible sans défilement
@@ -39,15 +47,11 @@ class PrestationCrudController extends AbstractCrudController
                     ->setBasePath('/uploads/prestations'),
                 TextField::new('nom', '💆 Nom'),
                 TextField::new('prixAffiche', '🏷️ Prix Affiché'),
-                MoneyField::new('prix', '👤 Tarif 1 pers')
+                MoneyField::new('prix', '💶 Tarif Base')
                     ->setCurrency('EUR')
                     ->setStoredAsCents(false),
-                MoneyField::new('prixCouple', '👥 Tarif Couple')
-                    ->setCurrency('EUR')
-                    ->setStoredAsCents(false),
-                MoneyField::new('prixGroupe', '👨‍👩‍👧 Tarif Groupe')
-                    ->setCurrency('EUR')
-                    ->setStoredAsCents(false),
+                IntegerField::new('minPersonnes', '👥 Min Pers'),
+                IntegerField::new('maxPersonnes', '👥 Max Pers'),
                 IntegerField::new('nombreSeances', '🎟️ Séances'),
                 IntegerField::new('ordre', '🔢 Ordre'),
                 BooleanField::new('estMisEnAvant', '⭐ En Vedette')
@@ -65,23 +69,21 @@ class PrestationCrudController extends AbstractCrudController
                 ->setHelp('Texte commercial libre. Ex: "À partir de 80 €", "Entre 80 € et 120 €", "80 €", "Sur devis"... (si vide, affiche le tarif 1 personne)')
                 ->setRequired(false),
 
-            MoneyField::new('prix', '👤 Tarif 1 personne (Individuel / Base)')
-                ->setCurrency('EUR')
-                ->setStoredAsCents(false)
+            IntegerField::new('minPersonnes', '👥 Nombre minimum de personnes')
                 ->setRequired(true)
-                ->setHelp('Montant exact payé sur Stripe pour 1 personne (ex: 50 €).'),
+                ->setHelp('Indiquez le minimum de participants (ex: 1 pour individuel, 2 pour couple).')
+                ->setColumns(6),
 
-            MoneyField::new('prixCouple', '👥 Tarif 2 personnes (Couple / Duo)')
-                ->setCurrency('EUR')
-                ->setStoredAsCents(false)
-                ->setRequired(false)
-                ->setHelp('Montant exact payé sur Stripe pour 2 personnes (ex: 80 €). Laissez vide si non applicable.'),
+            IntegerField::new('maxPersonnes', '👥 Nombre maximum de personnes')
+                ->setRequired(true)
+                ->setHelp('Indiquez le maximum de participants (ex: 1, 3, 5...). Les champs de tarifs ci-dessous s\'adaptent automatiquement.')
+                ->setColumns(6),
 
-            MoneyField::new('prixGroupe', '👨‍👩‍👧 Tarif 3+ personnes (Groupe / Famille)')
-                ->setCurrency('EUR')
-                ->setStoredAsCents(false)
-                ->setRequired(false)
-                ->setHelp('Montant exact payé sur Stripe pour 3 personnes et plus (ex: 120 €). Laissez vide si non applicable.'),
+            \EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField::new('tarifsParPersonneJson')
+                ->setFormTypeOption('attr', ['id' => 'tarifs-json-input']),
+
+            \EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField::new('prix')
+                ->setFormTypeOption('attr', ['id' => 'prix-base-input']),
 
             IntegerField::new('nombreSeances', '🎟️ Nombre de séances incluses')
                 ->setRequired(true)
@@ -130,5 +132,41 @@ class PrestationCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setHelp('Collez ici l\'URL complète de la vidéo de présentation.'),
         ];
+    }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Prestation) {
+            $this->syncPrestationPricing($entityInstance);
+        }
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Prestation) {
+            $this->syncPrestationPricing($entityInstance);
+        }
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    private function syncPrestationPricing(Prestation $prestation): void
+    {
+        $tarifs = $prestation->getTarifsParPersonne();
+        $min = $prestation->getMinPersonnes();
+
+        if (isset($tarifs[(string)$min]) && (float)$tarifs[(string)$min] > 0) {
+            $prestation->setPrix((float) $tarifs[(string)$min]);
+        } elseif (!empty($tarifs)) {
+            $first = reset($tarifs);
+            $prestation->setPrix((float) $first);
+        }
+
+        if (isset($tarifs['2'])) {
+            $prestation->setPrixCouple((float) $tarifs['2']);
+        }
+        if (isset($tarifs['3'])) {
+            $prestation->setPrixGroupe((float) $tarifs['3']);
+        }
     }
 }

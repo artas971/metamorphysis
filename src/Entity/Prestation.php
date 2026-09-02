@@ -25,15 +25,15 @@ class Prestation
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    // Tarif fixé directement par l'administrateur pour 1 personne (Individuel / Base)
+    // Prix de base / 1ère formule (gardé pour cohérence DB et listing par défaut)
     #[ORM\Column]
     private ?float $prix = null;
 
-    // Tarif fixé directement par l'administrateur pour 2 personnes (Couple / Duo)
+    // Tarif fixé pour 2 personnes (compatibilité)
     #[ORM\Column(nullable: true)]
     private ?float $prixCouple = null;
 
-    // Tarif fixé directement par l'administrateur pour 3 personnes et plus (Groupe / Famille)
+    // Tarif fixé pour 3+ personnes (compatibilité)
     #[ORM\Column(nullable: true)]
     private ?float $prixGroupe = null;
 
@@ -41,13 +41,18 @@ class Prestation
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $prixAffiche = null;
 
-    // Nombre de personnes minimum
+    // Nombre de personnes minimum (ex: 1, 2...)
     #[ORM\Column(options: ['default' => 1])]
     private int $minPersonnes = 1;
 
-    // Nombre de personnes maximum
+    // Nombre de personnes maximum (ex: 1, 3, 5...)
     #[ORM\Column(options: ['default' => 1])]
     private int $maxPersonnes = 1;
+
+    // Grille tarifaire dynamique JSON stockant le prix exact pour chaque nombre de personnes de minPersonnes à maxPersonnes
+    // Ex: {"2": 80, "3": 100, "4": 120, "5": 140}
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $tarifsParPersonne = [];
 
     #[ORM\Column(nullable: true)]
     private ?int $duree = null;
@@ -106,6 +111,7 @@ class Prestation
         $this->minPersonnes = 1;
         $this->maxPersonnes = 1;
         $this->nombreSeances = 1;
+        $this->tarifsParPersonne = [];
     }
 
     public function getId(): ?int
@@ -209,9 +215,37 @@ class Prestation
         return $this;
     }
 
+    public function getTarifsParPersonne(): array
+    {
+        return $this->tarifsParPersonne ?? [];
+    }
+
+    public function setTarifsParPersonne(?array $tarifsParPersonne): static
+    {
+        $this->tarifsParPersonne = $tarifsParPersonne ?? [];
+
+        return $this;
+    }
+
+    public function getTarifsParPersonneJson(): string
+    {
+        return json_encode($this->getTarifsParPersonne(), JSON_UNESCAPED_UNICODE);
+    }
+
+    public function setTarifsParPersonneJson(?string $json): static
+    {
+        if ($json) {
+            $decoded = json_decode($json, true);
+            if (is_array($decoded)) {
+                $this->tarifsParPersonne = $decoded;
+            }
+        }
+        return $this;
+    }
+
     public function hasTarificationVariable(): bool
     {
-        return $this->prixCouple !== null || $this->prixGroupe !== null;
+        return $this->getMaxPersonnes() > $this->getMinPersonnes();
     }
 
     public function hasChoixPersonnes(): bool
@@ -220,21 +254,35 @@ class Prestation
     }
 
     /**
-     * Retourne le prix exact fixé par l'administrateur selon le nombre de personnes sélectionné
+     * Retourne le tarif exact pour le nombre de personnes sélectionné
+     */
+    public function getTarifPour(int $nombrePersonnes): float
+    {
+        $tarifs = $this->getTarifsParPersonne();
+        $key = (string) $nombrePersonnes;
+
+        if (isset($tarifs[$key]) && is_numeric($tarifs[$key]) && (float)$tarifs[$key] > 0) {
+            return (float) $tarifs[$key];
+        }
+
+        if ($nombrePersonnes === 2 && $this->prixCouple !== null) {
+            return (float) $this->prixCouple;
+        }
+
+        if ($nombrePersonnes >= 3 && $this->prixGroupe !== null) {
+            return (float) $this->prixGroupe;
+        }
+
+        return (float) ($this->prix ?? 0.0);
+    }
+
+    /**
+     * Calcule le montant à régler selon la formule choisie
      */
     public function calculerPrix(?int $nombrePersonnes = null): float
     {
-        $nb = $nombrePersonnes ?? 1;
-        if ($nb === 2 && $this->prixCouple !== null) {
-            return (float) $this->prixCouple;
-        }
-        if ($nb >= 3 && $this->prixGroupe !== null) {
-            return (float) $this->prixGroupe;
-        }
-        if ($nb >= 2 && $this->prixCouple !== null) {
-            return (float) $this->prixCouple;
-        }
-        return (float) ($this->prix ?? 0.0);
+        $nb = $nombrePersonnes ?? $this->getMinPersonnes();
+        return $this->getTarifPour($nb);
     }
 
     public function calculerPrixTotal(?int $nombrePersonnes = null): float
@@ -244,14 +292,14 @@ class Prestation
 
     public function getLibelleFormule(?int $nombrePersonnes): string
     {
-        $nb = $nombrePersonnes ?? 1;
+        $nb = $nombrePersonnes ?? $this->getMinPersonnes();
+        if ($nb === 1) {
+            return '1 personne (Individuel)';
+        }
         if ($nb === 2) {
             return 'Formule Couple (2 personnes)';
         }
-        if ($nb >= 3) {
-            return 'Formule Groupe (' . $nb . ' personnes)';
-        }
-        return 'Formule Individuelle (1 personne)';
+        return 'Formule ' . $nb . ' personnes';
     }
 
     public function getDuree(): ?int
