@@ -495,6 +495,12 @@ textarea:focus-visible {
 #Lower_right_wing, #Bottom_right { transform-box: fill-box; transform-origin: 0% 20%; animation: flapRight 0.8s ease-in-out infinite alternate; }
 #body { transform-box: fill-box; transform-origin: center center; animation: respiration 4s ease-in-out infinite; }
 
+/* Libellule statique dans la barre de navigation */
+.navbar-dragonfly-container svg,
+.navbar-dragonfly-container svg * {
+    animation: none !important;
+}
+
 @keyframes levitation {
     0%, 100% { 
         transform: translateY(35px); 
