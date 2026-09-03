@@ -8,6 +8,11 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # 1. FORCER HTTPS SUR OVH (Évite l'alerte de formulaire non sécurisé sur mobile/navigateur)
+    RewriteCond %{HTTPS} !=on [NC]
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
     # Determine the RewriteBase automatically and set it as environment variable.
     RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::\2$
     RewriteRule .* - [E=BASE:%1]
