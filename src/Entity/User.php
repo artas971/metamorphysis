@@ -53,7 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Seance>
      */
-    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'user', orphanRemoval: true, cascade: ['remove'])]
     private Collection $seances;
 
     public function __construct()

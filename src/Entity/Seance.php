@@ -26,11 +26,11 @@ class Seance
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Prestation $prestation = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
