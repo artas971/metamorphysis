@@ -181,4 +181,15 @@ class Seance
     {
         return $this->prestation ? $this->prestation->getLibelleFormule($this->nombrePersonnes) : 'Séance';
     }
+
+    public function getClientTelephone(): string
+    {
+        return ($this->user && $this->user->getTelephone()) ? $this->user->getTelephone() : 'Non renseigné';
+    }
+
+    public function __toString(): string
+    {
+        $nomPresta = $this->prestation ? $this->prestation->getNom() : 'Séance';
+        return sprintf('%s #%d', $nomPresta, $this->numero ?? 1);
+    }
 }

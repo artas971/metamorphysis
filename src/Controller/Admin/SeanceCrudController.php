@@ -50,7 +50,10 @@ class SeanceCrudController extends AbstractCrudController
             ->linkToCrudAction('changerStatutEffectuee')
             ->addCssClass('text-success')
             ->displayIf(static function ($entity) {
-                // On affiche le bouton seulement si la séance a une date et n'est pas déjà annulée ou effectuée
+                // Protection si l'entité est nulle ou n'est pas une Seance
+                if (!$entity instanceof Seance) {
+                    return false;
+                }
                 return $entity->getDateRendezVous() !== null && $entity->getStatut() !== 'Effectuée';
             });
 
@@ -116,10 +119,7 @@ class SeanceCrudController extends AbstractCrudController
             AssociationField::new('user', 'Client')
                 ->setDisabled(true),
 
-            TextField::new('user.telephone', 'Téléphone Client')
-                ->formatValue(function ($value, $entity) {
-                    return $entity->getUser() ? $entity->getUser()->getTelephone() : 'Non renseigné';
-                })
+            TextField::new('clientTelephone', 'Téléphone Client')
                 ->onlyOnIndex(),
 
             AssociationField::new('prestation', 'Soin / Parcours')
