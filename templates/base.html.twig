@@ -77,7 +77,9 @@
             <div class="container">
                 
                 <a class="navbar-brand text-gold typo-symbolic d-flex align-items-center gap-3" href="{{ path('app_home') }}" aria-label="Metamorphysis - Accueil">
-                    <img src="{{ asset('images/libellule.svg') }}" alt="" width="42" height="42" decoding="async" class="d-inline-block align-text-top" aria-hidden="true">
+                    <div class="navbar-dragonfly-container" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+                        {% include 'partials/logo_nav.html.twig' with {'is_navbar': true} %}
+                    </div>
                     <span class="d-none d-md-inline fs-4" style="letter-spacing: 2px;">METAMORPHYSIS</span>
                 </a>
                 
