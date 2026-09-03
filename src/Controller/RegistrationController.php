@@ -15,9 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[Route('/inscription', name: 'app_register')]
+    #[Route('/register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+        // Si l'utilisateur est déjà connecté, il ne peut pas créer de compte ni accéder à l'inscription
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_account');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
