@@ -38,8 +38,18 @@ class MenuController extends AbstractController
 
         $pages = $pageRepository->findBy($criteria, ['ordreMenu' => 'ASC', 'id' => 'ASC']);
 
+        // S'assurer que les Mentions Légales sont TOUJOURS présentes dans le footer pour tous les visiteurs (même non connectés)
+        $hasMentionsLegales = false;
+        foreach ($pages as $p) {
+            if ($p->getSlug() === 'mentions-legales') {
+                $hasMentionsLegales = true;
+                break;
+            }
+        }
+
         return $this->render('partials/_footer_links.html.twig', [
             'pages' => $pages,
+            'hasMentionsLegales' => $hasMentionsLegales,
         ]);
     }
 }
