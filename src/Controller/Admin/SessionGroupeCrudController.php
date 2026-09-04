@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -105,6 +106,10 @@ class SessionGroupeCrudController extends AbstractCrudController
                 'Annulé' => 'danger',
                 'Effectué' => 'secondary',
             ]);
+
+        yield BooleanField::new('estVisiblePublic', '👁️ Visible sur le site public')
+            ->setHelp('Activez pour afficher ce créneau aux visiteurs sur le site internet.')
+            ->renderAsSwitch(true);
 
         yield TextField::new('jaugeInscriptions', '👥 Présences & Inscrits')
             ->onlyOnIndex()

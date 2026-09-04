@@ -181,7 +181,7 @@
                                     {# Liste des sessions disponibles #}
                                     {% set sessionsValides = [] %}
                                     {% for s in prestation.sessionsGroupe %}
-                                        {% if s.dateDebut > date() and s.statut != 'Annulé' %}
+                                        {% if s.dateDebut > date() and s.statut != 'Annulé' and s.isEstVisiblePublic and (s.numeroSeance is null or s.numeroSeance == 1) %}
                                             {% set sessionsValides = sessionsValides|merge([s]) %}
                                         {% endif %}
                                     {% endfor %}

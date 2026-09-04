@@ -33,6 +33,11 @@ class PrestationController extends AbstractController
     #[Route('/prestation/{slug}', name: 'app_prestation_show')]
     public function show(string $slug, PrestationRepository $prestationRepository): Response
     {
+        // Redirection permanente pour l'ancien libellé 'therapie-de-groupe'
+        if ($slug === 'therapie-de-groupe') {
+            return $this->redirectToRoute('app_prestation_show', ['slug' => 'accompagnement-en-groupe'], Response::HTTP_MOVED_PERMANENTLY);
+        }
+
         $prestation = is_numeric($slug) 
             ? $prestationRepository->find((int) $slug) 
             : $prestationRepository->findOneBy(['slug' => $slug]);

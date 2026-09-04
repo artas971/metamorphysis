@@ -43,6 +43,10 @@ class SessionGroupe
     #[ORM\Column(length: 50)]
     private ?string $statut = "En cours d'inscriptions";
 
+    // Détermine si le créneau de 1ère séance est visible et réservable par le public sur le site
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $estVisiblePublic = true;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lienVisio = null;
 
@@ -151,6 +155,17 @@ class SessionGroupe
                 $inscription->setSessionGroupe(null);
             }
         }
+        return $this;
+    }
+
+    public function isEstVisiblePublic(): bool
+    {
+        return $this->estVisiblePublic;
+    }
+
+    public function setEstVisiblePublic(bool $estVisiblePublic): static
+    {
+        $this->estVisiblePublic = $estVisiblePublic;
         return $this;
     }
 
