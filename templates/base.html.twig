@@ -91,6 +91,15 @@
                         
                         {{ render(controller('App\\Controller\\MenuController::renderDynamicNav')) }}
 
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item mt-2 mt-lg-0">
+                                <a class="nav-link text-gold nav-link-premium d-flex align-items-center gap-1 fw-semibold" href="{{ path('admin') }}">
+                                    <i class="bi bi-shield-lock-fill"></i>
+                                    <span>Administration</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
                         {% if app.user %}
                             <li class="nav-item dropdown ms-lg-4 mt-2 mt-lg-0">
                                 <a class="nav-link dropdown-toggle btn-premium py-1 px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,6 +108,10 @@
                                 <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="navbarDropdown">
                                     <li><span class="dropdown-item-text typo-citation" style="color: #FFFFF0;">Bonjour, {{ app.user.prenom|capitalize }}</span></li>
                                     <li><hr class="dropdown-divider border-sage"></li>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <li><a class="dropdown-item text-gold fw-bold" href="{{ path('admin') }}"><i class="bi bi-shield-lock-fill me-2"></i>Administration</a></li>
+                                        <li><hr class="dropdown-divider border-sage"></li>
+                                    {% endif %}
                                     <li><a class="dropdown-item text-ivory" href="{{ path('app_account') }}"><i class="bi bi-person-badge me-2 text-gold"></i>Mon tableau de bord</a></li>
                                     <li><hr class="dropdown-divider border-sage"></li>
                                     <li><a class="dropdown-item text-danger fw-bold" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Se déconnecter</a></li>
