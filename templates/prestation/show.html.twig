@@ -210,7 +210,7 @@
                                                                 {% if s.dateFin %} - {{ s.dateFin|date('H:i') }}{% endif %}
                                                             </div>
                                                             <span class="badge" style="{% if s.isComplet %}background-color: rgba(42, 26, 30, 0.9); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;{% elseif s.isQuorumAtteint %}background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory);{% else %}background-color: var(--meta-plum); border: 1px solid var(--meta-gold); color: var(--meta-gold);{% endif %}">
-                                                                {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}<i class="bi bi-check2-circle text-gold me-1"></i>Quorum validé{% else %}<i class="bi bi-hourglass-split me-1"></i>En cours{% endif %}
+                                                                {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}<i class="bi bi-check2-circle text-gold me-1"></i>Atelier confirmé{% else %}<i class="bi bi-hourglass-split me-1"></i>Inscriptions en cours{% endif %}
                                                             </span>
                                                         </div>
 
@@ -376,7 +376,7 @@
                             <span>ENGAGEMENT &amp; TRANSPARENCE :</span>
                         </div>
                         <div class="text-ivory" style="opacity: 0.95;">
-                            Votre carte ne sera prélevée de <strong class="text-gold">{{ prestation.prix|default(30) }} €</strong> que si l'atelier réunit au moins <strong class="text-gold">5 participants</strong>. Si ce quorum n'est pas atteint, l'empreinte bancaire s'annule automatiquement sans aucun frais.
+                            Votre carte ne sera prélevée de <strong class="text-gold">{{ prestation.prix|default(30) }} €</strong> que si l'atelier réunit au moins <strong class="text-gold">5 participants</strong>. Si ce nombre de participants n'est pas atteint, l'empreinte bancaire s'annule automatiquement sans aucun frais.
                         </div>
                     </div>
 
@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (inscData.quorumAtteint) {
                         document.getElementById('group-success-msg').innerHTML = 
-                            '<strong class="text-gold fs-5">🎉 Le quorum des ' + inscData.seuilMinimum + ' participants est atteint !</strong><br>Votre atelier est confirmé. Le prélèvement de 30 € a été validé et votre lien visio vous a été envoyé par email.';
+                            '<strong class="text-gold fs-5">🎉 L\'atelier est confirmé !</strong><br>Le nombre minimum de ' + inscData.seuilMinimum + ' participants est atteint. Votre place est validée, le prélèvement de 30 € a été effectué et votre lien visio vous a été envoyé par email.';
                         document.getElementById('group-success-gauge').innerText = 
                             'Statut : Session Confirmée (' + inscData.totalInscrits + ' participants inscrits)';
                     } else {

@@ -143,9 +143,9 @@ class PrestationCrudController extends AbstractCrudController
                 ->renderAsSwitch(true)
                 ->setHelp('Si activé, la fiche publique affichera une jauge de participants et le mode pré-réservation avec empreinte bancaire à 0 € sans débit immédiat.'),
 
-            IntegerField::new('seuilMinimum', '👥 Seuil Minimum de Participants (Quorum)')
+            IntegerField::new('seuilMinimum', '👥 Nombre Minimum de Participants requis')
                 ->setRequired(false)
-                ->setHelp('Nombre minimum d\'inscrits pour déclencher la séance et les paiements (défaut : 5).')
+                ->setHelp('Nombre minimum d\'inscrits requis pour valider la séance et prélever les participations (défaut : 5).')
                 ->setColumns(6),
 
             IntegerField::new('capaciteMaximale', '👥 Capacité Maximale de la Salle')

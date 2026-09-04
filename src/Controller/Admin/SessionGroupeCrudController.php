@@ -61,7 +61,7 @@ class SessionGroupeCrudController extends AbstractCrudController
         yield ChoiceField::new('statut', 'Statut de la session')
             ->setChoices([
                 "En cours d'inscriptions" => "En cours d'inscriptions",
-                'Confirmé (Quorum atteint)' => 'Confirmé',
+                'Confirmé (Minimum de participants atteint)' => 'Confirmé',
                 'Annulé' => 'Annulé',
                 'Effectué' => 'Effectué',
             ])
