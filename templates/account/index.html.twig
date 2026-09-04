@@ -79,6 +79,156 @@
             <div class="card-premium shadow-lg h-100" style="background-color: rgba(74, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 0;">
                 <div class="card-body p-4 p-md-5">
                     
+                    {# --- SECTION : ACCOMPAGNEMENTS EN GROUPE --- #}
+                    {% if inscriptionsGroupe is defined and inscriptionsGroupe|length > 0 %}
+                        <div class="mb-5 pb-5 border-bottom" style="border-color: rgba(184, 154, 99, 0.3) !important;">
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-2">
+                                <h2 class="fw-bold text-uppercase typo-titre h3 m-0" style="color: var(--meta-gold); letter-spacing: 2px;">
+                                    <i class="bi bi-people-fill me-2"></i>Mes Accompagnements en Groupe
+                                </h2>
+                                <span class="badge px-3 py-2 rounded-0 text-uppercase align-self-start align-self-md-auto" style="background-color: rgba(184, 154, 99, 0.15); color: var(--meta-gold); border: 1px solid rgba(184, 154, 99, 0.3);">
+                                    {{ inscriptionsGroupe|length }} séance(s)
+                                </span>
+                            </div>
+
+                            <div class="d-flex flex-column gap-4">
+                                {% for insc in inscriptionsGroupe %}
+                                    {% set session = insc.sessionGroupe %}
+                                    <div class="p-4 rounded-0 position-relative shadow-sm" style="background-color: rgba(10, 10, 9, 0.55); border: 1px solid rgba(184, 154, 99, 0.25);">
+                                        
+                                        {# En-tête : Titre du groupe & Séance #}
+                                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start mb-3 gap-2">
+                                            <div>
+                                                <h3 class="fw-bold mb-1 text-uppercase h5" style="color: var(--meta-ivory); font-family: var(--font-title), serif; letter-spacing: 1px;">
+                                                    {{ session.groupe ? session.groupe.nom : (session.prestation ? session.prestation.nom : 'Accompagnement en Groupe') }}
+                                                    {% if session.numeroSeance %}
+                                                        <span class="text-gold ms-1">— Séance {{ session.numeroSeance }}</span>
+                                                    {% endif %}
+                                                </h3>
+                                                <div class="small" style="color: var(--meta-sage);">
+                                                    <i class="bi bi-calendar-check text-gold me-2"></i><strong>{{ session.dateDebut|date('d/m/Y à H:i') }}</strong>
+                                                    {% if session.dateFin %} - {{ session.dateFin|date('H:i') }}{% endif %}
+                                                </div>
+                                            </div>
+
+                                            {# Badge Statut #}
+                                            <div>
+                                                {% if session.statut == 'Annulé' %}
+                                                    <span class="badge px-3 py-2 rounded-0" style="background-color: rgba(108, 117, 125, 0.25); border: 1px solid rgba(108, 117, 125, 0.6); color: #ccc;">
+                                                        <i class="bi bi-x-circle me-1"></i>Séance annulée (Empreinte libérée sans frais)
+                                                    </span>
+                                                {% elseif insc.statutPresence == 'Décliné' %}
+                                                    <span class="badge px-3 py-2 rounded-0" style="background-color: rgba(220, 53, 69, 0.2); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;">
+                                                        <i class="bi bi-x-circle-fill me-1"></i>Participation déclinée
+                                                    </span>
+                                                {% elseif insc.statutPaiement == 'Payé' %}
+                                                    <span class="badge px-3 py-2 rounded-0" style="background-color: rgba(40, 167, 69, 0.2); border: 1px solid rgba(40, 167, 69, 0.6); color: #85e085;">
+                                                        <i class="bi bi-check-circle-fill me-1"></i>Présence confirmée & Réglée
+                                                    </span>
+                                                {% elseif insc.statutPresence == 'Confirmé' %}
+                                                    <span class="badge px-3 py-2 rounded-0" style="background-color: rgba(138, 143, 124, 0.25); border: 1px solid var(--meta-gold); color: var(--meta-ivory);">
+                                                        <i class="bi bi-shield-check text-gold me-1"></i>Présence confirmée (Empreinte validée)
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge px-3 py-2 rounded-0" style="background-color: rgba(255, 193, 7, 0.15); border: 1px solid rgba(255, 193, 7, 0.5); color: #E5C78D;">
+                                                        <i class="bi bi-hourglass-split me-1"></i>En attente de confirmation (30 €)
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        {# Explications et contexte #}
+                                        <div class="small mb-3 text-ivory opacity-85" style="line-height: 1.6;">
+                                            {% if session.statut == 'Annulé' %}
+                                                <p class="mb-0 text-muted fst-italic">Cette séance a été annulée par Louisa car le nombre minimum de participants requis n'a pas été atteint. Aucun montant n'a été débité.</p>
+                                            {% elseif insc.statutPresence == 'Décliné' %}
+                                                <p class="mb-0 text-muted fst-italic">Vous avez décliné votre participation à cette séance. Aucun débit n'a été effectué.</p>
+                                            {% elseif insc.statutPaiement == 'Payé' %}
+                                                <p class="mb-0"><i class="bi bi-check2 text-gold me-1"></i>Paiement de 30,00 € validé. Votre facture est téléchargeable ci-dessous.</p>
+                                            {% elseif insc.statutPresence == 'Confirmé' %}
+                                                <p class="mb-0"><i class="bi bi-shield-check text-gold me-1"></i>Empreinte bancaire de 30,00 € validée (<strong>0,00 € débité aujourd'hui</strong>). Vous ne serez prélevé(e) que si la séance est confirmée et validée par Louisa.</p>
+                                            {% else %}
+                                                <p class="mb-0"><i class="bi bi-info-circle text-gold me-1"></i>Louisa a planifié cette séance suite à vos échanges. Validez votre présence par une empreinte bancaire sécurisée (0,00 € débité aujourd'hui) ou déclinez sans frais.</p>
+                                            {% endif %}
+                                        </div>
+
+                                        {# Boutons d'action #}
+                                        <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                                            {% if session.statut != 'Annulé' %}
+                                                {% if insc.statutPresence != 'Confirmé' and insc.statutPaiement != 'Payé' %}
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-open-account-group-modal fw-bold text-uppercase py-2 px-3 rounded-0"
+                                                            data-insc-id="{{ insc.id }}"
+                                                            data-session-title="{{ session.groupe ? session.groupe.nom : (session.prestation ? session.prestation.nom : 'Accompagnement en Groupe') }} - Séance {{ session.numeroSeance|default(1) }}"
+                                                            data-session-date="{{ session.dateDebut|date('d/m/Y à H:i') }}"
+                                                            style="background-color: var(--meta-gold); color: var(--meta-black); letter-spacing: 1px; font-size: 0.82rem;">
+                                                        <i class="bi bi-credit-card me-1"></i>Confirmer ma présence (Empreinte 30 €)
+                                                    </button>
+                                                {% endif %}
+
+                                                {% if insc.statutPresence != 'Décliné' and insc.statutPaiement != 'Payé' %}
+                                                    <form method="post" action="{{ path('app_account_groupe_decliner', {'id': insc.id}) }}" onsubmit="return confirm('Êtes-vous sûr(e) de vouloir décliner votre présence à cette séance ? Aucun montant ne sera débité.');">
+                                                        <button type="submit" class="btn btn-sm py-2 px-3 rounded-0 text-uppercase transition-hover" style="border: 1px solid rgba(220, 53, 69, 0.5); color: #ff8b94; background: transparent; font-size: 0.8rem; letter-spacing: 0.5px;">
+                                                            <i class="bi bi-x-circle me-1"></i>Je ne pourrai pas participer
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+
+                                                {% if insc.statutPresence == 'Confirmé' or insc.statutPaiement == 'Payé' %}
+                                                    {% if session.lienVisio %}
+                                                        <a href="{{ session.lienVisio }}" target="_blank" class="btn btn-sm py-2 px-3 rounded-0 text-uppercase fw-bold" style="background-color: var(--meta-gold); color: var(--meta-black); letter-spacing: 1px; font-size: 0.82rem;">
+                                                            <i class="bi bi-camera-video-fill me-1"></i>Accéder à la salle Visio
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="badge py-2 px-3 rounded-0" style="background-color: rgba(74, 79, 65, 0.5); color: var(--meta-ivory); border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.8rem;">
+                                                            <i class="bi bi-camera-video me-1"></i>Lien visio activé prochainement
+                                                        </span>
+                                                    {% endif %}
+                                                {% endif %}
+
+                                                {% if insc.statutPaiement == 'Payé' or insc.statutPresence == 'Confirmé' %}
+                                                    <a href="{{ path('app_account_groupe_facture', {'id': insc.id}) }}" target="_blank" class="btn btn-sm py-2 px-3 rounded-0 text-uppercase" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); background: transparent; font-size: 0.8rem;">
+                                                        <i class="bi bi-file-earmark-pdf me-1"></i>Reçu / Facture PDF
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+
+                                        {# Section Messagerie avec Louisa #}
+                                        <div class="mt-3 pt-3 border-top" style="border-color: rgba(184, 154, 99, 0.15) !important;">
+                                            <button class="btn btn-link text-decoration-none p-0 text-uppercase small fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMsg-{{ insc.id }}" aria-expanded="false" style="color: var(--meta-sage); font-size: 0.8rem; letter-spacing: 1px;">
+                                                <i class="bi bi-chat-dots me-1 text-gold"></i>
+                                                {% if insc.messageParticipant %}
+                                                    Consulter ou modifier mon message pour Louisa
+                                                {% else %}
+                                                    Laisser un message à Louisa pour cette séance
+                                                {% endif %}
+                                            </button>
+                                            <div class="collapse {% if insc.messageParticipant %}show{% endif %} mt-2" id="collapseMsg-{{ insc.id }}">
+                                                <form method="post" action="{{ path('app_account_groupe_message', {'id': insc.id}) }}" class="mt-2">
+                                                    <div class="mb-2">
+                                                        <textarea name="message" rows="2" class="form-control rounded-0 text-white" placeholder="Une remarque, question ou précision pour Louisa concernant cette prochaine séance..." style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.3); font-size: 0.88rem;">{{ insc.messageParticipant }}</textarea>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        {% if insc.dateReponse %}
+                                                            <span class="small opacity-50" style="font-size: 0.75rem;">Dernière réponse : {{ insc.dateReponse|date('d/m/Y H:i') }}</span>
+                                                        {% else %}
+                                                            <span></span>
+                                                        {% endif %}
+                                                        <button type="submit" class="btn btn-sm py-1 px-3 rounded-0 text-uppercase fw-bold" style="background-color: rgba(184, 154, 99, 0.2); border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.78rem; letter-spacing: 1px;">
+                                                            <i class="bi bi-send me-1"></i>Enregistrer le message
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <h2 id="parcours-heading" class="fw-bold mb-5 text-uppercase typo-titre h3" style="color: var(--meta-gold); letter-spacing: 2px;">
                         Mes Parcours d'Accompagnement
                     </h2>
@@ -169,4 +319,220 @@
         
     </div>
 </main>
+
+{# --- MODALE DE CONFIRMATION AVEC EMPREINTE BANCAIRE (COMPTE CLIENT) --- #}
+<div class="modal fade" id="modalAccountConfirmerGroupe" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg" style="background: radial-gradient(ellipse at 50% 15%, var(--meta-plum) 0%, var(--meta-plum-dark) 60%, var(--meta-black) 100%); border: 1px solid var(--meta-gold); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(184, 154, 99, 0.25) !important; border-radius: 0;">
+            <div class="modal-header border-0 pb-2">
+                <div>
+                    <h5 class="modal-title text-gold typo-titre fs-4 text-uppercase" style="letter-spacing: 1.5px;">
+                        <i class="bi bi-shield-lock me-2"></i>Confirmer ma présence
+                    </h5>
+                    <div id="modal-account-session-title" class="text-ivory small opacity-75">Accompagnement en Groupe</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-4">
+                {# Résumé séance #}
+                <div class="p-3 mb-3 d-flex justify-content-between align-items-center" style="background: rgba(79, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.35); border-radius: 0;">
+                    <span class="text-ivory small"><i class="bi bi-calendar3 text-gold me-2"></i>Date : <strong id="modal-account-session-date" class="text-gold">-</strong></span>
+                    <span class="badge px-2 py-1" style="background-color: #4F4F41; border: 1px solid var(--meta-gold); color: var(--meta-ivory); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.5px;">
+                        <i class="bi bi-shield-check text-gold me-1"></i>0,00 € débité
+                    </span>
+                </div>
+
+                <form id="form-account-confirmer-groupe">
+                    <input type="hidden" id="input-account-insc-id" value="">
+
+                    <div class="p-3 mb-3" style="background: rgba(184, 154, 99, 0.08); border-left: 3px solid var(--meta-gold);">
+                        <p class="small text-ivory mb-0" style="line-height: 1.5;">
+                            <strong class="text-gold">🔒 Empreinte bancaire sécurisée :</strong><br>
+                            Aucun prélèvement n'est effectué aujourd'hui (<strong>0,00 €</strong>). Vous ne serez débité(e) de 30 € que si le seuil de participants est atteint et la séance validée par Louisa. Si la séance est annulée, l'empreinte s'annule immédiatement sans frais.
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-credit-card me-1"></i>Numéro de carte bancaire
+                        </label>
+                        <div id="account-card-element" class="p-3 border rounded-0" style="background-color: rgba(10, 10, 9, 0.85); border: 1px solid rgba(184, 154, 99, 0.4) !important;">
+                            <!-- Stripe Card Element -->
+                        </div>
+                        <div id="account-card-errors" class="text-danger small mt-2" role="alert"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-chat-text me-1"></i>Message optionnel pour Louisa
+                        </label>
+                        <textarea id="account-group-message" rows="2" class="form-control rounded-0 text-white" placeholder="Un mot, une question ou une remarque pour Louisa..." style="background-color: rgba(10, 10, 9, 0.85); border: 1px solid rgba(184, 154, 99, 0.4); font-size: 0.88rem;"></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-account-submit-group" class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2 rounded-0" style="background-color: var(--meta-gold); color: var(--meta-black); letter-spacing: 1.5px;">
+                        <span id="account-btn-text"><i class="bi bi-check2-circle me-1"></i>Valider mon empreinte et confirmer (0 €)</span>
+                        <span id="account-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                </form>
+
+                {# Succès #}
+                <div id="account-group-success-box" class="d-none text-center py-4">
+                    <i class="bi bi-check-circle-fill text-gold fs-1 mb-3 d-block"></i>
+                    <h4 class="text-gold typo-titre mb-2">Présence Confirmée !</h4>
+                    <p class="text-ivory small mb-4">Votre empreinte bancaire a été enregistrée avec succès. Aucun montant n'a été débité de votre compte.</p>
+                    <button type="button" class="btn fw-bold text-uppercase px-4 py-2 rounded-0" data-bs-dismiss="modal" onclick="window.location.reload();" style="background-color: var(--meta-gold); color: var(--meta-black);">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('modalAccountConfirmerGroupe');
+    if (!modalEl) return;
+
+    if (modalEl.parentNode !== document.body) {
+        document.body.appendChild(modalEl);
+    }
+
+    const openBtns = document.querySelectorAll('.btn-open-account-group-modal');
+    const form = document.getElementById('form-account-confirmer-groupe');
+    const cardErrors = document.getElementById('account-card-errors');
+    const btnSubmit = document.getElementById('btn-account-submit-group');
+    const btnText = document.getElementById('account-btn-text');
+    const btnSpinner = document.getElementById('account-btn-spinner');
+    const successBox = document.getElementById('account-group-success-box');
+
+    let stripe = null;
+    let cardElement = null;
+    let clientSecret = null;
+
+    async function initStripeElements() {
+        if (stripe && cardElement) return;
+
+        try {
+            const res = await fetch("{{ path('app_atelier_setup_intent') }}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (data.error) {
+                cardErrors.innerText = data.error;
+                return;
+            }
+
+            stripe = Stripe(data.publicKey);
+            clientSecret = data.clientSecret;
+
+            const elements = stripe.elements({
+                fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap' }]
+            });
+
+            cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        color: '#FFFFF0',
+                        fontFamily: "'Inter', sans-serif",
+                        fontSmoothing: 'antialiased',
+                        fontSize: '15px',
+                        '::placeholder': { color: 'rgba(216, 208, 190, 0.45)' }
+                    },
+                    invalid: {
+                        color: '#ff8b94',
+                        iconColor: '#ff8b94'
+                    }
+                }
+            });
+
+            cardElement.mount('#account-card-element');
+            cardElement.on('change', function(event) {
+                cardErrors.textContent = event.error ? event.error.message : '';
+            });
+        } catch (err) {
+            cardErrors.innerText = "Erreur de chargement du module de paiement.";
+        }
+    }
+
+    openBtns.forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const inscId = this.getAttribute('data-insc-id');
+            const title = this.getAttribute('data-session-title');
+            const date = this.getAttribute('data-session-date');
+
+            document.getElementById('input-account-insc-id').value = inscId;
+            document.getElementById('modal-account-session-title').innerText = title;
+            document.getElementById('modal-account-session-date').innerText = date;
+            form.classList.remove('d-none');
+            successBox.classList.add('d-none');
+
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            bsModal.show();
+
+            await initStripeElements();
+        });
+    });
+
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            cardErrors.textContent = '';
+
+            btnSubmit.disabled = true;
+            btnText.classList.add('d-none');
+            btnSpinner.classList.remove('d-none');
+
+            try {
+                const { setupIntent, error } = await stripe.confirmCardSetup(clientSecret, {
+                    payment_method: { card: cardElement }
+                });
+
+                if (error) {
+                    cardErrors.textContent = error.message;
+                    btnSubmit.disabled = false;
+                    btnText.classList.remove('d-none');
+                    btnSpinner.classList.add('d-none');
+                    return;
+                }
+
+                const inscId = document.getElementById('input-account-insc-id').value;
+                const messageVal = document.getElementById('account-group-message').value;
+
+                const response = await fetch(`/mon-compte/groupe/${inscId}/confirmer-empreinte`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        payment_method_id: setupIntent.payment_method,
+                        message: messageVal
+                    })
+                });
+
+                const resData = await response.json();
+                if (resData.error) {
+                    cardErrors.textContent = resData.error;
+                    btnSubmit.disabled = false;
+                    btnText.classList.remove('d-none');
+                    btnSpinner.classList.add('d-none');
+                } else {
+                    form.classList.add('d-none');
+                    successBox.classList.remove('d-none');
+                }
+            } catch (err) {
+                cardErrors.textContent = "Une erreur est survenue lors de la validation.";
+                btnSubmit.disabled = false;
+                btnText.classList.remove('d-none');
+                btnSpinner.classList.add('d-none');
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

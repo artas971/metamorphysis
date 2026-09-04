@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture Metamorphysis - Accompagnement en Groupe</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #1a1a1a;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #B89A63;
+        }
+        .logo-text {
+            font-size: 26px;
+            font-weight: bold;
+            color: #B89A63;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .info-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .info-cabinet {
+            float: left;
+            width: 50%;
+        }
+        .info-client {
+            float: right;
+            width: 42%;
+            background-color: #f9f9f9;
+            padding: 12px 15px;
+            border-left: 3px solid #B89A63;
+        }
+        .clearfix { clear: both; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+        th {
+            background-color: #1a1a1a;
+            color: #B89A63;
+            padding: 10px 12px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .total-row td {
+            font-weight: bold;
+            border-top: 2px solid #1a1a1a;
+            border-bottom: none;
+            font-size: 15px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 11px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-text">METAMORPHYSIS</div>
+        <div style="font-size: 12px; color: #666; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Accompagnement & Relation Humaine</div>
+    </div>
+
+    <div class="info-container">
+        <div class="info-cabinet">
+            <strong>Louisa Chouihi</strong><br>
+            Praticienne en Relation d'Aide & Développement Personnel<br>
+            Cabinet Metamorphysis<br>
+            Email : contact@metamorphysis.fr<br>
+            Tél : 06 00 00 00 00<br>
+            SIRET : En cours d'immatriculation
+        </div>
+        <div class="info-client">
+            <strong>Facturé à :</strong><br>
+            {{ inscription.nomComplet }}<br>
+            Email : {{ inscription.email }}<br>
+            {% if inscription.telephone %}Tél : {{ inscription.telephone }}<br>{% endif %}
+            Date de facture : {{ "now"|date("d/m/Y") }}<br>
+            Facture n° : FAC-GRP-{{ "now"|date("Ymd") }}-{{ inscription.id }}
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th style="text-align: center;">Séance</th>
+                <th style="text-align: center;">Date & Heure</th>
+                <th style="text-align: right;">Montant TTC</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>{{ session.groupe ? session.groupe.nom : (session.prestation ? session.prestation.nom : 'Accompagnement en Groupe') }}</strong><br>
+                    <span style="font-size: 12px; color: #555;">Accompagnement collectif en visioconférence sécurisée</span>
+                </td>
+                <td style="text-align: center;">
+                    Séance {{ session.numeroSeance|default(1) }}
+                </td>
+                <td style="text-align: center;">
+                    {{ session.dateDebut|date('d/m/Y à H:i') }}
+                </td>
+                <td style="text-align: right;">
+                    {{ inscription.montant|default(30.00)|number_format(2, ',', ' ') }} €
+                </td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align: right;">Total Réglé TTC :</td>
+                <td style="text-align: right; color: #B89A63;">
+                    {{ inscription.montant|default(30.00)|number_format(2, ',', ' ') }} €
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 30px; font-size: 12px; color: #555;">
+        <p><strong>Statut du règlement :</strong> Payé par carte bancaire sécurisée (Stripe)</p>
+        <p>TVA non applicable, art. 293 B du CGI.</p>
+    </div>
+
+    <div class="footer">
+        Merci pour votre confiance.<br>
+        Cabinet Metamorphysis - Louisa Chouihi
+    </div>
+
+</body>
+</html>

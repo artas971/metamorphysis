@@ -50,7 +50,8 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Gestion du Cabinet');
         yield MenuItem::linkToUrl('Suivi des Séances', 'fas fa-calendar-check', '/admin/seance');
-        yield MenuItem::linkToUrl('Ateliers de Groupe', 'fa-solid fa-users', '/admin/session-groupe');
+        yield MenuItem::linkToCrud('Groupes d\'Accompagnement', 'fa-solid fa-people-roof', \App\Entity\Groupe::class);
+        yield MenuItem::linkToUrl('Séances de Groupe', 'fa-solid fa-users', '/admin/session-groupe');
         yield MenuItem::linkToUrl('Mes Prestations', 'fa-solid fa-gem', '/admin/prestation');
         yield MenuItem::linkToUrl('Contenu des Pages', 'fa-solid fa-file-lines', '/admin/page');
         yield MenuItem::linkToUrl('Clients', 'fa-solid fa-user-friends', '/admin/user');

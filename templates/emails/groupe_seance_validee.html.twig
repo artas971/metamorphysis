@@ -1,0 +1,50 @@
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Séance d'Accompagnement en Groupe confirmée — Metamorphysis{% endblock %}
+
+{% block content %}
+    <h2 style="color: #B89A63; font-size: 20px; font-weight: normal; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+        Bonjour {{ inscription.prenom|capitalize }},
+    </h2>
+
+    <p style="margin-bottom: 20px;">
+        Bonne nouvelle ! Le groupe est réuni et votre prochaine séance d'Accompagnement en Groupe est <strong>officiellement confirmée</strong> :
+    </p>
+
+    <div style="background-color: rgba(74, 79, 65, 0.25); border-left: 3px solid #B89A63; padding: 18px 20px; margin: 25px 0;">
+        <p style="margin: 0 0 8px 0; font-size: 16px; color: #FFFFF0;">
+            <strong style="color: #B89A63;">Date & Heure :</strong> {{ session.dateDebut|date('d/m/Y à H:i') }}
+            {% if session.dateFin %} - {{ session.dateFin|date('H:i') }}{% endif %}
+        </p>
+        <p style="margin: 0; font-size: 14px; color: #D8D0BE;">
+            <strong style="color: #B89A63;">Prestation :</strong> {{ groupe ? groupe.nom : (session.prestation ? session.prestation.nom : 'Accompagnement') }}
+            {% if session.numeroSeance %}(Séance {{ session.numeroSeance }}){% endif %}
+        </p>
+    </div>
+
+    <p style="margin-bottom: 20px;">
+        Votre participation de <strong>30,00 €</strong> a été validée via votre empreinte bancaire. Votre reçu et votre facture sont désormais disponibles dans votre espace client.
+    </p>
+
+    {% if lienVisio %}
+        <div style="text-align: center; margin: 35px 0;">
+            <a href="{{ lienVisio }}" 
+               style="background-color: #B89A63; color: #0A0A09; font-weight: bold; text-decoration: none; padding: 14px 28px; display: inline-block; text-transform: uppercase; font-size: 13px; letter-spacing: 1.5px;">
+                📹 Rejoindre la salle de visio
+            </a>
+            <div style="font-size: 12px; color: #8F8876; margin-top: 8px;">(Lien accessible le jour du rendez-vous)</div>
+        </div>
+    {% endif %}
+
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{{ absolute_url(path('app_account')) }}" 
+           style="background-color: transparent; border: 1px solid rgba(184, 154, 99, 0.4); color: #D8D0BE; text-decoration: none; padding: 10px 20px; display: inline-block; font-size: 12px;">
+            Consulter mon espace personnel
+        </a>
+    </div>
+
+    <p style="margin-top: 30px; font-size: 14px; color: #8F8876;">
+        À très bientôt pour ce moment de partage et d'évolution,<br>
+        <strong>Louisa Chouihi</strong>
+    </p>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'emails/layout_email.html.twig' %}
+
+{% block title %}Information concernant votre séance d'Accompagnement en Groupe — Metamorphysis{% endblock %}
+
+{% block content %}
+    <h2 style="color: #B89A63; font-size: 20px; font-weight: normal; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+        Bonjour {{ inscription.prenom|capitalize }},
+    </h2>
+
+    <p style="margin-bottom: 20px;">
+        Nous vous informons que la séance d'Accompagnement en Groupe initialement prévue le :
+    </p>
+
+    <div style="background-color: rgba(74, 79, 65, 0.25); border-left: 3px solid #8A8F7C; padding: 18px 20px; margin: 25px 0;">
+        <p style="margin: 0; font-size: 15px; color: #FFFFF0;">
+            <strong>{{ session.dateDebut|date('d/m/Y à H:i') }}</strong>
+            {% if session.numeroSeance %}(Séance {{ session.numeroSeance }}){% endif %}
+        </p>
+    </div>
+
+    <p style="margin-bottom: 20px;">
+        ne pourra malheureusement pas avoir lieu, le nombre minimum de participants requis n'ayant pas été atteint pour garantir la dynamique collective.
+    </p>
+
+    <div style="background-color: rgba(184, 154, 99, 0.12); border: 1px solid rgba(184, 154, 99, 0.35); padding: 15px 20px; margin: 25px 0;">
+        <p style="margin: 0; font-size: 14px; color: #FFFFF0;">
+            <strong style="color: #B89A63;">🔒 Information financière importante :</strong><br>
+            Votre empreinte bancaire a été <strong>immédiatement annulée sans aucun frais</strong>. Aucun prélèvement n'a été effectué sur votre compte bancaire.
+        </p>
+    </div>
+
+    <p style="margin-bottom: 20px;">
+        Louisa Chouihi reviendra très prochainement vers vous afin de vous proposer de nouvelles dates de rendez-vous.
+    </p>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ absolute_url(path('app_account')) }}" 
+           style="background-color: transparent; border: 1px solid #B89A63; color: #B89A63; font-weight: bold; text-decoration: none; padding: 12px 24px; display: inline-block; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">
+            Accéder à mon espace personnel
+        </a>
+    </div>
+{% endblock %}

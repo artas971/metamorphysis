@@ -43,9 +43,19 @@ class InscriptionGroupe
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stripePaymentIntentId = null;
 
-    // Statuts : 'Empreinte validée', 'Payé', 'Échec paiement', 'Annulé', 'Remboursé'
+    // Statuts : 'En attente', 'Empreinte validée', 'Payé', 'Échec paiement', 'Annulé', 'Remboursé'
     #[ORM\Column(length: 50)]
     private ?string $statutPaiement = 'Empreinte validée';
+
+    // Statuts de présence : 'En attente', 'Confirmé', 'Décliné'
+    #[ORM\Column(length: 50)]
+    private ?string $statutPresence = 'Confirmé';
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $messageParticipant = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $dateReponse = null;
 
     #[ORM\Column]
     private ?float $montant = 30.0;
@@ -57,6 +67,7 @@ class InscriptionGroupe
     {
         $this->dateInscription = new \DateTimeImmutable();
         $this->statutPaiement = 'Empreinte validée';
+        $this->statutPresence = 'Confirmé';
         $this->montant = 30.0;
     }
 
@@ -172,6 +183,39 @@ class InscriptionGroupe
     public function setStatutPaiement(string $statutPaiement): static
     {
         $this->statutPaiement = $statutPaiement;
+        return $this;
+    }
+
+    public function getStatutPresence(): ?string
+    {
+        return $this->statutPresence;
+    }
+
+    public function setStatutPresence(string $statutPresence): static
+    {
+        $this->statutPresence = $statutPresence;
+        return $this;
+    }
+
+    public function getMessageParticipant(): ?string
+    {
+        return $this->messageParticipant;
+    }
+
+    public function setMessageParticipant(?string $messageParticipant): static
+    {
+        $this->messageParticipant = $messageParticipant;
+        return $this;
+    }
+
+    public function getDateReponse(): ?\DateTimeImmutable
+    {
+        return $this->dateReponse;
+    }
+
+    public function setDateReponse(?\DateTimeImmutable $dateReponse): static
+    {
+        $this->dateReponse = $dateReponse;
         return $this;
     }
 

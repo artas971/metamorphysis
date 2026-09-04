@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planifier la séance suivante - {{ groupe.nom }} - Admin Metamorphysis{% endblock %}
+
+{% block body %}
+<main class="container mt-4 mb-5 text-white">
+    
+    {# Fil d'ariane & Bouton retour #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ path('admin_session_groupe_index') }}" class="btn btn-sm text-uppercase fw-bold" style="border: 1px solid var(--meta-gold); color: var(--meta-gold); background: transparent; letter-spacing: 1px;">
+            <i class="bi bi-arrow-left me-2"></i>Retour aux sessions
+        </a>
+        <span class="badge px-3 py-2 text-uppercase" style="background-color: rgba(184, 154, 99, 0.2); color: var(--meta-gold); border: 1px solid rgba(184, 154, 99, 0.4); font-size: 0.8rem;">
+            Espace Praticienne &bull; Accompagnement en Groupe
+        </span>
+    </div>
+
+    {# Carte principale luxe #}
+    <div class="card-premium shadow-lg" style="background-color: rgba(74, 79, 65, 0.45); border: 1px solid rgba(184, 154, 99, 0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 0;">
+        <div class="card-body p-4 p-md-5">
+            
+            <div class="border-bottom pb-4 mb-4" style="border-color: rgba(184, 154, 99, 0.3) !important;">
+                <h1 class="text-gold fw-bold text-uppercase typo-titre h2 mb-2" style="letter-spacing: 2px;">
+                    Planifier la Séance {{ nextNumero }}
+                </h1>
+                <div class="d-flex flex-wrap align-items-center gap-3 text-ivory small">
+                    <span><strong class="text-gold">Groupe :</strong> {{ groupe.nom }}</span>
+                    <span>&bull;</span>
+                    <span><strong class="text-gold">Prestation :</strong> {{ groupe.prestation.nom }} ({{ groupe.prestation.prix|default(30) }} €)</span>
+                    {% if lastSession %}
+                        <span>&bull;</span>
+                        <span><strong class="text-gold">Précédente séance :</strong> {{ lastSession.dateDebut|date('d/m/Y à H:i') }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <form method="post" action="{{ path('admin_groupe_planifier_seance', {'id': groupe.id}) }}">
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-calendar-event me-1"></i>Date & Heure de début *
+                        </label>
+                        <input type="datetime-local" name="date_debut" class="form-control rounded-0 text-white" required style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4);">
+                        <div class="form-text text-ivory opacity-75 small">Date convenue avec vos participants lors de votre précédente séance.</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-clock me-1"></i>Date & Heure de fin (optionnel)
+                        </label>
+                        <input type="datetime-local" name="date_fin" class="form-control rounded-0 text-white" style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4);">
+                        <div class="form-text text-ivory opacity-75 small">Par défaut : 1 heure après le début.</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-tag me-1"></i>Thème ou Intitulé de cette séance
+                        </label>
+                        <input type="text" name="titre" value="Séance {{ nextNumero }}" class="form-control rounded-0 text-white" placeholder="Ex: Séance {{ nextNumero }} - Approfondissement et libération" style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4);">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-card-text me-1"></i>Notes privées pour Louisa
+                        </label>
+                        <textarea name="notes" rows="2" class="form-control rounded-0 text-white" placeholder="Notes pédagogiques, progression du groupe, points à aborder..." style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4);"></textarea>
+                    </div>
+                </div>
+
+                {# SECTION PARTICIPANTS DE LA COHORTE #}
+                <div class="mb-4 pt-3 border-top" style="border-color: rgba(184, 154, 99, 0.2) !important;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h5 text-gold text-uppercase fw-bold m-0" style="letter-spacing: 1px;">
+                            <i class="bi bi-people me-2"></i>Membres de la Cohorte à reconduire
+                        </h3>
+                        <div class="small text-ivory opacity-75">
+                            Cochez/décochez les participants selon les présences convenues
+                        </div>
+                    </div>
+
+                    {% if participantsBase is not empty %}
+                        <div class="table-responsive">
+                            <table class="table table-dark table-borderless align-middle" style="background: transparent;">
+                                <thead>
+                                    <tr class="border-bottom" style="border-color: rgba(184, 154, 99, 0.3) !important;">
+                                        <th style="width: 50px;" class="text-center">
+                                            <input type="checkbox" id="check-all" checked class="form-check-input">
+                                        </th>
+                                        <th class="text-uppercase text-gold small">Participant</th>
+                                        <th class="text-uppercase text-gold small">Email</th>
+                                        <th class="text-uppercase text-gold small">Téléphone</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for userId, p in participantsBase %}
+                                        <tr class="border-bottom" style="border-color: rgba(184, 154, 99, 0.15) !important;">
+                                            <td class="text-center">
+                                                <input type="checkbox" name="selected_users[]" value="{{ userId }}" {% if p.checked %}checked{% endif %} class="form-check-input participant-checkbox">
+                                            </td>
+                                            <td class="fw-bold text-ivory">
+                                                <i class="bi bi-person-fill text-gold me-2"></i>{{ p.nom }}
+                                            </td>
+                                            <td class="text-ivory opacity-75">
+                                                {{ p.email }}
+                                            </td>
+                                            <td class="text-ivory opacity-75">
+                                                {{ p.telephone|default('-') }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="p-3 text-center text-ivory opacity-75 mb-3" style="background-color: rgba(10, 10, 9, 0.4); border: 1px dashed rgba(184, 154, 99, 0.3);">
+                            Aucun participant précédent trouvé. Vous pouvez ajouter des membres ci-dessous.
+                        </div>
+                    {% endif %}
+
+                    {# AJOUTER D'AUTRES PARTICIPANTS #}
+                    <div class="mt-3 p-3" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.2);">
+                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                            <i class="bi bi-person-plus me-1"></i>Ajouter un autre client au groupe pour cette séance :
+                        </label>
+                        <select name="selected_users[]" multiple class="form-select rounded-0 text-white" style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4); min-height: 100px;">
+                            {% for u in allUsers %}
+                                {% if u.id not in participantsBase|keys %}
+                                    <option value="{{ u.id }}">{{ u.prenom|capitalize }} {{ u.nom|upper }} ({{ u.email }})</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <div class="form-text text-ivory opacity-75 small">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs clients.</div>
+                    </div>
+                </div>
+
+                {# OPTION NOTIFICATION PAR EMAIL #}
+                <div class="mb-4 p-3" style="background-color: rgba(184, 154, 99, 0.1); border-left: 3px solid var(--meta-gold);">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="send_notifications" id="sendNotifications" value="1" checked>
+                        <label class="form-check-label text-ivory fw-bold" for="sendNotifications">
+                            <i class="bi bi-envelope-paper-heart text-gold me-1"></i>Envoyer un e-mail d'invitation immédiat à chaque participant reconduit
+                        </label>
+                    </div>
+                    <div class="small text-ivory opacity-75 mt-1 ms-4">
+                        Chaque membre recevra un courriel élégant avec la date convenue et pourra valider son empreinte bancaire ou poser une question depuis son espace personnel.
+                    </div>
+                </div>
+
+                {# BOUTON SUBMIT #}
+                <div class="d-flex justify-content-end gap-3">
+                    <a href="{{ path('admin_session_groupe_index') }}" class="btn btn-outline-secondary rounded-0 text-uppercase py-3 px-4">
+                        Annuler
+                    </a>
+                    <button type="submit" class="btn fw-bold text-uppercase py-3 px-4 rounded-0" style="background-color: var(--meta-gold); color: var(--meta-black); letter-spacing: 1.5px;">
+                        <i class="bi bi-check-circle-fill me-2"></i>Créer la séance et notifier la cohorte
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkAll = document.getElementById('check-all');
+    const checkboxes = document.querySelectorAll('.participant-checkbox');
+    if (checkAll) {
+        checkAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = checkAll.checked);
+        });
+    }
+});
+</script>
+{% endblock %}

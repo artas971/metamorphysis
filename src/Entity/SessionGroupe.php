@@ -20,6 +20,19 @@ class SessionGroupe
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Prestation $prestation = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sessions')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Groupe $groupe = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $numeroSeance = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $titre = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notesTherapeute = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateDebut = null;
 
@@ -141,13 +154,90 @@ class SessionGroupe
         return $this;
     }
 
+    public function getGroupe(): ?Groupe
+    {
+        return $this->groupe;
+    }
+
+    public function setGroupe(?Groupe $groupe): static
+    {
+        $this->groupe = $groupe;
+        return $this;
+    }
+
+    public function getNumeroSeance(): ?int
+    {
+        return $this->numeroSeance;
+    }
+
+    public function setNumeroSeance(?int $numeroSeance): static
+    {
+        $this->numeroSeance = $numeroSeance;
+        return $this;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(?string $titre): static
+    {
+        $this->titre = $titre;
+        return $this;
+    }
+
+    public function getNotesTherapeute(): ?string
+    {
+        return $this->notesTherapeute;
+    }
+
+    public function setNotesTherapeute(?string $notesTherapeute): static
+    {
+        $this->notesTherapeute = $notesTherapeute;
+        return $this;
+    }
+
     // --- HELPERS MÉTIER ---
 
     public function getNombreInscrits(): int
     {
         $count = 0;
         foreach ($this->inscriptions as $insc) {
-            if (in_array($insc->getStatutPaiement(), ['Empreinte validée', 'Payé'])) {
+            if (in_array($insc->getStatutPaiement(), ['Empreinte validée', 'Payé']) || $insc->getStatutPresence() === 'Confirmé') {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    public function getNombreConfirmes(): int
+    {
+        $count = 0;
+        foreach ($this->inscriptions as $insc) {
+            if ($insc->getStatutPresence() === 'Confirmé') {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    public function getNombreEnAttente(): int
+    {
+        $count = 0;
+        foreach ($this->inscriptions as $insc) {
+            if ($insc->getStatutPresence() === 'En attente') {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    public function getNombreDeclines(): int
+    {
+        $count = 0;
+        foreach ($this->inscriptions as $insc) {
+            if ($insc->getStatutPresence() === 'Décliné') {
                 $count++;
             }
         }
@@ -176,8 +266,9 @@ class SessionGroupe
 
     public function __toString(): string
     {
-        $nom = $this->prestation ? $this->prestation->getNom() : 'Atelier';
+        $nom = $this->groupe ? $this->groupe->getNom() : ($this->prestation ? $this->prestation->getNom() : 'Accompagnement');
+        $seanceLabel = $this->numeroSeance ? ' - Séance ' . $this->numeroSeance : '';
         $date = $this->dateDebut ? $this->dateDebut->format('d/m/Y H:i') : 'Date indéterminée';
-        return sprintf('%s - %s (%d/%d)', $nom, $date, $this->getNombreInscrits(), $this->getSeuilMinimum());
+        return sprintf('%s%s (%s) [%d/%d]', $nom, $seanceLabel, $date, $this->getNombreInscrits(), $this->getSeuilMinimum());
     }
 }
