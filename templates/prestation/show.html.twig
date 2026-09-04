@@ -161,7 +161,7 @@
                             </div>
                         {% elseif prestation.estCollectif %}
                             {# --- SECTION SPÉCIFIQUE : ACCOMPAGNEMENT EN GROUPE --- #}
-                            <div class="mt-4 pt-4 border-top border-gold-subtle">
+                            <div class="mt-4 pt-4 border-top border-gold-subtle" id="section-accompagnement-groupe">
                                 <div class="p-4" style="background: rgba(74, 79, 65, 0.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--meta-gold); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h3 class="m-0 text-gold fs-5 text-uppercase" style="letter-spacing: 1.5px; font-family: var(--font-title), serif;">
@@ -178,11 +178,17 @@
                                         </p>
                                     {% endif %}
 
-                                    {# Liste des sessions disponibles #}
+                                    {# 1. Sessions avec date arrêtée ouvertes aux réservations #}
                                     {% set sessionsValides = [] %}
+                                    {# 2. Sessions en préparation (date à définir ultérieurement) #}
+                                    {% set sessionsEnAttenteDate = [] %}
                                     {% for s in prestation.sessionsGroupe %}
-                                        {% if s.dateDebut > date() and s.statut != 'Annulé' and s.isEstVisiblePublic and (s.numeroSeance is null or s.numeroSeance == 1) %}
-                                            {% set sessionsValides = sessionsValides|merge([s]) %}
+                                        {% if s.statut != 'Annulé' and s.isEstVisiblePublic and (s.numeroSeance is null or s.numeroSeance == 1) %}
+                                            {% if s.isEstDateADefinir or s.dateDebut is null %}
+                                                {% set sessionsEnAttenteDate = sessionsEnAttenteDate|merge([s]) %}
+                                            {% elseif s.dateDebut > date() %}
+                                                {% set sessionsValides = sessionsValides|merge([s]) %}
+                                            {% endif %}
                                         {% endif %}
                                     {% endfor %}
 
@@ -258,7 +264,47 @@
                                         </button>
 
                                         <div class="text-center mt-2 small text-ivory opacity-75">
-                                            <i class="bi bi-shield-check text-gold me-1"></i>Empreinte bancaire sécurisée. Aucun prélèvement de {{ prestation.prix|default(30) }} € tant que les 5 participants ne sont pas réunis.
+                                            <i class="bi bi-shield-check text-gold me-1"></i>Empreinte bancaire sécurisée. Aucun prélèvement de {{ prestation.prix|default(30) }} € tant que les {{ prestation.seuilMinimum|default(5) }} participants ne sont pas réunis.
+                                        </div>
+                                    {% elseif sessionsEnAttenteDate|length > 0 %}
+                                        {# Encart promotionnel : Prochaine session en préparation (Date à définir ultérieurement) #}
+                                        {% set sPromo = sessionsEnAttenteDate|first %}
+                                        <div class="p-3 border mb-3" style="background: var(--meta-plum); border: 1px solid var(--meta-gold) !important; box-shadow: 0 0 10px rgba(184, 154, 99, 0.35);">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div class="text-ivory fw-bold">
+                                                    <i class="bi bi-calendar-range text-gold me-2"></i>Date à définir ultérieurement
+                                                </div>
+                                                <span class="badge" style="background-color: #4F4F41; border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.78rem;">
+                                                    <i class="bi bi-hourglass-split me-1"></i>Date bientôt annoncée
+                                                </span>
+                                            </div>
+
+                                            {% if sPromo.titre %}
+                                                <div class="text-gold small mb-2">
+                                                    <i class="bi bi-bookmark-star me-1"></i>Thème : <strong>{{ sPromo.titre }}</strong>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="small text-ivory opacity-90 mb-2">
+                                                <i class="bi bi-people-fill text-gold me-1"></i>Groupe limité : <strong>{{ prestation.seuilMinimum|default(5) }} inscrits min</strong> (max {{ prestation.capaciteMaximale|default(8) }} participants) &bull; <strong>{{ prestation.prix|default(30) }} €</strong> / pers.
+                                            </div>
+
+                                            <div class="p-2 mt-2" style="background: rgba(10, 10, 9, 0.5); border-left: 3px solid var(--meta-gold);">
+                                                <p class="small text-ivory m-0" style="line-height: 1.5;">
+                                                    <i class="bi bi-info-circle text-gold me-1"></i><strong>Information :</strong> Louisa Chouihi prépare actuellement cette session. Les pré-réservations avec empreinte bancaire (0,00 €) ouvriront dès la fixation de la date et de l'horaire.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <a href="{{ path('app_contact', {'sujet': 'Informations sur l\'accompagnement en groupe'}) }}" 
+                                           class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
+                                           style="background: linear-gradient(135deg, var(--meta-plum) 0%, rgba(74, 79, 65, 0.9) 100%); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 1.5px; border-radius: 0; font-size: 0.85rem;">
+                                            <i class="bi bi-bell text-gold me-1"></i>
+                                            <span style="color: var(--meta-ivory);">Être informé(e) dès la fixation de la date</span>
+                                        </a>
+
+                                        <div class="text-center mt-2 small text-ivory opacity-75">
+                                            <i class="bi bi-shield-check text-gold me-1"></i>Aucun débit ni enregistrement de carte bancaire avant la publication de la date officielle.
                                         </div>
                                     {% else %}
                                         <div class="p-4 text-ivory text-center" style="background: rgba(74, 79, 65, 0.35); border: 1px solid rgba(184, 154, 99, 0.3);">

@@ -83,6 +83,10 @@ class AtelierGroupeController extends AbstractController
             return new JsonResponse(['error' => 'Session d\'atelier introuvable.'], 404);
         }
 
+        if ($session->isEstDateADefinir() || !$session->getDateDebut()) {
+            return new JsonResponse(['error' => 'Les réservations par empreinte bancaire pour cette session ne sont pas encore ouvertes (la date est en cours de fixation par Louisa).'], 400);
+        }
+
         if ($session->isComplet()) {
             return new JsonResponse(['error' => 'Désolé, cette session a atteint sa capacité maximale.'], 400);
         }
@@ -158,7 +162,7 @@ class AtelierGroupeController extends AbstractController
         Stripe::setApiKey($stripeSecret);
 
         // 1. Génération de la salle Daily.co
-        if (!$session->getLienVisio()) {
+        if (!$session->getLienVisio() && $session->getDateDebut()) {
             $lien = $this->dailyCoService->createRoom($session->getDateDebut());
             if ($lien) {
                 $session->setLienVisio($lien);
@@ -173,6 +177,7 @@ class AtelierGroupeController extends AbstractController
             if ($insc->getStatutPaiement() === 'Empreinte validée' && $insc->getStripePaymentMethodId()) {
                 try {
                     $amountInCents = (int) round(($insc->getMontant() ?: 30.0) * 100);
+                    $dateDesc = $session->getDateDebut() ? $session->getDateDebut()->format('d/m/Y H:i') : 'Date convenue';
                     $paymentIntent = PaymentIntent::create([
                         'amount' => $amountInCents,
                         'currency' => 'eur',
@@ -182,7 +187,7 @@ class AtelierGroupeController extends AbstractController
                         'confirm' => true,
                         'description' => sprintf('Atelier de groupe : %s (%s)', 
                             $session->getPrestation()->getNom(), 
-                            $session->getDateDebut()->format('d/m/Y H:i')
+                            $dateDesc
                         ),
                         'metadata' => [
                             'session_groupe_id' => $session->getId(),
@@ -224,7 +229,7 @@ class AtelierGroupeController extends AbstractController
                     <p>À très bientôt,<br>Louisa Chouihi - Metamorphysis</p>
                 ', 
                 htmlspecialchars($insc->getPrenom()),
-                $session->getDateDebut()->format('d/m/Y à H:i'),
+                $session->getLibelleDate(),
                 $session->getLienVisio() ?: '#'
                 ));
 

@@ -33,11 +33,15 @@ class SessionGroupe
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notesTherapeute = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateDebut = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateFin = null;
+
+    // Indique si la date est encore à définir ultérieurement par Louisa
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $estDateADefinir = false;
 
     // Statuts : "En cours d'inscriptions", "Confirmé", "Annulé", "Effectué"
     #[ORM\Column(length: 50)]
@@ -87,9 +91,20 @@ class SessionGroupe
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeInterface $dateDebut): static
+    public function setDateDebut(?\DateTimeInterface $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
+        return $this;
+    }
+
+    public function isEstDateADefinir(): bool
+    {
+        return $this->estDateADefinir;
+    }
+
+    public function setEstDateADefinir(bool $estDateADefinir): static
+    {
+        $this->estDateADefinir = $estDateADefinir;
         return $this;
     }
 
@@ -279,11 +294,29 @@ class SessionGroupe
         return $this->getNombreInscrits() >= $this->getSeuilMinimum();
     }
 
+    public function isOuverteAuxInscriptions(): bool
+    {
+        return !$this->estDateADefinir 
+            && $this->dateDebut !== null 
+            && $this->dateDebut > new \DateTime() 
+            && $this->statut !== 'Annulé' 
+            && !$this->isComplet();
+    }
+
+    public function getLibelleDate(): string
+    {
+        if ($this->estDateADefinir || !$this->dateDebut) {
+            return 'Date à définir ultérieurement';
+        }
+
+        return $this->dateDebut->format('d/m/Y à H:i') . ($this->dateFin ? ' - ' . $this->dateFin->format('H:i') : '');
+    }
+
     public function __toString(): string
     {
         $nom = $this->groupe ? $this->groupe->getNom() : ($this->prestation ? $this->prestation->getNom() : 'Accompagnement');
         $seanceLabel = $this->numeroSeance ? ' - Séance ' . $this->numeroSeance : '';
-        $date = $this->dateDebut ? $this->dateDebut->format('d/m/Y H:i') : 'Date indéterminée';
+        $date = ($this->estDateADefinir || !$this->dateDebut) ? 'Date à définir' : $this->dateDebut->format('d/m/Y H:i');
         return sprintf('%s%s (%s) [%d/%d]', $nom, $seanceLabel, $date, $this->getNombreInscrits(), $this->getSeuilMinimum());
     }
 }

@@ -120,7 +120,7 @@ class Prestation
     private ?int $seuilMinimum = 5;
 
     #[ORM\Column]
-    private ?int $capaciteMaximale = 10;
+    private ?int $capaciteMaximale = 8;
 
     #[ORM\Column]
     private ?int $delaiLimiteHeures = 24;

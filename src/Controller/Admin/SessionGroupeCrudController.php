@@ -91,9 +91,20 @@ class SessionGroupeCrudController extends AbstractCrudController
         yield AssociationField::new('prestation', '💆 Prestation')
             ->setRequired(true);
 
+        yield BooleanField::new('estDateADefinir', '🗓️ Date à définir ultérieurement')
+            ->setHelp('Activez cette option si vous souhaitez promouvoir cette session sans avoir encore fixé la date exacte. Les réservations par carte bancaire seront verrouillées jusqu\'à la fixation de la date.')
+            ->renderAsSwitch(true);
+
         yield DateTimeField::new('dateDebut', '📅 Date & Heure')
-            ->setRequired(true)
-            ->setFormat('dd/MM/yyyy HH:mm');
+            ->setRequired(false)
+            ->setHelp('Laissez vide si la date est encore à définir ultérieurement.')
+            ->setFormat('dd/MM/yyyy HH:mm')
+            ->formatValue(function ($value, SessionGroupe $entity) {
+                if ($entity->isEstDateADefinir() || !$entity->getDateDebut()) {
+                    return '<span class="badge" style="background:#6c757d;color:#fff;padding:5px 8px;font-size:12px;"><i class="fa fa-clock me-1"></i>Date à définir ultérieurement</span>';
+                }
+                return $entity->getDateDebut()->format('d/m/Y H:i');
+            });
 
         yield DateTimeField::new('dateFin', '⏰ Fin')
             ->setRequired(false)
@@ -172,6 +183,10 @@ class SessionGroupeCrudController extends AbstractCrudController
             if ($entityInstance->getNumeroSeance() > 1) {
                 $entityInstance->setEstVisiblePublic(false);
             }
+            // Si aucune date n'est saisie, la séance est automatiquement marquée comme "Date à définir ultérieurement"
+            if ($entityInstance->getDateDebut() === null) {
+                $entityInstance->setEstDateADefinir(true);
+            }
         }
         parent::persistEntity($entityManager, $entityInstance);
     }
@@ -182,6 +197,10 @@ class SessionGroupeCrudController extends AbstractCrudController
             // Sécurité : Les séances de suivi (n° 2, 3...) sont strictement privées pour la cohorte
             if ($entityInstance->getNumeroSeance() > 1) {
                 $entityInstance->setEstVisiblePublic(false);
+            }
+            // Si aucune date n'est saisie, la séance est automatiquement marquée comme "Date à définir ultérieurement"
+            if ($entityInstance->getDateDebut() === null) {
+                $entityInstance->setEstDateADefinir(true);
             }
         }
         parent::updateEntity($entityManager, $entityInstance);
