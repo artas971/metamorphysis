@@ -128,6 +128,9 @@ class Prestation
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $recurrence = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $messageDateADefinir = "Louisa Chouihi prépare actuellement cette session. Les pré-réservations avec empreinte bancaire (0,00 €) ouvriront dès la fixation de la date et de l'horaire.";
+
     /**
      * @var Collection<int, SessionGroupe>
      */
@@ -690,6 +693,17 @@ class Prestation
     public function setRecurrence(?string $recurrence): static
     {
         $this->recurrence = $recurrence;
+        return $this;
+    }
+
+    public function getMessageDateADefinir(): ?string
+    {
+        return $this->messageDateADefinir ?: "Louisa Chouihi prépare actuellement cette session. Les pré-réservations avec empreinte bancaire (0,00 €) ouvriront dès la fixation de la date et de l'horaire.";
+    }
+
+    public function setMessageDateADefinir(?string $messageDateADefinir): static
+    {
+        $this->messageDateADefinir = $messageDateADefinir;
         return $this;
     }
 

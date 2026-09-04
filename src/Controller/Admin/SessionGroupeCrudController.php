@@ -147,6 +147,11 @@ class SessionGroupeCrudController extends AbstractCrudController
             ->setHelp('Notes personnelles et confidentielles (progression du groupe, points abordés...)')
             ->hideOnIndex();
 
+        yield TextareaField::new('messageInformation', '💬 Message d\'information personnalisé (quand date à définir)')
+            ->setHelp('Texte personnalisé affiché sur le site public pour cette session. Laissez vide pour utiliser le texte par défaut de la prestation.')
+            ->setNumOfRows(3)
+            ->hideOnIndex();
+
         yield AssociationField::new('inscriptions', 'Participants & Réponses')
             ->onlyOnDetail()
             ->formatValue(function ($value, SessionGroupe $entity) {

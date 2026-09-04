@@ -33,6 +33,9 @@ class SessionGroupe
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notesTherapeute = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $messageInformation = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateDebut = null;
 
@@ -225,6 +228,17 @@ class SessionGroupe
     public function setNotesTherapeute(?string $notesTherapeute): static
     {
         $this->notesTherapeute = $notesTherapeute;
+        return $this;
+    }
+
+    public function getMessageInformation(): ?string
+    {
+        return $this->messageInformation;
+    }
+
+    public function setMessageInformation(?string $messageInformation): static
+    {
+        $this->messageInformation = $messageInformation;
         return $this;
     }
 

@@ -291,7 +291,7 @@
 
                                             <div class="p-2 mt-2" style="background: rgba(10, 10, 9, 0.5); border-left: 3px solid var(--meta-gold);">
                                                 <p class="small text-ivory m-0" style="line-height: 1.5;">
-                                                    <i class="bi bi-info-circle text-gold me-1"></i><strong>Information :</strong> Louisa Chouihi prépare actuellement cette session. Les pré-réservations avec empreinte bancaire (0,00 €) ouvriront dès la fixation de la date et de l'horaire.
+                                                    <i class="bi bi-info-circle text-gold me-1"></i><strong>Information :</strong> {{ sPromo.messageInformation|default(prestation.messageDateADefinir)|default("Louisa Chouihi prépare actuellement cette session. Les pré-réservations avec empreinte bancaire (0,00 €) ouvriront dès la fixation de la date et de l'horaire.") }}
                                                 </p>
                                             </div>
                                         </div>

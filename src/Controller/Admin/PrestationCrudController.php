@@ -249,6 +249,12 @@ class PrestationCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setHelp('Ex: "Chaque samedi de 14h00 à 15h30", "Un dimanche sur deux"...')
                 ->setColumns(6),
+
+            TextareaField::new('messageDateADefinir', '💬 Message d\'information (quand la date est à définir)')
+                ->setRequired(false)
+                ->setNumOfRows(3)
+                ->setHelp('Texte affiché sur la fiche publique lorsque la prochaine date n\'est pas encore fixée.')
+                ->setColumns(12),
         ];
     }
 
