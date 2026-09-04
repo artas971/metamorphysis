@@ -1,50 +1,20 @@
 /**
  * Gestion dynamique de la grille tarifaire dans EasyAdmin
- * Génère automatiquement les champs de formules et tarifs personnalisés en fonction de minPersonnes et maxPersonnes.
+ * Génère automatiquement les champs de formules et tarifs personnalisés en fonction du nombre de prix sélectionné.
  */
 document.addEventListener('DOMContentLoaded', function() {
     initDynamicPricingGrid();
 });
 
 function initDynamicPricingGrid() {
-    const minInput = document.querySelector('input[name$="[minPersonnes]"]');
-    const maxInput = document.querySelector('input[name$="[maxPersonnes]"]');
+    const nombrePrixSelect = document.querySelector('select[name$="[nombrePrix]"], input[name$="[nombrePrix]"]');
+    const minInput = document.querySelector('input[name$="[minPersonnes]"]') || document.getElementById('min-personnes-input');
+    const maxInput = document.querySelector('input[name$="[maxPersonnes]"]') || document.getElementById('max-personnes-input');
     const jsonInput = document.querySelector('input[name$="[tarifsParPersonneJson]"]') || document.getElementById('tarifs-json-input');
     const prixBaseInput = document.querySelector('input[name$="[prix]"]') || document.getElementById('prix-base-input');
 
-    if (!minInput || !maxInput) {
+    if (!nombrePrixSelect && !minInput && !jsonInput) {
         return;
-    }
-
-    // Création du conteneur de la grille dynamique
-    let container = document.getElementById('ea-dynamic-tarifs-card');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'ea-dynamic-tarifs-card';
-        container.className = 'form-group field-tarifs-dynamiques mb-4';
-        container.innerHTML = `
-            <div style="background: #1a1a17; border: 1px solid #B89A63; border-left: 4px solid #B89A63; border-radius: 4px; padding: 20px; margin-top: 15px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                    <strong style="color: #B89A63; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
-                        💶 Personnalisation des Formules & Tarifs
-                    </strong>
-                    <span id="ea-tarifs-summary-badge" style="background: rgba(184, 154, 99, 0.2); color: #FFFFF0; border: 1px solid #B89A63; padding: 3px 10px; font-size: 12px; border-radius: 3px;">
-                        Formules Actives
-                    </span>
-                </div>
-                <p style="color: #D8D0BE; font-size: 13px; margin-bottom: 15px; line-height: 1.5;">
-                    Personnalisez le titre (ex: <em>2 personnes</em> ou <em>3 personnes et +</em>), le sous-titre (ex: <em>Meilleur ami</em>, <em>Trouple</em>, <em>Couple</em>) et le tarif exact qui sera débité sur Stripe :
-                </p>
-                <div id="ea-dynamic-tarifs-fields" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
-                </div>
-            </div>
-        `;
-
-        // Insertion après le champ maxPersonnes
-        const maxFieldGroup = maxInput.closest('.form-group') || maxInput.closest('.field-integer') || maxInput.parentElement;
-        if (maxFieldGroup && maxFieldGroup.parentNode) {
-            maxFieldGroup.parentNode.insertBefore(container, maxFieldGroup.nextSibling);
-        }
     }
 
     // Récupération des données existantes
@@ -57,11 +27,61 @@ function initDynamicPricingGrid() {
         tarifs = {};
     }
 
+    // Déterminer le nombre de prix initial
+    let count = 1;
+    if (nombrePrixSelect && nombrePrixSelect.value) {
+        count = parseInt(nombrePrixSelect.value, 10) || 1;
+    } else if (Object.keys(tarifs).length > 0) {
+        count = Object.keys(tarifs).length;
+        if (nombrePrixSelect) nombrePrixSelect.value = count;
+    } else if (maxInput && maxInput.value) {
+        count = parseInt(maxInput.value, 10) || 1;
+        if (nombrePrixSelect) nombrePrixSelect.value = count;
+    }
+
+    // Création du conteneur de la grille dynamique
+    let container = document.getElementById('ea-dynamic-tarifs-card');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'ea-dynamic-tarifs-card';
+        container.className = 'form-group field-tarifs-dynamiques mb-4';
+        container.innerHTML = `
+            <div style="background: #1a1a17; border: 1px solid #B89A63; border-left: 4px solid #B89A63; border-radius: 4px; padding: 20px; margin-top: 15px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <strong style="color: #B89A63; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                        💶 Personnalisation des Prix & Formules
+                    </strong>
+                    <span id="ea-tarifs-summary-badge" style="background: rgba(184, 154, 99, 0.2); color: #FFFFF0; border: 1px solid #B89A63; padding: 3px 10px; font-size: 12px; border-radius: 3px;">
+                        ${count === 1 ? '1 Tarif Unique' : count + ' Formules Actives'}
+                    </span>
+                </div>
+                <p style="color: #D8D0BE; font-size: 13px; margin-bottom: 15px; line-height: 1.5;">
+                    Renseignez pour chaque formule le titre (ex: <em>Individuel</em>, <em>Couple</em>, <em>Tarif standard</em>), le sous-titre optionnel et le montant exact en € débité sur Stripe :
+                </p>
+                <div id="ea-dynamic-tarifs-fields" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
+                </div>
+            </div>
+        `;
+
+        // Insertion après le champ nombrePrix (ou maxFieldGroup en fallback)
+        const targetAnchor = (nombrePrixSelect ? (nombrePrixSelect.closest('.form-group') || nombrePrixSelect.closest('.field-choice') || nombrePrixSelect.parentElement) : null)
+            || (maxInput ? (maxInput.closest('.form-group') || maxInput.closest('.field-integer') || maxInput.parentElement) : null);
+
+        if (targetAnchor && targetAnchor.parentNode) {
+            targetAnchor.parentNode.insertBefore(container, targetAnchor.nextSibling);
+        }
+    }
+
     function renderFields() {
-        const min = parseInt(minInput.value, 10) || 1;
-        let max = parseInt(maxInput.value, 10) || min;
-        if (max < min) {
-            max = min;
+        const selectedCount = parseInt(nombrePrixSelect ? nombrePrixSelect.value : (maxInput ? maxInput.value : 1), 10) || 1;
+
+        // Mise à jour de minInput et maxInput
+        if (minInput) minInput.value = 1;
+        if (maxInput) maxInput.value = selectedCount;
+
+        const badge = document.getElementById('ea-tarifs-summary-badge');
+        if (badge) {
+            badge.textContent = selectedCount === 1 ? '1 Tarif Unique' : `${selectedCount} Formules Actives`;
         }
 
         const fieldsContainer = document.getElementById('ea-dynamic-tarifs-fields');
@@ -69,11 +89,18 @@ function initDynamicPricingGrid() {
 
         fieldsContainer.innerHTML = '';
 
-        for (let i = min; i <= max; i++) {
+        // Transformer les tarifs actuels en liste ordonnée pour conserver les valeurs même si les index diffèrent
+        const existingEntries = Object.entries(tarifs);
+
+        for (let i = 1; i <= selectedCount; i++) {
             const key = String(i);
-            const rawData = tarifs[key] || {};
-            
-            // Extraction du prix, titre et sous-titre existants
+            // Vérifier d'abord par clé exacte "1", "2"..., sinon par index positionnel
+            let rawData = tarifs[key];
+            if (!rawData && existingEntries[i - 1]) {
+                rawData = existingEntries[i - 1][1];
+            }
+            rawData = rawData || {};
+
             let currentPrice = '';
             let currentTitre = '';
             let currentSousTitre = '';
@@ -88,19 +115,29 @@ function initDynamicPricingGrid() {
 
             // Valeurs par défaut intelligentes
             if (!currentTitre) {
-                if (i === max && i > 2) {
-                    currentTitre = `${i} personnes et +`;
+                if (selectedCount === 1) {
+                    currentTitre = '1 personne';
                 } else if (i === 1) {
-                    currentTitre = `1 personne`;
+                    currentTitre = '1 personne';
+                } else if (i === 2) {
+                    currentTitre = '2 personnes';
+                } else if (i === selectedCount) {
+                    currentTitre = `${i} personnes et +`;
                 } else {
                     currentTitre = `${i} personnes`;
                 }
             }
 
             if (currentSousTitre === '') {
-                if (i === 1) currentSousTitre = 'Individuel';
-                else if (i === 2) currentSousTitre = 'Couple / Duo';
-                else currentSousTitre = 'Groupe / Famille';
+                if (selectedCount === 1) {
+                    currentSousTitre = 'Individuel';
+                } else if (i === 1) {
+                    currentSousTitre = 'Individuel';
+                } else if (i === 2) {
+                    currentSousTitre = 'Couple / Duo';
+                } else {
+                    currentSousTitre = 'Groupe / Famille';
+                }
             }
 
             const fieldDiv = document.createElement('div');
@@ -112,31 +149,31 @@ function initDynamicPricingGrid() {
             fieldDiv.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(184,154,99,0.2); padding-bottom: 6px;">
                     <span style="font-size: 13px; font-weight: bold; color: #B89A63; text-transform: uppercase;">
-                        👥 Palier ${i} (${i} pers.)
+                        🏷️ Formule ${i} ${selectedCount === 1 ? '(Tarif unique)' : ''}
                     </span>
                 </div>
 
                 <div style="margin-bottom: 10px;">
                     <label style="display: block; font-size: 11px; color: #D8D0BE; margin-bottom: 3px; text-transform: uppercase;">
-                        Titre affiché
+                        Titre de la formule
                     </label>
                     <input type="text" 
                            class="form-control form-control-sm ea-tarif-titre-input" 
-                           data-personnes="${i}" 
+                           data-formule="${i}" 
                            value="${currentTitre}" 
-                           placeholder="ex: ${i} personnes, ${i} personnes et +" 
+                           placeholder="ex: Individuel, Couple, Séance 1h..." 
                            style="background: #111; border: 1px solid rgba(184, 154, 99, 0.5); color: #FFFFF0; font-size: 13px;">
                 </div>
 
                 <div style="margin-bottom: 10px;">
                     <label style="display: block; font-size: 11px; color: #D8D0BE; margin-bottom: 3px; text-transform: uppercase;">
-                        Sous-titre / Relation
+                        Sous-titre / Précision (optionnel)
                     </label>
                     <input type="text" 
                            class="form-control form-control-sm ea-tarif-soustitre-input" 
-                           data-personnes="${i}" 
+                           data-formule="${i}" 
                            value="${currentSousTitre}" 
-                           placeholder="ex: Meilleur ami, Trouple, Famille..." 
+                           placeholder="ex: Solo, Couple, Autre..." 
                            style="background: #111; border: 1px solid rgba(184, 154, 99, 0.5); color: #FFFFF0; font-size: 13px;">
                 </div>
 
@@ -147,7 +184,7 @@ function initDynamicPricingGrid() {
                     <div style="display: flex; align-items: center;">
                         <input type="number" step="0.01" min="0" 
                                class="form-control ea-tarif-step-input" 
-                               data-personnes="${i}" 
+                               data-formule="${i}" 
                                value="${currentPrice}" 
                                placeholder="0.00" 
                                style="background: #111; border: 1px solid #B89A63; color: #B89A63; font-weight: bold; font-size: 15px; border-radius: 3px 0 0 3px; height: 36px;">
@@ -171,16 +208,15 @@ function initDynamicPricingGrid() {
     }
 
     function updateJsonAndBase() {
-        const min = parseInt(minInput.value, 10) || 1;
-        const max = parseInt(maxInput.value, 10) || min;
+        const selectedCount = parseInt(nombrePrixSelect ? nombrePrixSelect.value : (maxInput ? maxInput.value : 1), 10) || 1;
         const updatedTarifs = {};
         let firstPrice = null;
 
-        for (let i = min; i <= max; i++) {
+        for (let i = 1; i <= selectedCount; i++) {
             const p = String(i);
-            const priceInput = document.querySelector(`.ea-tarif-step-input[data-personnes="${p}"]`);
-            const titreInput = document.querySelector(`.ea-tarif-titre-input[data-personnes="${p}"]`);
-            const sousTitreInput = document.querySelector(`.ea-tarif-soustitre-input[data-personnes="${p}"]`);
+            const priceInput = document.querySelector(`.ea-tarif-step-input[data-formule="${p}"]`);
+            const titreInput = document.querySelector(`.ea-tarif-titre-input[data-formule="${p}"]`);
+            const sousTitreInput = document.querySelector(`.ea-tarif-soustitre-input[data-formule="${p}"]`);
 
             const priceVal = priceInput ? parseFloat(priceInput.value) : null;
             const titreVal = titreInput ? titreInput.value.trim() : '';
@@ -189,7 +225,7 @@ function initDynamicPricingGrid() {
             if (priceVal !== null && !isNaN(priceVal) && priceVal >= 0) {
                 updatedTarifs[p] = {
                     prix: priceVal,
-                    titre: titreVal || `${p} personnes`,
+                    titre: titreVal || (selectedCount === 1 ? 'Tarif unique' : `Formule ${p}`),
                     sousTitre: sousTitreVal
                 };
                 if (firstPrice === null) {
@@ -207,14 +243,18 @@ function initDynamicPricingGrid() {
         if (prixBaseInput && firstPrice !== null) {
             prixBaseInput.value = firstPrice;
         }
+
+        if (minInput) minInput.value = 1;
+        if (maxInput) maxInput.value = selectedCount;
     }
 
-    // Écouteurs sur min et max
-    minInput.addEventListener('input', renderFields);
-    minInput.addEventListener('change', renderFields);
-    maxInput.addEventListener('input', renderFields);
-    maxInput.addEventListener('change', renderFields);
+    // Écouteurs sur nombrePrixSelect
+    if (nombrePrixSelect) {
+        nombrePrixSelect.addEventListener('change', renderFields);
+        nombrePrixSelect.addEventListener('input', renderFields);
+    }
 
     // Initialisation
     renderFields();
+}
 }

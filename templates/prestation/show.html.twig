@@ -102,7 +102,7 @@
                         {% if prestation.hasTarificationVariable %}
                             <div class="my-4 p-4" style="background-color: var(--meta-olive); border: 1px solid var(--meta-gold); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);">
                                 <label class="form-label text-uppercase small fw-bold mb-3 d-flex align-items-center" style="letter-spacing: 1.5px; color: var(--meta-ivory);">
-                                    <i class="bi bi-people-fill me-2 fs-5" style="color: var(--meta-gold);"></i>Formule & Nombre de participants
+                                    <i class="bi bi-tags-fill me-2 fs-5" style="color: var(--meta-gold);"></i>Choisissez votre formule
                                 </label>
                                 <div class="d-flex flex-wrap gap-2" id="formula-options">
                                     {% for i in prestation.minPersonnes..prestation.maxPersonnes %}
@@ -112,7 +112,7 @@
                                              data-price="{{ details.prix }}"
                                              style="background-color: var(--meta-plum); {% if loop.first %}border: 2px solid var(--meta-gold); box-shadow: 0 0 10px rgba(184, 154, 99, 0.45);{% else %}border: 1px solid rgba(184, 154, 99, 0.35); opacity: 0.85;{% endif %} cursor: pointer; min-width: 140px;">
                                             <div class="fw-bold mb-1" style="color: var(--meta-ivory); font-size: 0.88rem; text-transform: uppercase; letter-spacing: 1px;">
-                                                <i class="bi bi-people me-1" style="color: var(--meta-gold);"></i>{{ details.titre }}
+                                                <i class="bi bi-tag me-1" style="color: var(--meta-gold);"></i>{{ details.titre }}
                                             </div>
                                             <div class="fw-bold" style="color: var(--meta-gold); font-size: 1.35rem;">
                                                 {{ details.prix }} €

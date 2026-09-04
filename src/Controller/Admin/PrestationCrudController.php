@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
@@ -52,8 +53,7 @@ class PrestationCrudController extends AbstractCrudController
                 MoneyField::new('prix', '💶 Tarif Base')
                     ->setCurrency('EUR')
                     ->setStoredAsCents(false),
-                IntegerField::new('minPersonnes', '👥 Min Pers'),
-                IntegerField::new('maxPersonnes', '👥 Max Pers'),
+                IntegerField::new('nombrePrix', '🏷️ Nb Prix'),
                 IntegerField::new('nombreSeances', '🎟️ Séances'),
                 IntegerField::new('ordre', '🔢 Ordre'),
                 BooleanField::new('estCollectif', '👥 Groupe')
@@ -73,20 +73,29 @@ class PrestationCrudController extends AbstractCrudController
                 ->setHelp('Texte commercial libre. Ex: "À partir de 80 €", "Entre 80 € et 120 €", "80 €", "Sur devis"... (si vide, affiche le tarif 1 personne)')
                 ->setRequired(false),
 
-            IntegerField::new('minPersonnes', '👥 Nombre minimum de personnes')
+            ChoiceField::new('nombrePrix', '🏷️ Nombre de prix proposés')
+                ->setChoices([
+                    '1 prix (Tarif unique)' => 1,
+                    '2 prix (2 formules / tarifs)' => 2,
+                    '3 prix (3 formules / tarifs)' => 3,
+                    '4 prix (4 formules / tarifs)' => 4,
+                    '5 prix (5 formules / tarifs)' => 5,
+                    '6 prix (6 formules / tarifs)' => 6,
+                ])
                 ->setRequired(true)
-                ->setHelp('Indiquez le minimum de participants (ex: 1 pour individuel, 2 pour couple).')
+                ->setHelp('Indiquez combien de prix ou formules sont proposés pour cette prestation. Le bloc ci-dessous s\'adapte instantanément.')
                 ->setColumns(6),
 
-            IntegerField::new('maxPersonnes', '👥 Nombre maximum de personnes')
-                ->setRequired(true)
-                ->setHelp('Indiquez le maximum de participants (ex: 1, 3, 5...). Les champs de tarifs ci-dessous s\'adaptent automatiquement.')
-                ->setColumns(6),
+            HiddenField::new('minPersonnes')
+                ->setFormTypeOption('attr', ['id' => 'min-personnes-input']),
 
-            \EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField::new('tarifsParPersonneJson')
+            HiddenField::new('maxPersonnes')
+                ->setFormTypeOption('attr', ['id' => 'max-personnes-input']),
+
+            HiddenField::new('tarifsParPersonneJson')
                 ->setFormTypeOption('attr', ['id' => 'tarifs-json-input']),
 
-            \EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField::new('prix')
+            HiddenField::new('prix')
                 ->setFormTypeOption('attr', ['id' => 'prix-base-input']),
 
             IntegerField::new('nombreSeances', '🎟️ Nombre de séances incluses')

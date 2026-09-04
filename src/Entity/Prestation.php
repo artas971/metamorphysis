@@ -268,6 +268,24 @@ class Prestation
         return $this;
     }
 
+    public function getNombrePrix(): int
+    {
+        $tarifs = $this->getTarifsParPersonne();
+        if (!empty($tarifs)) {
+            return count($tarifs);
+        }
+        return max(1, $this->getMaxPersonnes() - $this->getMinPersonnes() + 1);
+    }
+
+    public function setNombrePrix(?int $nombrePrix): static
+    {
+        $nb = max(1, $nombrePrix ?? 1);
+        $this->minPersonnes = 1;
+        $this->maxPersonnes = $nb;
+
+        return $this;
+    }
+
     public function getTarifsParPersonne(): array
     {
         return $this->tarifsParPersonne ?? [];
@@ -358,6 +376,25 @@ class Prestation
                     'titre' => $defaultTitre,
                     'sousTitre' => $defaultSousTitre,
                 ];
+            }
+        } else {
+            $values = array_values($tarifs);
+            $idx = $nombrePersonnes - $min;
+            if (isset($values[$idx])) {
+                $item = $values[$idx];
+                if (is_array($item)) {
+                    return [
+                        'prix' => isset($item['prix']) && is_numeric($item['prix']) ? (float) $item['prix'] : (float) ($this->prix ?? 0),
+                        'titre' => !empty($item['titre']) ? $item['titre'] : $defaultTitre,
+                        'sousTitre' => isset($item['sousTitre']) ? $item['sousTitre'] : $defaultSousTitre,
+                    ];
+                } elseif (is_numeric($item)) {
+                    return [
+                        'prix' => (float) $item,
+                        'titre' => $defaultTitre,
+                        'sousTitre' => $defaultSousTitre,
+                    ];
+                }
             }
         }
 
