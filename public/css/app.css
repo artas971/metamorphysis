@@ -112,7 +112,14 @@ body::after {
 main {
     flex: 1;
     position: relative;
-    z-index: 1;
+}
+
+/* Priorité d'affichage des modales Bootstrap au-dessus du backdrop */
+.modal {
+    z-index: 1060 !important;
+}
+.modal-backdrop {
+    z-index: 1050 !important;
 }
 
 /* =========================================

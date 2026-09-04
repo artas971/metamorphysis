@@ -383,6 +383,7 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
 
 {% block javascripts %}
 <script src="https://js.stripe.com/v3/"></script>
@@ -428,6 +429,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalEl = document.getElementById('modalPrereservationGroupe');
 
     if (sessionItems.length > 0 && btnOpenGroupModal && modalEl) {
+        // Déplacer la modale sous <body> pour éviter d'être piégé dans le contexte d'empilement du conteneur parent
+        if (modalEl.parentNode !== document.body) {
+            document.body.appendChild(modalEl);
+        }
+
         let activeSessionId = sessionItems[0].getAttribute('data-session-id');
         let activeSessionDate = sessionItems[0].getAttribute('data-date');
 
@@ -461,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('form-prereservation-groupe').classList.remove('d-none');
             document.getElementById('group-success-box').classList.add('d-none');
 
-            const bsModal = new bootstrap.Modal(modalEl);
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
             bsModal.show();
 
             // Appel pour créer le SetupIntent Stripe
@@ -582,5 +588,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-{% endblock %}
 {% endblock %}
