@@ -148,20 +148,34 @@ if (isset($_GET['update_db'])) {
             }
             $pdo->exec("ALTER TABLE `session_groupe` MODIFY `date_debut` DATETIME DEFAULT NULL");
 
-            // 6. Synchronisation de la prestation "Accompagnement en Groupe"
-            $stmt = $pdo->query("SELECT id FROM prestation WHERE slug = 'accompagnement-en-groupe' OR nom LIKE '%Accompagnement en Groupe%' LIMIT 1");
-            $prestId = $stmt->fetchColumn();
-            if ($prestId) {
-                $pdo->exec("UPDATE prestation SET 
-                    est_collectif = 1,
-                    label_collectif = IFNULL(label_collectif, 'ACCOMPAGNEMENT EN GROUPE'),
-                    seuil_minimum = IFNULL(seuil_minimum, 5),
-                    capacite_maximale = IFNULL(capacite_maximale, 8),
-                    prix = IFNULL(prix, 30)
-                WHERE id = $prestId");
-                echo "✓ Prestation collective n°$prestId configurée (seuil 5, max 8, 30€).\n";
+            // 6. Synchronisation de la prestation "Accompagnement en Groupe" / "Thérapie de Groupe"
+            $stmt = $pdo->query("SELECT id, nom, slug FROM prestation WHERE slug LIKE '%groupe%' OR nom LIKE '%groupe%' OR nom LIKE '%Groupe%' OR nom LIKE '%Thérapie%'");
+            $prestations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Vérifier s'il y a une session n°1
+            $prestId = null;
+            if (!empty($prestations)) {
+                foreach ($prestations as $p) {
+                    $prestId = $p['id'];
+                    $pdo->exec("UPDATE prestation SET 
+                        nom = 'Accompagnement en Groupe',
+                        slug = 'accompagnement-en-groupe',
+                        est_collectif = 1,
+                        label_collectif = 'ACCOMPAGNEMENT EN GROUPE',
+                        seuil_minimum = 5,
+                        capacite_maximale = 8,
+                        prix = 30
+                    WHERE id = $prestId");
+                    echo "✓ Prestation ID {$prestId} (anciennement '{$p['nom']}') mise à jour en 'Accompagnement en Groupe' (est_collectif=1, seuil 5, max 8, 30€).\n";
+                }
+            } else {
+                $pdo->exec("INSERT INTO prestation (nom, slug, description, prix, duree, est_collectif, label_collectif, seuil_minimum, capacite_maximale, ordre, recurrence, updated_at) 
+                            VALUES ('Accompagnement en Groupe', 'accompagnement-en-groupe', 'Explorer, partager et avancer ensemble.', 30, 90, 1, 'ACCOMPAGNEMENT EN GROUPE', 5, 8, 5, 'Un dimanche sur deux', NOW())");
+                $prestId = $pdo->lastInsertId();
+                echo "✓ Prestation collective créée avec l'ID $prestId.\n";
+            }
+
+            // Vérifier s'il y a une session n°1 "Date à définir"
+            if ($prestId) {
                 $sessCount = $pdo->query("SELECT COUNT(*) FROM session_groupe WHERE prestation_id = $prestId AND est_visible_public = 1")->fetchColumn();
                 if ($sessCount == 0) {
                     $pdo->exec("INSERT INTO session_groupe (prestation_id, numero_seance, titre, statut, est_visible_public, est_date_adefinir, date_creation) 
@@ -170,6 +184,13 @@ if (isset($_GET['update_db'])) {
                 } else {
                     echo "✓ Séance collective publique déjà active en base.\n";
                 }
+            }
+
+            echo "\n--- ÉTAT ACTUEL DES PRESTATIONS EN BDD ---\n";
+            $allPrest = $pdo->query("SELECT id, nom, slug, est_collectif, label_collectif, prix FROM prestation")->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($allPrest as $ap) {
+                $colInfo = ($ap['est_collectif'] ?? 0) ? "[COLLECTIF - {$ap['label_collectif']}]" : "[INDIVIDUEL]";
+                echo "• ID {$ap['id']}: {$ap['nom']} ({$ap['slug']}) - {$ap['prix']}€ - $colInfo\n";
             }
 
             echo "\n>>> BASE DE DONNÉES ENTIÈREMENT SYNCHRONISÉE AVEC SUCCÈS ! <<<\n\n";
