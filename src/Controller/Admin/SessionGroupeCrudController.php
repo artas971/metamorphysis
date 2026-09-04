@@ -132,7 +132,8 @@ class SessionGroupeCrudController extends AbstractCrudController
         yield UrlField::new('lienVisio', '📹 Lien Salle Visio (Daily.co)')
             ->setHelp('Généré automatiquement dès confirmation de la séance.');
 
-        yield TextareaField::new('notesTherapeute', 'Notes privées de la praticienne')
+        yield TextareaField::new('notesTherapeute', '📝 Prise de notes & Suivi de séance')
+            ->setHelp('Notes personnelles et confidentielles (progression du groupe, points abordés...)')
             ->hideOnIndex();
 
         yield AssociationField::new('inscriptions', 'Participants & Réponses')

@@ -3,6 +3,37 @@
 {% block title %}Planifier la séance suivante - {{ groupe.nom }} - Admin Metamorphysis{% endblock %}
 
 {% block body %}
+<style>
+/* Placeholders en couleur ivoire bien lisibles */
+.form-control::placeholder,
+textarea::placeholder,
+input::placeholder {
+    color: var(--meta-ivory, #FFFFF0) !important;
+    opacity: 0.75 !important;
+    font-style: italic;
+}
+.form-control::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder,
+input::-webkit-input-placeholder {
+    color: #FFFFF0 !important;
+    opacity: 0.75 !important;
+    font-style: italic;
+}
+.form-control::-moz-placeholder,
+textarea::-moz-placeholder,
+input::-moz-placeholder {
+    color: #FFFFF0 !important;
+    opacity: 0.75 !important;
+    font-style: italic;
+}
+.form-control:-ms-input-placeholder,
+textarea:-ms-input-placeholder,
+input:-ms-input-placeholder {
+    color: #FFFFF0 !important;
+    opacity: 0.75 !important;
+    font-style: italic;
+}
+</style>
 <main class="container mt-4 mb-5 text-white">
     
     {# Fil d'ariane & Bouton retour #}
@@ -61,10 +92,15 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
-                            <i class="bi bi-card-text me-1"></i>Notes privées pour Louisa
-                        </label>
-                        <textarea name="notes" rows="2" class="form-control rounded-0 text-white" placeholder="Notes pédagogiques, progression du groupe, points à aborder..." style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4);"></textarea>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label text-gold small text-uppercase fw-bold m-0" style="letter-spacing: 1px;">
+                                <i class="bi bi-journal-text me-1"></i>Prise de notes & Suivi de la séance
+                            </label>
+                            <span class="small text-ivory opacity-50 fst-italic">
+                                (Visible uniquement par vous)
+                            </span>
+                        </div>
+                        <textarea name="notes" rows="3" class="form-control rounded-0 text-white" placeholder="Notes pédagogiques, progression du groupe, points à aborder..." style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4);"></textarea>
                     </div>
                 </div>
 
