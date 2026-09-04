@@ -189,9 +189,13 @@
                                     {% if sessionsValides|length > 0 %}
                                         <div class="mb-3">
                                             {% if sessionsValides|length > 1 %}
-                                                <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">Choisissez votre créneau :</label>
+                                                <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                                                    <i class="bi bi-calendar-range text-gold me-1"></i>Sélectionnez votre créneau :
+                                                </label>
                                             {% else %}
-                                                <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">Prochaine session programmée :</label>
+                                                <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                                                    <i class="bi bi-calendar-event text-gold me-1"></i>Prochaine session programmée :
+                                                </label>
                                             {% endif %}
                                             <div class="d-flex flex-column gap-2" id="sessions-group-list">
                                                 {% for s in sessionsValides %}
@@ -202,16 +206,23 @@
                                                          data-seuil="{{ s.seuilMinimum }}"
                                                          data-max="{{ s.capaciteMaximale }}"
                                                          data-complet="{{ s.isComplet ? '1' : '0' }}"
-                                                         style="background: var(--meta-plum); {% if loop.first %}border-color: var(--meta-gold) !important; box-shadow: 0 0 10px rgba(184, 154, 99, 0.4);{% else %}border-color: rgba(184, 154, 99, 0.3) !important; opacity: 0.85;{% endif %} cursor: pointer;">
+                                                         style="background: var(--meta-plum); {% if loop.first %}border: 1px solid var(--meta-gold) !important; box-shadow: 0 0 10px rgba(184, 154, 99, 0.35);{% else %}border: 1px solid rgba(184, 154, 99, 0.3) !important; opacity: 0.85;{% endif %} {% if sessionsValides|length > 1 %}cursor: pointer;{% endif %}">
                                                         
                                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                                             <div class="text-ivory fw-bold">
                                                                 <i class="bi bi-calendar-check text-gold me-2"></i>{{ s.dateDebut|date('d/m/Y à H:i') }}
                                                                 {% if s.dateFin %} - {{ s.dateFin|date('H:i') }}{% endif %}
                                                             </div>
-                                                            <span class="badge" style="{% if s.isComplet %}background-color: rgba(42, 26, 30, 0.9); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;{% elseif s.isQuorumAtteint %}background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory);{% else %}background-color: var(--meta-plum); border: 1px solid var(--meta-gold); color: var(--meta-gold);{% endif %}">
-                                                                {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}<i class="bi bi-check2-circle text-gold me-1"></i>Atelier confirmé{% else %}<i class="bi bi-hourglass-split me-1"></i>Inscriptions en cours{% endif %}
-                                                            </span>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                {% if sessionsValides|length > 1 %}
+                                                                    <span class="session-radio-badge badge" style="{% if loop.first %}background-color: var(--meta-gold); color: var(--meta-black);{% else %}background-color: transparent; border: 1px solid var(--meta-sage); color: var(--meta-sage);{% endif %} font-size: 0.72rem;">
+                                                                        {% if loop.first %}<i class="bi bi-check-circle-fill me-1"></i>Sélectionné{% else %}Choisir ce créneau{% endif %}
+                                                                    </span>
+                                                                {% endif %}
+                                                                <span class="badge" style="{% if s.isComplet %}background-color: rgba(42, 26, 30, 0.9); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;{% elseif s.isQuorumAtteint %}background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory);{% else %}background-color: var(--meta-plum); border: 1px solid var(--meta-gold); color: var(--meta-gold);{% endif %}">
+                                                                    {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}<i class="bi bi-check2-circle text-gold me-1"></i>Atelier confirmé{% else %}<i class="bi bi-hourglass-split me-1"></i>Inscriptions en cours{% endif %}
+                                                                </span>
+                                                            </div>
                                                         </div>
 
                                                         {# JAUGE PROGRESSION DYNAMIQUE #}
@@ -232,13 +243,6 @@
                                                                  style="width: {{ pct }}%; background: linear-gradient(90deg, var(--meta-gold), #E5C78D); border-radius: 0;" 
                                                                  aria-valuenow="{{ s.nombreInscrits }}" aria-valuemin="0" aria-valuemax="{{ s.seuilMinimum }}">
                                                             </div>
-                                                        </div>
-
-                                                        <div class="mt-3 pt-2 d-flex justify-content-between align-items-center" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
-                                                            <span class="text-ivory small opacity-75"><i class="bi bi-shield-lock text-gold me-1"></i>0,00 € débité aujourd'hui</span>
-                                                            <span class="btn btn-sm text-uppercase" style="background-color: rgba(184, 154, 99, 0.2); border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.72rem; letter-spacing: 1px;">
-                                                                Réserver ce créneau <i class="bi bi-arrow-right ms-1"></i>
-                                                            </span>
                                                         </div>
                                                     </div>
                                                 {% endfor %}
@@ -511,21 +515,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     s.style.borderColor = 'rgba(184, 154, 99, 0.3)';
                     s.style.boxShadow = 'none';
                     s.style.opacity = '0.85';
+                    const badge = s.querySelector('.session-radio-badge');
+                    if (badge) {
+                        badge.style.backgroundColor = 'transparent';
+                        badge.style.border = '1px solid var(--meta-sage)';
+                        badge.style.color = 'var(--meta-sage)';
+                        badge.innerHTML = 'Choisir ce créneau';
+                    }
                 });
 
                 this.classList.add('selected-session');
                 this.style.borderColor = 'var(--meta-gold)';
                 this.style.boxShadow = '0 0 10px rgba(184, 154, 99, 0.4)';
                 this.style.opacity = '1';
+                const badge = this.querySelector('.session-radio-badge');
+                if (badge) {
+                    badge.style.backgroundColor = 'var(--meta-gold)';
+                    badge.style.border = 'none';
+                    badge.style.color = 'var(--meta-black)';
+                    badge.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Sélectionné';
+                }
 
                 activeSessionId = this.getAttribute('data-session-id');
                 activeSessionDate = this.getAttribute('data-date');
-
-                // Ouvrir immédiatement la modale pour ce créneau
-                openGroupModal(activeSessionId, activeSessionDate);
             });
         });
 
+        // Un SEUL et UNIQUE bouton pour ouvrir la modale de réservation
         btnOpenGroupModal.addEventListener('click', function() {
             openGroupModal(activeSessionId, activeSessionDate);
         });
