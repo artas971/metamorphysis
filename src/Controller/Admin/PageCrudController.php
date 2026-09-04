@@ -16,13 +16,30 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
 class PageCrudController extends AbstractCrudController
 {
+    #[Route('/admin/page/{entityId}/edit', name: 'admin_page_edit_legacy', priority: 10)]
+    public function legacyEdit(string $entityId, EntityManagerInterface $em): RedirectResponse
+    {
+        $page = $em->getRepository(Page::class)->find($entityId);
+        $target = ($page && $page->getSlug()) ? $page->getSlug() : $entityId;
+
+        return $this->redirectToRoute('admin_page_edit', ['entityId' => $target]);
+    }
+
+    #[Route('/admin/page/new', name: 'admin_page_new_legacy', priority: 10)]
+    public function legacyNew(): RedirectResponse
+    {
+        return $this->redirectToRoute('admin_page_new');
+    }
+
     public static function getEntityFqcn(): string
     {
         return Page::class;
@@ -47,7 +64,7 @@ class PageCrudController extends AbstractCrudController
                 $adminUrlGenerator
                     ->setController(self::class)
                     ->setAction(Action::EDIT)
-                    ->setEntityId($page->getId())
+                    ->setEntityId($page->getSlug() ?: $page->getId())
                     ->generateUrl()
             );
         }
@@ -97,8 +114,18 @@ class PageCrudController extends AbstractCrudController
             ->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function (Action $action) {
                 return $action->setLabel('💾 Enregistrer & Quitter (Retour aux Pages)')->setIcon('fa fa-check')->addCssClass('btn-primary');
             })
-            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
-                return $action->setLabel('🔄 Enregistrer & Continuer d\'Éditer')->setIcon('fa fa-sync')->addCssClass('btn-outline-primary');
+            ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+                return $action->setLabel('Modifier')
+                    ->linkToUrl(function (Page $page) {
+                        return $this->container->get(AdminUrlGenerator::class)
+                            ->setController(self::class)
+                            ->setAction(Action::EDIT)
+                            ->setEntityId($page->getSlug() ?: $page->getId())
+                            ->generateUrl();
+                    });
+            })
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setLabel('Ajouter une page');
             })
             ->add(Crud::PAGE_INDEX, $previewAction)
             ->add(Crud::PAGE_EDIT, $previewAction);

@@ -113,6 +113,9 @@ class Prestation
     #[ORM\Column(type: 'boolean')]
     private bool $estCollectif = false;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $labelCollectif = 'ATELIER COLLECTIF';
+
     #[ORM\Column]
     private ?int $seuilMinimum = 5;
 
@@ -632,6 +635,17 @@ class Prestation
     public function setEstCollectif(bool $estCollectif): static
     {
         $this->estCollectif = $estCollectif;
+        return $this;
+    }
+
+    public function getLabelCollectif(): ?string
+    {
+        return $this->labelCollectif ?: 'ATELIER COLLECTIF';
+    }
+
+    public function setLabelCollectif(?string $labelCollectif): static
+    {
+        $this->labelCollectif = $labelCollectif ? trim($labelCollectif) : 'ATELIER COLLECTIF';
         return $this;
     }
 

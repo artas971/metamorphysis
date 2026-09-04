@@ -4,8 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\Prestation;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -17,10 +20,28 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Attribute\Route;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class PrestationCrudController extends AbstractCrudController
 {
+    #[Route('/admin/prestation/{entityId}/edit', name: 'admin_prestation_edit_legacy', priority: 10)]
+    public function legacyEdit(string $entityId, EntityManagerInterface $em): RedirectResponse
+    {
+        $prestation = $em->getRepository(Prestation::class)->find($entityId);
+        $target = ($prestation && $prestation->getSlug()) ? $prestation->getSlug() : $entityId;
+
+        return $this->redirectToRoute('admin_prestation_edit', ['entityId' => $target]);
+    }
+
+    #[Route('/admin/prestation/new', name: 'admin_prestation_new_legacy', priority: 10)]
+    public function legacyNew(): RedirectResponse
+    {
+        return $this->redirectToRoute('admin_prestation_new');
+    }
+
     public static function getEntityFqcn(): string
     {
         return Prestation::class;
@@ -39,6 +60,57 @@ class PrestationCrudController extends AbstractCrudController
     {
         return $assets
             ->addJsFile('js/admin_tarifs_dynamiques.js?v=2.2');
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+            return $action->setLabel('Modifier')
+                ->linkToUrl(function (Prestation $prestation) {
+                    return $this->container->get(AdminUrlGenerator::class)
+                        ->setController(self::class)
+                        ->setAction(Action::EDIT)
+                        ->setEntityId($prestation->getSlug() ?: $prestation->getId())
+                        ->generateUrl();
+                });
+        });
+
+        $actions->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+            return $action->setLabel('Ajouter une prestation');
+        });
+
+        return $actions;
+    }
+
+    protected function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        /** @var Prestation $prestation */
+        $prestation = $context->getEntity()->getInstance();
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+
+        $postData = $context->getRequest()->request->all();
+        $submitButtonName = $postData['ea']['editForm']['btn'] 
+            ?? $postData['ea']['newForm']['btn'] 
+            ?? $context->getRequest()->request->get('btn') 
+            ?? $context->getRequest()->query->get('btn') 
+            ?? $action;
+
+        if ($action === Action::NEW || $submitButtonName === Action::SAVE_AND_CONTINUE || $submitButtonName === 'saveAndContinue') {
+            return $this->redirect(
+                $adminUrlGenerator
+                    ->setController(self::class)
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($prestation->getSlug() ?: $prestation->getId())
+                    ->generateUrl()
+            );
+        }
+
+        return $this->redirect(
+            $adminUrlGenerator
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl()
+        );
     }
 
     public function configureFields(string $pageName): iterable
@@ -145,12 +217,18 @@ class PrestationCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setHelp('Collez ici l\'URL complète de la vidéo de présentation.'),
 
-            FormField::addFieldset('👥 Atelier Collectif & Thérapie de Groupe')
-                ->setHelp('Activez cette option si cette prestation est un atelier en groupe avec seuil de participants et pré-réservation.'),
+            FormField::addFieldset('👥 Accompagnement en Groupe & Atelier Collectif')
+                ->setHelp('Activez cette option si cette prestation est un accompagnement collectif / atelier en groupe avec seuil de participants et pré-réservation.'),
 
             BooleanField::new('estCollectif', 'Activer le mode Atelier Collectif / Groupe')
                 ->renderAsSwitch(true)
-                ->setHelp('Si activé, la fiche publique affichera une jauge de participants et le mode pré-réservation avec empreinte bancaire à 0 € sans débit immédiat.'),
+                ->setHelp('Si activé, la fiche publique affichera une jauge de participants et le mode pré-réservation avec empreinte bancaire à 0 € sans débit immédiat.')
+                ->setColumns(6),
+
+            TextField::new('labelCollectif', '🏷️ Intitulé du bouton / Type de collectif')
+                ->setHelp('Texte affiché sur le bouton de la carte (ex : "ATELIER COLLECTIF", "ACCOMPAGNEMENT EN GROUPE", "CERCLE D\'ÉVEIL"...). Par défaut : "ATELIER COLLECTIF".')
+                ->setRequired(false)
+                ->setColumns(6),
 
             IntegerField::new('seuilMinimum', '👥 Nombre Minimum de Participants requis')
                 ->setRequired(false)

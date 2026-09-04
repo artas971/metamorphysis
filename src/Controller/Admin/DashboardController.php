@@ -18,7 +18,32 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 
 #[IsGranted('ROLE_ADMIN')]
-#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
+#[AdminDashboard(
+    routePath: '/admin', 
+    routeName: 'admin',
+    routes: [
+        'new' => [
+            'routePath' => '/nouveau',
+            'routeName' => 'new',
+        ],
+        'edit' => [
+            'routePath' => '/{entityId}/modifier',
+            'routeName' => 'edit',
+        ],
+        'detail' => [
+            'routePath' => '/{entityId}/details',
+            'routeName' => 'detail',
+        ],
+        'delete' => [
+            'routePath' => '/{entityId}/supprimer',
+            'routeName' => 'delete',
+        ],
+        'batchDelete' => [
+            'routePath' => '/supprimer-selection',
+            'routeName' => 'batch_delete',
+        ],
+    ]
+)]
 class DashboardController extends AbstractDashboardController
 {
     private AdminUrlGenerator $adminUrlGenerator;

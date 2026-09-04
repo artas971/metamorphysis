@@ -165,7 +165,7 @@
                                 <div class="p-4" style="background: rgba(74, 79, 65, 0.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--meta-gold); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h3 class="m-0 text-gold fs-5 text-uppercase" style="letter-spacing: 1.5px; font-family: var(--font-title), serif;">
-                                            <i class="bi bi-people-fill me-2"></i>Accompagnement en Groupe
+                                            <i class="bi bi-people-fill me-2"></i>{{ prestation.labelCollectif|default('Accompagnement en Groupe') }}
                                         </h3>
                                         <span class="badge" style="background: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); font-size: 0.85rem;">
                                             Tarif unique : {{ prestation.prix|default(30) }} € / pers
@@ -297,7 +297,7 @@
                     <h5 class="modal-title text-gold typo-titre fs-4 text-uppercase" style="letter-spacing: 1.5px;">
                         <i class="bi bi-shield-lock me-2"></i>Pré-réservation
                     </h5>
-                    <div class="text-ivory small opacity-75">Accompagnement Collectif &bull; {{ prestation.nom }}</div>
+                    <div class="text-ivory small opacity-75">{{ prestation.labelCollectif|default('Accompagnement Collectif') }} &bull; {{ prestation.nom }}</div>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>

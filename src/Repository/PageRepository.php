@@ -16,6 +16,18 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
+    public function find($id, $lockMode = null, $lockVersion = null): ?Page
+    {
+        if (is_string($id) && !is_numeric($id)) {
+            $entity = $this->findOneBy(['slug' => $id]);
+            if ($entity) {
+                return $entity;
+            }
+        }
+
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
     //    /**
     //     * @return Page[] Returns an array of Page objects
     //     */

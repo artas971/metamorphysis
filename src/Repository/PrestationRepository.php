@@ -16,6 +16,18 @@ class PrestationRepository extends ServiceEntityRepository
         parent::__construct($registry, Prestation::class);
     }
 
+    public function find($id, $lockMode = null, $lockVersion = null): ?Prestation
+    {
+        if (is_string($id) && !is_numeric($id)) {
+            $entity = $this->findOneBy(['slug' => $id]);
+            if ($entity) {
+                return $entity;
+            }
+        }
+
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
     //    /**
     //     * @return Prestation[] Returns an array of Prestation objects
     //     */
