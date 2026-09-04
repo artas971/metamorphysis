@@ -298,39 +298,56 @@
                 <form id="form-prereservation-groupe">
                     <input type="hidden" id="input-session-id" value="">
 
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-ivory small text-uppercase">Prénom *</label>
-                            <input type="text" id="group-prenom" class="form-control" required 
-                                   value="{{ app.user ? app.user.prenom : '' }}"
+                    {% if app.user %}
+                        {# UTILISATEUR CONNECTÉ : Champs masqués + récapitulatif élégant #}
+                        <input type="hidden" id="group-prenom" value="{{ app.user.prenom }}">
+                        <input type="hidden" id="group-nom" value="{{ app.user.nom }}">
+                        <input type="hidden" id="group-email" value="{{ app.user.email }}">
+                        <input type="hidden" id="group-telephone" value="{{ app.user.telephone }}">
+
+                        <div class="p-3 mb-3 border rounded d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.4); border-color: rgba(184, 154, 99, 0.3) !important;">
+                            <div>
+                                <div class="text-gold fw-bold small text-uppercase" style="letter-spacing: 1px;">
+                                    <i class="bi bi-person-check-fill me-1"></i>Participant connecté
+                                </div>
+                                <div class="text-ivory small mt-1">
+                                    {{ app.user.prenom }} {{ app.user.nom }} &bull; {{ app.user.email }}
+                                </div>
+                            </div>
+                            <span class="text-sage small"><i class="bi bi-check2-circle me-1"></i>Identifié</span>
+                        </div>
+                    {% else %}
+                        {# VISITEUR NON CONNECTÉ : Formulaire complet #}
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label text-ivory small text-uppercase">Prénom *</label>
+                                <input type="text" id="group-prenom" class="form-control" required 
+                                       style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-ivory small text-uppercase">Nom *</label>
+                                <input type="text" id="group-nom" class="form-control" required
+                                       style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-ivory small text-uppercase">Adresse Email *</label>
+                            <input type="email" id="group-email" class="form-control" required
                                    style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
                         </div>
-                        <div class="col-6">
-                            <label class="form-label text-ivory small text-uppercase">Nom *</label>
-                            <input type="text" id="group-nom" class="form-control" required
-                                   value="{{ app.user ? app.user.nom : '' }}"
+
+                        <div class="mb-3">
+                            <label class="form-label text-ivory small text-uppercase">Téléphone (SMS de rappel) *</label>
+                            <input type="tel" id="group-telephone" class="form-control" required
                                    style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-ivory small text-uppercase">Adresse Email *</label>
-                        <input type="email" id="group-email" class="form-control" required
-                               value="{{ app.user ? app.user.email : '' }}"
-                               style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-ivory small text-uppercase">Téléphone (SMS de rappel) *</label>
-                        <input type="tel" id="group-telephone" class="form-control" required
-                               value="{{ app.user ? app.user.telephone : '' }}"
-                               style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
-                    </div>
+                    {% endif %}
 
                     {# ZONE CARTE BANCAIRE STRIPE #}
                     <div class="mb-4">
                         <label class="form-label text-ivory small text-uppercase d-flex justify-content-between">
-                            <span>Empreinte Carte Bancaire *</span>
+                            <span>Coordonnées bancaires (Numéro, Date, CVC) *</span>
                             <span class="text-gold"><i class="bi bi-lock-fill me-1"></i>3D Secure</span>
                         </label>
                         <div id="stripe-card-element" class="p-3 border rounded" style="background: rgba(0,0,0,0.6); border-color: rgba(184, 154, 99, 0.4) !important;">
@@ -455,8 +472,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (setupData.publicKey && setupData.clientSecret) {
                         stripe = Stripe(setupData.publicKey);
                         clientSecret = setupData.clientSecret;
-                        const elements = stripe.elements();
+                        const elements = stripe.elements({ locale: 'fr' });
                         cardElement = elements.create('card', {
+                            hidePostalCode: true,
                             style: {
                                 base: {
                                     color: '#FFFFFF',
