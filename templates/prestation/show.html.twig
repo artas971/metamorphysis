@@ -159,6 +159,100 @@
                                     <i class="bi bi-person-circle me-2"></i>Accéder à mon espace personnel
                                 </a>
                             </div>
+                        {% elseif prestation.estCollectif %}
+                            {# --- SECTION SPÉCIFIQUE : ATELIER DE GROUPE & THÉRAPIE COLLECTIVE (OPTION A) --- #}
+                            <div class="mt-4 pt-4 border-top border-gold-subtle">
+                                <div class="p-4" style="background: rgba(26, 28, 24, 0.85); border: 1px solid var(--meta-gold); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h3 class="m-0 text-gold fs-5 text-uppercase" style="letter-spacing: 1.5px; font-family: var(--font-title), serif;">
+                                            <i class="bi bi-people-fill me-2"></i>Atelier de Groupe & Éveil
+                                        </h3>
+                                        <span class="badge" style="background: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); font-size: 0.85rem;">
+                                            Tarif unique : {{ prestation.prix|default(30) }} € / pers
+                                        </span>
+                                    </div>
+
+                                    {% if prestation.recurrence %}
+                                        <p class="text-ivory small mb-3">
+                                            <i class="bi bi-calendar-event text-gold me-2"></i><strong>Fréquence :</strong> {{ prestation.recurrence }}
+                                        </p>
+                                    {% endif %}
+
+                                    {# Liste des sessions disponibles #}
+                                    {% set sessionsValides = [] %}
+                                    {% for s in prestation.sessionsGroupe %}
+                                        {% if s.dateDebut > date() and s.statut != 'Annulé' %}
+                                            {% set sessionsValides = sessionsValides|merge([s]) %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if sessionsValides|length > 0 %}
+                                        <div class="mb-3">
+                                            <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">Choisissez votre créneau :</label>
+                                            <div class="d-flex flex-column gap-2" id="sessions-group-list">
+                                                {% for s in sessionsValides %}
+                                                    <div class="session-item p-3 border transition-hover position-relative {% if loop.first %}selected-session{% endif %}"
+                                                         data-session-id="{{ s.id }}"
+                                                         data-date="{{ s.dateDebut|date('d/m/Y à H:i') }}"
+                                                         data-inscrits="{{ s.nombreInscrits }}"
+                                                         data-seuil="{{ s.seuilMinimum }}"
+                                                         data-max="{{ s.capaciteMaximale }}"
+                                                         data-complet="{{ s.isComplet ? '1' : '0' }}"
+                                                         style="background: var(--meta-plum); {% if loop.first %}border-color: var(--meta-gold) !important; box-shadow: 0 0 10px rgba(184, 154, 99, 0.4);{% else %}border-color: rgba(184, 154, 99, 0.3) !important; opacity: 0.85;{% endif %} cursor: pointer;">
+                                                        
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <div class="text-ivory fw-bold">
+                                                                <i class="bi bi-calendar-check text-gold me-2"></i>{{ s.dateDebut|date('d/m/Y à H:i') }}
+                                                                {% if s.dateFin %} - {{ s.dateFin|date('H:i') }}{% endif %}
+                                                            </div>
+                                                            <span class="badge {% if s.isComplet %}bg-danger{% elseif s.isQuorumAtteint %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                                                {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}Quorum validé{% else %}En cours{% endif %}
+                                                            </span>
+                                                        </div>
+
+                                                        {# JAUGE PROGRESSION DYNAMIQUE #}
+                                                        <div class="d-flex justify-content-between small mb-1 text-ivory">
+                                                            <span>Progression : <strong class="text-gold">{{ s.nombreInscrits }}</strong> / {{ s.seuilMinimum }} requis (max {{ s.capaciteMaximale }})</span>
+                                                            <span class="text-gold fw-bold">
+                                                                {% if s.isQuorumAtteint %}
+                                                                    <i class="bi bi-check-circle-fill text-success me-1"></i>Session garantie
+                                                                {% else %}
+                                                                    Plus que {{ s.seuilMinimum - s.nombreInscrits }} place(s)
+                                                                {% endif %}
+                                                            </span>
+                                                        </div>
+                                                        <div class="progress" style="height: 8px; background-color: rgba(0,0,0,0.5); border-radius: 4px;">
+                                                            {% set pct = (s.nombreInscrits / s.seuilMinimum) * 100 %}
+                                                            {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+                                                            <div class="progress-bar" role="progressbar" 
+                                                                 style="width: {{ pct }}%; background: linear-gradient(90deg, #B89A63, #E5C78D);" 
+                                                                 aria-valuenow="{{ s.nombreInscrits }}" aria-valuemin="0" aria-valuemax="{{ s.seuilMinimum }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <button type="button" id="btn-open-group-modal" 
+                                                class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
+                                                style="background-color: var(--meta-plum); color: var(--meta-gold); border: 2px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
+                                            <i class="bi bi-credit-card-2-front me-1"></i>
+                                            <span style="color: var(--meta-ivory);">Pré-réserver ma place</span>
+                                            <span class="badge text-gold ms-2 px-3 py-1" style="background-color: rgba(10, 10, 9, 0.85); border: 1px solid var(--meta-gold); font-size: 0.9rem;">0,00 € débité</span>
+                                        </button>
+
+                                        <div class="text-center mt-2 small text-ivory opacity-75">
+                                            <i class="bi bi-shield-check text-gold me-1"></i>Empreinte bancaire sécurisée (Option A). Vous ne serez débité de {{ prestation.prix|default(30) }} € que si 5 participants s'inscrivent.
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-dark text-ivory text-center m-0" style="border: 1px solid rgba(184, 154, 99, 0.3);">
+                                            <i class="bi bi-info-circle text-gold fs-4 d-block mb-2"></i>
+                                            Les prochaines dates d'ateliers seront programmées très prochainement par Louisa Chouihi.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         {% else %}
                             <div class="mt-4 pt-3" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
                                 <a id="btn-reserver-prestation" href="{{ path('app_reservation_new', {'slug': prestation.slug|default(prestation.id), 'personnes': prestation.minPersonnes}) }}" 
@@ -178,9 +272,106 @@
     </div>
 </div>
 
+{# --- MODAL DE PRÉ-RÉSERVATION AVEC EMPREINTE BANCAIRE (OPTION A) --- #}
+{% if prestation.estCollectif %}
+<div class="modal fade" id="modalPrereservationGroupe" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: var(--meta-black); border: 2px solid var(--meta-gold); box-shadow: 0 0 25px rgba(184, 154, 99, 0.4);">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title text-gold typo-titre fs-4 text-uppercase" style="letter-spacing: 1px;">
+                        <i class="bi bi-shield-lock me-2"></i>Pré-réservation
+                    </h5>
+                    <div class="text-ivory small opacity-75">Atelier : {{ prestation.nom }}</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-4">
+                {# Résumé Créneau sélectionné #}
+                <div class="p-3 mb-3 border rounded" style="background: rgba(74, 79, 65, 0.35); border-color: rgba(184, 154, 99, 0.3) !important;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-ivory small"><i class="bi bi-calendar3 text-gold me-2"></i>Date : <strong id="modal-session-date">-</strong></span>
+                        <span class="badge bg-success">0,00 € débité aujourd'hui</span>
+                    </div>
+                </div>
+
+                <form id="form-prereservation-groupe">
+                    <input type="hidden" id="input-session-id" value="">
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-ivory small text-uppercase">Prénom *</label>
+                            <input type="text" id="group-prenom" class="form-control" required 
+                                   value="{{ app.user ? app.user.prenom : '' }}"
+                                   style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-ivory small text-uppercase">Nom *</label>
+                            <input type="text" id="group-nom" class="form-control" required
+                                   value="{{ app.user ? app.user.nom : '' }}"
+                                   style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-ivory small text-uppercase">Adresse Email *</label>
+                        <input type="email" id="group-email" class="form-control" required
+                               value="{{ app.user ? app.user.email : '' }}"
+                               style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-ivory small text-uppercase">Téléphone (SMS de rappel) *</label>
+                        <input type="tel" id="group-telephone" class="form-control" required
+                               value="{{ app.user ? app.user.telephone : '' }}"
+                               style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                    </div>
+
+                    {# ZONE CARTE BANCAIRE STRIPE #}
+                    <div class="mb-4">
+                        <label class="form-label text-ivory small text-uppercase d-flex justify-content-between">
+                            <span>Empreinte Carte Bancaire *</span>
+                            <span class="text-gold"><i class="bi bi-lock-fill me-1"></i>3D Secure</span>
+                        </label>
+                        <div id="stripe-card-element" class="p-3 border rounded" style="background: rgba(0,0,0,0.6); border-color: rgba(184, 154, 99, 0.4) !important;">
+                            <!-- Stripe injectera l'input de carte ici -->
+                        </div>
+                        <div id="stripe-card-errors" class="text-danger small mt-1" role="alert"></div>
+                    </div>
+
+                    <div class="alert alert-dark small text-ivory p-3 mb-4" style="border: 1px solid rgba(184, 154, 99, 0.3); line-height: 1.4;">
+                        <strong><i class="bi bi-info-circle text-gold me-1"></i>Engagement & Transparence :</strong><br>
+                        Votre carte ne sera <strong>prélevée de {{ prestation.prix|default(30) }} € que si l'atelier réunit au moins 5 participants</strong>. Si ce quorum n'est pas atteint, l'empreinte s'annulera sans aucun frais.
+                    </div>
+
+                    <button type="submit" id="btn-submit-prereservation" class="btn w-100 py-3 fw-bold text-uppercase d-flex align-items-center justify-content-center gap-2"
+                            style="background-color: var(--meta-gold); color: var(--meta-black); border: none; letter-spacing: 1.5px; border-radius: 0;">
+                        <span id="btn-submit-text">Confirmer ma pré-réservation (0 €)</span>
+                        <div id="btn-submit-spinner" class="spinner-border spinner-border-sm text-dark d-none" role="status"></div>
+                    </button>
+                </form>
+
+                {# MESSAGE DE SUCCÈS #}
+                <div id="group-success-box" class="d-none text-center py-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
+                    <h4 class="text-gold typo-titre mt-3">Pré-réservation validée !</h4>
+                    <p class="text-ivory mt-2" id="group-success-msg">Votre place est réservée. Aucun montant n'a été débité.</p>
+                    <div class="p-3 my-3 border rounded" style="background: rgba(74, 79, 65, 0.35); border-color: rgba(184, 154, 99, 0.3) !important;">
+                        <div class="text-gold fw-bold" id="group-success-gauge">-</div>
+                    </div>
+                    <button type="button" class="btn btn-outline-gold mt-2 px-4" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% block javascripts %}
+<script src="https://js.stripe.com/v3/"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. GESTION DES FORMULES CLASSIQUES
     const formulaCards = document.querySelectorAll('.formula-card');
     const btnPricePreview = document.getElementById('btn-price-preview');
     const btnReserver = document.getElementById('btn-reserver-prestation');
@@ -213,6 +404,164 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // 2. GESTION DU MODULE ATELIER DE GROUPE (OPTION A)
+    const sessionItems = document.querySelectorAll('.session-item');
+    const btnOpenGroupModal = document.getElementById('btn-open-group-modal');
+    const modalEl = document.getElementById('modalPrereservationGroupe');
+
+    if (sessionItems.length > 0 && btnOpenGroupModal && modalEl) {
+        let activeSessionId = sessionItems[0].getAttribute('data-session-id');
+        let activeSessionDate = sessionItems[0].getAttribute('data-date');
+
+        sessionItems.forEach(item => {
+            item.addEventListener('click', function() {
+                sessionItems.forEach(s => {
+                    s.classList.remove('selected-session');
+                    s.style.borderColor = 'rgba(184, 154, 99, 0.3)';
+                    s.style.boxShadow = 'none';
+                    s.style.opacity = '0.85';
+                });
+
+                this.classList.add('selected-session');
+                this.style.borderColor = 'var(--meta-gold)';
+                this.style.boxShadow = '0 0 10px rgba(184, 154, 99, 0.4)';
+                this.style.opacity = '1';
+
+                activeSessionId = this.getAttribute('data-session-id');
+                activeSessionDate = this.getAttribute('data-date');
+            });
+        });
+
+        // Initialisation Stripe Elements
+        let stripe = null;
+        let cardElement = null;
+        let clientSecret = null;
+
+        btnOpenGroupModal.addEventListener('click', async function() {
+            document.getElementById('input-session-id').value = activeSessionId;
+            document.getElementById('modal-session-date').innerText = activeSessionDate;
+            document.getElementById('form-prereservation-groupe').classList.remove('d-none');
+            document.getElementById('group-success-box').classList.add('d-none');
+
+            const bsModal = new bootstrap.Modal(modalEl);
+            bsModal.show();
+
+            // Appel pour créer le SetupIntent Stripe
+            if (!stripe) {
+                try {
+                    const resp = await fetch("{{ path('app_atelier_setup_intent') }}", { method: 'POST' });
+                    const setupData = await resp.json();
+                    if (setupData.publicKey && setupData.clientSecret) {
+                        stripe = Stripe(setupData.publicKey);
+                        clientSecret = setupData.clientSecret;
+                        const elements = stripe.elements();
+                        cardElement = elements.create('card', {
+                            style: {
+                                base: {
+                                    color: '#FFFFFF',
+                                    fontFamily: 'Segoe UI, sans-serif',
+                                    fontSize: '15px',
+                                    '::placeholder': { color: '#94A3B8' }
+                                },
+                                invalid: { color: '#FA755A' }
+                            }
+                        });
+                        cardElement.mount('#stripe-card-element');
+                    }
+                } catch (e) {
+                    console.error('Erreur chargement Stripe:', e);
+                }
+            }
+        });
+
+        // Soumission du formulaire de pré-réservation
+        const groupForm = document.getElementById('form-prereservation-groupe');
+        const submitBtn = document.getElementById('btn-submit-prereservation');
+        const submitText = document.getElementById('btn-submit-text');
+        const submitSpinner = document.getElementById('btn-submit-spinner');
+        const cardErrors = document.getElementById('stripe-card-errors');
+
+        groupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            cardErrors.textContent = '';
+            submitBtn.disabled = true;
+            submitText.textContent = 'Sécurisation de l\'empreinte...';
+            submitSpinner.classList.remove('d-none');
+
+            const prenom = document.getElementById('group-prenom').value;
+            const nom = document.getElementById('group-nom').value;
+            const email = document.getElementById('group-email').value;
+            const telephone = document.getElementById('group-telephone').value;
+            const sessionId = document.getElementById('input-session-id').value;
+
+            try {
+                // 1. Validation de la carte et du 3D Secure via Stripe SetupIntent
+                const { setupIntent, error } = await stripe.confirmCardSetup(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: prenom + ' ' + nom,
+                            email: email,
+                            phone: telephone
+                        }
+                    }
+                });
+
+                if (error) {
+                    cardErrors.textContent = error.message;
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Confirmer ma pré-réservation (0 €)';
+                    submitSpinner.classList.add('d-none');
+                    return;
+                }
+
+                // 2. Enregistrement en BDD de l'empreinte validée
+                const resInsc = await fetch("{{ path('app_atelier_inscrire') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        nom: nom,
+                        prenom: prenom,
+                        email: email,
+                        telephone: telephone,
+                        payment_method_id: setupIntent.payment_method
+                    })
+                });
+
+                const inscData = await resInsc.json();
+
+                if (inscData.success) {
+                    groupForm.classList.add('d-none');
+                    const successBox = document.getElementById('group-success-box');
+                    successBox.classList.remove('d-none');
+
+                    if (inscData.quorumAtteint) {
+                        document.getElementById('group-success-msg').innerHTML = 
+                            '<strong class="text-success">🎉 Le quorum des ' + inscData.seuilMinimum + ' participants est atteint !</strong><br>Votre atelier est confirmé. Le prélèvement de 30 € a été validé et votre lien visio vous a été envoyé par email.';
+                        document.getElementById('group-success-gauge').innerText = 
+                            'Statut : Session Confirmée (' + inscData.totalInscrits + ' participants inscrits)';
+                    } else {
+                        document.getElementById('group-success-msg').innerHTML = 
+                            'Votre carte a été enregistrée avec succès. <strong>Montant débité : 0,00 €</strong>.<br>Vous serez automatiquement prélevé dès que le 5ᵉ participant s\'inscrira.';
+                        document.getElementById('group-success-gauge').innerText = 
+                            'Jauge actuelle : ' + inscData.totalInscrits + ' sur ' + inscData.seuilMinimum + ' requis';
+                    }
+                } else {
+                    cardErrors.textContent = inscData.error || 'Une erreur est survenue.';
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Confirmer ma pré-réservation (0 €)';
+                    submitSpinner.classList.add('d-none');
+                }
+            } catch (err) {
+                cardErrors.textContent = 'Erreur réseau ou communication avec Stripe.';
+                submitBtn.disabled = false;
+                submitText.textContent = 'Confirmer ma pré-réservation (0 €)';
+                submitSpinner.classList.add('d-none');
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

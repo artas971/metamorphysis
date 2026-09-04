@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
@@ -55,6 +56,8 @@ class PrestationCrudController extends AbstractCrudController
                 IntegerField::new('maxPersonnes', '👥 Max Pers'),
                 IntegerField::new('nombreSeances', '🎟️ Séances'),
                 IntegerField::new('ordre', '🔢 Ordre'),
+                BooleanField::new('estCollectif', '👥 Groupe')
+                    ->renderAsSwitch(true),
                 BooleanField::new('estMisEnAvant', '⭐ En Vedette')
                     ->renderAsSwitch(true),
             ];
@@ -132,6 +135,33 @@ class PrestationCrudController extends AbstractCrudController
             UrlField::new('lienVideo', 'Lien Vidéo (YouTube, Vimeo, etc.)')
                 ->setRequired(false)
                 ->setHelp('Collez ici l\'URL complète de la vidéo de présentation.'),
+
+            FormField::addFieldset('👥 Atelier Collectif & Thérapie de Groupe')
+                ->setHelp('Activez cette option si cette prestation est un atelier en groupe avec seuil de participants et pré-réservation.'),
+
+            BooleanField::new('estCollectif', 'Activer le mode Atelier Collectif / Groupe')
+                ->renderAsSwitch(true)
+                ->setHelp('Si activé, la fiche publique affichera une jauge de participants et le mode pré-réservation (Option A).'),
+
+            IntegerField::new('seuilMinimum', '👥 Seuil Minimum de Participants (Quorum)')
+                ->setRequired(false)
+                ->setHelp('Nombre minimum d\'inscrits pour déclencher la séance et les paiements (défaut : 5).')
+                ->setColumns(6),
+
+            IntegerField::new('capaciteMaximale', '👥 Capacité Maximale de la Salle')
+                ->setRequired(false)
+                ->setHelp('Plafond maximal de participants pour cette session de groupe (ex : 8, 10, 12).')
+                ->setColumns(6),
+
+            IntegerField::new('delaiLimiteHeures', '⏳ Délai Limite de Confirmation (en heures)')
+                ->setRequired(false)
+                ->setHelp('Nombre d\'heures avant l\'atelier pour statuer si le seuil est atteint (ex: 24h ou 48h).')
+                ->setColumns(6),
+
+            TextField::new('recurrence', '🔁 Fréquence / Récurrence')
+                ->setRequired(false)
+                ->setHelp('Ex: "Chaque samedi de 14h00 à 15h30", "Un dimanche sur deux"...')
+                ->setColumns(6),
         ];
     }
 

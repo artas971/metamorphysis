@@ -109,14 +109,41 @@ class Prestation
     #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'prestation')]
     private Collection $seances;
 
+    // --- CHAMPS THÉRAPIE / ATELIER DE GROUPE ---
+    #[ORM\Column(type: 'boolean')]
+    private bool $estCollectif = false;
+
+    #[ORM\Column]
+    private ?int $seuilMinimum = 5;
+
+    #[ORM\Column]
+    private ?int $capaciteMaximale = 10;
+
+    #[ORM\Column]
+    private ?int $delaiLimiteHeures = 24;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $recurrence = null;
+
+    /**
+     * @var Collection<int, SessionGroupe>
+     */
+    #[ORM\OneToMany(targetEntity: SessionGroupe::class, mappedBy: 'prestation', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $sessionsGroupe;
+
     public function __construct()
     {
         $this->Entrée = new ArrayCollection();
         $this->seances = new ArrayCollection();
+        $this->sessionsGroupe = new ArrayCollection();
         $this->minPersonnes = 1;
         $this->maxPersonnes = 1;
         $this->nombreSeances = 1;
         $this->tarifsParPersonne = [];
+        $this->estCollectif = false;
+        $this->seuilMinimum = 5;
+        $this->capaciteMaximale = 10;
+        $this->delaiLimiteHeures = 24;
     }
 
     public function getId(): ?int
@@ -557,6 +584,88 @@ class Prestation
             }
         }
 
+        return $this;
+    }
+
+    public function isEstCollectif(): bool
+    {
+        return $this->estCollectif;
+    }
+
+    public function setEstCollectif(bool $estCollectif): static
+    {
+        $this->estCollectif = $estCollectif;
+        return $this;
+    }
+
+    public function getSeuilMinimum(): int
+    {
+        return $this->seuilMinimum ?? 5;
+    }
+
+    public function setSeuilMinimum(int $seuilMinimum): static
+    {
+        $this->seuilMinimum = $seuilMinimum;
+        return $this;
+    }
+
+    public function getCapaciteMaximale(): int
+    {
+        return $this->capaciteMaximale ?? 10;
+    }
+
+    public function setCapaciteMaximale(int $capaciteMaximale): static
+    {
+        $this->capaciteMaximale = $capaciteMaximale;
+        return $this;
+    }
+
+    public function getDelaiLimiteHeures(): int
+    {
+        return $this->delaiLimiteHeures ?? 24;
+    }
+
+    public function setDelaiLimiteHeures(int $delaiLimiteHeures): static
+    {
+        $this->delaiLimiteHeures = $delaiLimiteHeures;
+        return $this;
+    }
+
+    public function getRecurrence(): ?string
+    {
+        return $this->recurrence;
+    }
+
+    public function setRecurrence(?string $recurrence): static
+    {
+        $this->recurrence = $recurrence;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SessionGroupe>
+     */
+    public function getSessionsGroupe(): Collection
+    {
+        return $this->sessionsGroupe;
+    }
+
+    public function addSessionGroupe(SessionGroupe $sessionGroupe): static
+    {
+        if (!$this->sessionsGroupe->contains($sessionGroupe)) {
+            $this->sessionsGroupe->add($sessionGroupe);
+            $sessionGroupe->setPrestation($this);
+        }
+        return $this;
+    }
+
+    public function removeSessionGroupe(SessionGroupe $sessionGroupe): static
+    {
+        if ($this->sessionsGroupe->removeElement($sessionGroupe)) {
+            if ($sessionGroupe->getPrestation() === $this) {
+                $sessionGroupe->setPrestation(null);
+            }
+        }
         return $this;
     }
 }
