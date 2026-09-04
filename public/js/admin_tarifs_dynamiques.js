@@ -2,12 +2,14 @@
  * Gestion dynamique de la grille tarifaire dans EasyAdmin
  * Génère automatiquement les champs de formules et tarifs personnalisés en fonction du nombre de prix sélectionné.
  */
-document.addEventListener('DOMContentLoaded', function() {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDynamicPricingGrid);
+} else {
     initDynamicPricingGrid();
-});
+}
 
 function initDynamicPricingGrid() {
-    const nombrePrixSelect = document.querySelector('select[name$="[nombrePrix]"], input[name$="[nombrePrix]"]');
+    const nombrePrixSelect = document.querySelector('select[name$="[nombrePrix]"], input[name$="[nombrePrix]"], select[name*="nombrePrix"], #Prestation_nombrePrix');
     const minInput = document.querySelector('input[name$="[minPersonnes]"]') || document.getElementById('min-personnes-input');
     const maxInput = document.querySelector('input[name$="[maxPersonnes]"]') || document.getElementById('max-personnes-input');
     const jsonInput = document.querySelector('input[name$="[tarifsParPersonneJson]"]') || document.getElementById('tarifs-json-input');
@@ -44,7 +46,7 @@ function initDynamicPricingGrid() {
     if (!container) {
         container = document.createElement('div');
         container.id = 'ea-dynamic-tarifs-card';
-        container.className = 'form-group field-tarifs-dynamiques mb-4';
+        container.className = 'col-12 form-group field-tarifs-dynamiques mb-4';
         container.innerHTML = `
             <div style="background: #1a1a17; border: 1px solid #B89A63; border-left: 4px solid #B89A63; border-radius: 4px; padding: 20px; margin-top: 15px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
@@ -64,11 +66,17 @@ function initDynamicPricingGrid() {
         `;
 
         // Insertion après le champ nombrePrix (ou maxFieldGroup en fallback)
-        const targetAnchor = (nombrePrixSelect ? (nombrePrixSelect.closest('.form-group') || nombrePrixSelect.closest('.field-choice') || nombrePrixSelect.parentElement) : null)
+        const targetAnchor = (nombrePrixSelect ? (nombrePrixSelect.closest('.field-choice') || nombrePrixSelect.closest('.form-group') || nombrePrixSelect.closest('[class*="field-"]') || nombrePrixSelect.closest('.col-12, .col-md-6, .col-sm-6') || nombrePrixSelect.parentElement) : null)
             || (maxInput ? (maxInput.closest('.form-group') || maxInput.closest('.field-integer') || maxInput.parentElement) : null);
 
         if (targetAnchor && targetAnchor.parentNode) {
             targetAnchor.parentNode.insertBefore(container, targetAnchor.nextSibling);
+        } else {
+            const form = document.querySelector('.ea-edit-form, .ea-new-form, form');
+            if (form) {
+                const row = form.querySelector('.row') || form;
+                row.appendChild(container);
+            }
         }
     }
 
@@ -111,6 +119,10 @@ function initDynamicPricingGrid() {
                 currentSousTitre = rawData.sousTitre !== undefined ? rawData.sousTitre : '';
             } else if (typeof rawData === 'number' || typeof rawData === 'string') {
                 currentPrice = rawData;
+            }
+
+            if (currentPrice === '' && i === 1 && prixBaseInput && prixBaseInput.value) {
+                currentPrice = prixBaseInput.value;
             }
 
             // Valeurs par défaut intelligentes
@@ -252,9 +264,52 @@ function initDynamicPricingGrid() {
     if (nombrePrixSelect) {
         nombrePrixSelect.addEventListener('change', renderFields);
         nombrePrixSelect.addEventListener('input', renderFields);
+
+        // Si TomSelect est utilisé par EasyAdmin
+        const hookTomSelect = () => {
+            if (nombrePrixSelect && nombrePrixSelect.tomselect) {
+                try {
+                    nombrePrixSelect.tomselect.off('change', renderFields);
+                } catch(e) {}
+                nombrePrixSelect.tomselect.on('change', renderFields);
+                return true;
+            }
+            return false;
+        };
+
+        if (!hookTomSelect()) {
+            const tsInterval = setInterval(() => {
+                if (hookTomSelect()) {
+                    clearInterval(tsInterval);
+                }
+            }, 100);
+            setTimeout(() => clearInterval(tsInterval), 3000);
+        }
+    }
+
+    // Écouteur global en délégation pour capturer tout changement sur nombrePrix
+    document.addEventListener('change', function(e) {
+        if (e.target && (e.target.matches('select[name*="nombrePrix"]') || e.target.id === 'Prestation_nombrePrix')) {
+            renderFields();
+        }
+    });
+
+    // Clic sur option d'un dropdown TomSelect
+    document.addEventListener('click', function(e) {
+        const opt = e.target.closest('.ts-dropdown .option');
+        if (opt) {
+            setTimeout(renderFields, 60);
+        }
+    });
+
+    // Sauvegarde avant soumission du formulaire
+    const form = (nombrePrixSelect || jsonInput || minInput)?.closest('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            updateJsonAndBase();
+        });
     }
 
     // Initialisation
     renderFields();
-}
 }

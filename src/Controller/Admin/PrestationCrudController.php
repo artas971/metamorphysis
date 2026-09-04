@@ -38,7 +38,7 @@ class PrestationCrudController extends AbstractCrudController
     public function configureAssets(Assets $assets): Assets
     {
         return $assets
-            ->addJsFile('js/admin_tarifs_dynamiques.js');
+            ->addJsFile('js/admin_tarifs_dynamiques.js?v=2.2');
     }
 
     public function configureFields(string $pageName): iterable

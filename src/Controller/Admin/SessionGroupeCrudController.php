@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\SessionGroupe;
 use App\Service\DailyCoService;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -76,7 +77,13 @@ class SessionGroupeCrudController extends AbstractCrudController
             ->setHelp('Groupe de cohorte auquel cette séance est rattachée (optionnel).');
 
         yield IntegerField::new('numeroSeance', 'N° Séance')
-            ->setHelp('Numéro d\'ordre dans le parcours de groupe (ex: 1, 2, 3...)');
+            ->setHelp('Indiquez 1 pour la 1ère séance (pouvant être publique sur le site). Indiquez 2, 3... pour les séances suivantes de suivi (strictement privées pour la cohorte).')
+            ->formatValue(function ($value) {
+                if ($value === null || $value <= 1) {
+                    return '<span class="badge" style="background:#28a745;color:#fff;padding:5px 8px;font-size:12px;"><i class="fa fa-door-open me-1"></i>Séance 1 (Initiale / Publique si activée)</span>';
+                }
+                return sprintf('<span class="badge" style="background:#17a2b8;color:#fff;padding:5px 8px;font-size:12px;"><i class="fa fa-users me-1"></i>Séance %d (Privée cohorte)</span>', $value);
+            });
 
         yield TextField::new('titre', 'Thème / Titre')
             ->setHelp('Ex: Approfondissement et libération émotionnelle');
@@ -108,7 +115,7 @@ class SessionGroupeCrudController extends AbstractCrudController
             ]);
 
         yield BooleanField::new('estVisiblePublic', '👁️ Visible sur le site public')
-            ->setHelp('Activez pour afficher ce créneau aux visiteurs sur le site internet.')
+            ->setHelp('⚠️ Uniquement pour la Séance n°1 ! Si activé : les visiteurs du site public peuvent réserver cette 1ère séance. Pour toute séance 2 ou +, cette option est automatiquement désactivée car la séance est réservée uniquement à votre groupe de suivi.')
             ->renderAsSwitch(true);
 
         yield TextField::new('jaugeInscriptions', '👥 Présences & Inscrits')
@@ -156,4 +163,27 @@ class SessionGroupeCrudController extends AbstractCrudController
                 return implode('<br><br>', $lines) ?: 'Aucun participant pour le moment.';
             });
     }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof SessionGroupe) {
+            // Sécurité : Les séances de suivi (n° 2, 3...) sont strictement privées pour la cohorte
+            if ($entityInstance->getNumeroSeance() > 1) {
+                $entityInstance->setEstVisiblePublic(false);
+            }
+        }
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof SessionGroupe) {
+            // Sécurité : Les séances de suivi (n° 2, 3...) sont strictement privées pour la cohorte
+            if ($entityInstance->getNumeroSeance() > 1) {
+                $entityInstance->setEstVisiblePublic(false);
+            }
+        }
+        parent::updateEntity($entityManager, $entityInstance);
+    }
 }
+

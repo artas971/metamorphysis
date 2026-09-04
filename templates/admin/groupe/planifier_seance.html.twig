@@ -119,18 +119,49 @@
                     {% endif %}
 
                     {# AJOUTER D'AUTRES PARTICIPANTS #}
-                    <div class="mt-3 p-3" style="background-color: rgba(10, 10, 9, 0.4); border: 1px solid rgba(184, 154, 99, 0.2);">
-                        <label class="form-label text-gold small text-uppercase fw-bold" style="letter-spacing: 1px;">
-                            <i class="bi bi-person-plus me-1"></i>Ajouter un autre client au groupe pour cette séance :
-                        </label>
-                        <select name="selected_users[]" multiple class="form-select rounded-0 text-white" style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4); min-height: 100px;">
+                    <div class="mt-4 p-3" style="background-color: rgba(10, 10, 9, 0.5); border: 1px solid rgba(184, 154, 99, 0.35);">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                            <label class="form-label text-gold small text-uppercase fw-bold m-0" style="letter-spacing: 1px;">
+                                <i class="bi bi-person-plus-fill me-2"></i>Ajouter d'autres clients du cabinet à cette séance :
+                            </label>
+                            <span class="badge" style="background-color: #4F4F41; color: var(--meta-ivory); border: 1px solid var(--meta-gold); font-size: 0.75rem;">
+                                Cochez simplement les personnes à inviter
+                            </span>
+                        </div>
+                        
+                        {# Filtre de recherche instantané #}
+                        <div class="input-group input-group-sm mb-3">
+                            <span class="input-group-text border-secondary" style="background-color: #1a1a17; color: var(--meta-gold); border-color: rgba(184, 154, 99, 0.4) !important;">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="filter-clients-input" class="form-control text-white" placeholder="Tapez un nom, prénom ou email pour filtrer..." style="background-color: rgba(10, 10, 9, 0.8); border: 1px solid rgba(184, 154, 99, 0.4); border-left: none;">
+                        </div>
+
+                        {# Liste à cocher avec scrollbar #}
+                        <div class="p-2 border rounded-0" id="clients-checklist" style="background-color: rgba(15, 15, 12, 0.7); border-color: rgba(184, 154, 99, 0.25) !important; max-height: 220px; overflow-y: auto;">
+                            {% set autresClients = [] %}
                             {% for u in allUsers %}
                                 {% if u.id not in participantsBase|keys %}
-                                    <option value="{{ u.id }}">{{ u.prenom|capitalize }} {{ u.nom|upper }} ({{ u.email }})</option>
+                                    {% set autresClients = autresClients|merge([u]) %}
+                                    <div class="form-check p-2 rounded mb-1 client-check-item transition-hover" style="border: 1px solid rgba(184, 154, 99, 0.15); background-color: rgba(42, 26, 30, 0.35);">
+                                        <input class="form-check-input ms-0 me-2" type="checkbox" name="nouveaux_users[]" value="{{ u.id }}" id="client-{{ u.id }}">
+                                        <label class="form-check-label text-ivory w-100" for="client-{{ u.id }}" style="cursor: pointer;">
+                                            <strong class="text-gold"><i class="bi bi-person me-1"></i>{{ u.prenom|capitalize }} {{ u.nom|upper }}</strong> 
+                                            <span class="opacity-75 small ms-1">({{ u.email }})</span>
+                                            {% if u.telephone %}
+                                                <span class="opacity-50 small ms-2">&bull; <i class="bi bi-telephone me-1"></i>{{ u.telephone }}</span>
+                                            {% endif %}
+                                        </label>
+                                    </div>
                                 {% endif %}
                             {% endfor %}
-                        </select>
-                        <div class="form-text text-ivory opacity-75 small">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs clients.</div>
+                            {% if autresClients|length == 0 %}
+                                <div class="text-muted small text-center py-3">Tous vos clients enregistrés font déjà partie de la liste des membres ci-dessus.</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-text text-ivory opacity-75 small mt-2">
+                            <i class="bi bi-info-circle text-gold me-1"></i>Les clients cochés seront automatiquement ajoutés à cette séance et intégrés au groupe d'accompagnement.
+                        </div>
                     </div>
                 </div>
 
@@ -139,7 +170,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="send_notifications" id="sendNotifications" value="1" checked>
                         <label class="form-check-label text-ivory fw-bold" for="sendNotifications">
-                            <i class="bi bi-envelope-paper-heart text-gold me-1"></i>Envoyer un e-mail d'invitation immédiat à chaque participant reconduit
+                            <i class="bi bi-envelope-paper-heart text-gold me-1"></i>Envoyer un e-mail d'invitation immédiat à chaque participant reconduit ou ajouté
                         </label>
                     </div>
                     <div class="small text-ivory opacity-75 mt-1 ms-4">
@@ -165,6 +196,21 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Filtre de recherche de clients
+    const filterInput = document.getElementById('filter-clients-input');
+    const checklist = document.getElementById('clients-checklist');
+    if (filterInput && checklist) {
+        filterInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            const items = checklist.querySelectorAll('.client-check-item');
+            items.forEach(function(item) {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        });
+    }
+
+    // Gestion du tout cocher/décocher pour les participants existants
     const checkAll = document.getElementById('check-all');
     const checkboxes = document.querySelectorAll('.participant-checkbox');
     if (checkAll) {

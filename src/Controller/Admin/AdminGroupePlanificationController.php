@@ -74,8 +74,9 @@ class AdminGroupePlanificationController extends AbstractController
             $dateDebutStr = $request->request->get('date_debut');
             $dateFinStr = $request->request->get('date_fin');
             $titre = trim((string)$request->request->get('titre', ''));
-            $notes = trim((string)$request->request->get('notes', ''));
             $selectedUserIds = (array)$request->request->all('selected_users');
+            $nouveauxUserIds = (array)$request->request->all('nouveaux_users');
+            $allTargetUserIds = array_unique(array_filter(array_merge($selectedUserIds, $nouveauxUserIds)));
             $sendNotifications = $request->request->getBoolean('send_notifications', true);
 
             if (!$dateDebutStr) {
@@ -101,11 +102,13 @@ class AdminGroupePlanificationController extends AbstractController
             $newSession->setTitre($titre ?: sprintf('Séance %d', $nextNumero));
             $newSession->setNotesTherapeute($notes);
             $newSession->setStatut("En cours d'inscriptions");
+            // Les séances 2+ sont des séances privées de cohorte (invisibles sur le site public)
+            $newSession->setEstVisiblePublic(false);
 
             $em->persist($newSession);
 
             $inscriptionsCreated = 0;
-            foreach ($selectedUserIds as $userId) {
+            foreach ($allTargetUserIds as $userId) {
                 $user = $userRepo->find((int)$userId);
                 if (!$user) continue;
 
