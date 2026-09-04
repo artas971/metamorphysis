@@ -215,11 +215,11 @@
                                                             </div>
                                                             <div class="d-flex align-items-center gap-2">
                                                                 {% if sessionsValides|length > 1 %}
-                                                                    <span class="session-radio-badge badge" style="{% if loop.first %}background-color: var(--meta-gold); color: var(--meta-black);{% else %}background-color: transparent; border: 1px solid var(--meta-sage); color: var(--meta-sage);{% endif %} font-size: 0.72rem;">
+                                                                    <span class="session-radio-badge badge" style="{% if loop.first %}background-color: var(--meta-gold); color: var(--meta-black);{% else %}background-color: transparent; border: 1px solid rgba(184, 154, 99, 0.4); color: var(--meta-ivory-dim);{% endif %} font-size: 0.72rem;">
                                                                         {% if loop.first %}<i class="bi bi-check-circle-fill me-1"></i>Sélectionné{% else %}Choisir ce créneau{% endif %}
                                                                     </span>
                                                                 {% endif %}
-                                                                <span class="badge" style="{% if s.isComplet %}background-color: rgba(42, 26, 30, 0.9); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;{% elseif s.isQuorumAtteint %}background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory);{% else %}background-color: var(--meta-plum); border: 1px solid var(--meta-gold); color: var(--meta-gold);{% endif %}">
+                                                                <span class="badge" style="{% if s.isComplet %}background-color: rgba(42, 26, 30, 0.9); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;{% elseif s.isQuorumAtteint %}background-color: #4F4F41; border: 1px solid var(--meta-gold); color: var(--meta-ivory);{% else %}background-color: var(--meta-plum); border: 1px solid var(--meta-gold); color: var(--meta-gold);{% endif %}">
                                                                     {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}<i class="bi bi-check2-circle text-gold me-1"></i>Atelier confirmé{% else %}<i class="bi bi-hourglass-split me-1"></i>Inscriptions en cours{% endif %}
                                                                 </span>
                                                             </div>
@@ -303,9 +303,9 @@
             </div>
             <div class="modal-body p-4">
                 {# Résumé Créneau sélectionné #}
-                <div class="p-3 mb-3 d-flex justify-content-between align-items-center" style="background: rgba(74, 79, 65, 0.35); border: 1px solid rgba(184, 154, 99, 0.35); border-radius: 0;">
+                <div class="p-3 mb-3 d-flex justify-content-between align-items-center" style="background: rgba(79, 79, 65, 0.4); border: 1px solid rgba(184, 154, 99, 0.35); border-radius: 0;">
                     <span class="text-ivory small"><i class="bi bi-calendar3 text-gold me-2"></i>Date : <strong id="modal-session-date" class="text-gold">-</strong></span>
-                    <span class="badge px-2 py-1" style="background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.5px;">
+                    <span class="badge px-2 py-1" style="background-color: #4F4F41; border: 1px solid var(--meta-gold); color: var(--meta-ivory); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.5px;">
                         <i class="bi bi-shield-check text-gold me-1"></i>0,00 € débité
                     </span>
                 </div>
@@ -329,7 +329,7 @@
                                     {{ app.user.prenom }} {{ app.user.nom }} &bull; <span class="opacity-75">{{ app.user.email }}</span>
                                 </div>
                             </div>
-                            <span class="badge" style="background-color: rgba(74, 79, 65, 0.7); border: 1px solid var(--meta-sage); color: var(--meta-ivory); font-size: 0.75rem;">
+                            <span class="badge" style="background-color: #4F4F41; border: 1px solid var(--meta-gold); color: var(--meta-ivory); font-size: 0.75rem;">
                                 <i class="bi bi-check2 text-gold me-1"></i>Identifié
                             </span>
                         </div>
@@ -374,7 +374,7 @@
                     </div>
 
                     {# ENCART ENGAGEMENT & TRANSPARENCE (Charte Pourpre & Olive & Or) #}
-                    <div class="p-3 mb-4 small" style="background: linear-gradient(135deg, rgba(74, 79, 65, 0.4) 0%, rgba(42, 26, 30, 0.5) 100%); border: 1px solid var(--meta-gold); border-radius: 0; line-height: 1.5;">
+                    <div class="p-3 mb-4 small" style="background: linear-gradient(135deg, rgba(79, 79, 65, 0.45) 0%, rgba(42, 26, 30, 0.55) 100%); border: 1px solid var(--meta-gold); border-radius: 0; line-height: 1.5;">
                         <div class="text-gold fw-bold mb-1 d-flex align-items-center gap-1" style="letter-spacing: 0.5px;">
                             <i class="bi bi-info-circle-fill text-gold"></i>
                             <span>ENGAGEMENT &amp; TRANSPARENCE :</span>
@@ -397,7 +397,7 @@
                     <i class="bi bi-check-circle-fill text-gold" style="font-size: 3.5rem;"></i>
                     <h4 class="text-gold typo-titre mt-3 fs-3">Pré-réservation validée !</h4>
                     <p class="text-ivory mt-2" id="group-success-msg">Votre place est réservée. Aucun montant n'a été débité.</p>
-                    <div class="p-3 my-3" style="background: rgba(74, 79, 65, 0.4); border: 1px solid var(--meta-gold); border-radius: 0;">
+                    <div class="p-3 my-3" style="background: rgba(79, 79, 65, 0.45); border: 1px solid var(--meta-gold); border-radius: 0;">
                         <div class="text-gold fw-bold" id="group-success-gauge">-</div>
                     </div>
                     <button type="button" class="btn btn-outline-gold mt-2 px-4 py-2" data-bs-dismiss="modal">Fermer</button>
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formulaCards.forEach(c => {
                 c.classList.remove('active-formula');
                 c.style.backgroundColor = 'var(--meta-plum)';
-                c.style.border = '1px solid var(--meta-sage)';
+                c.style.border = '1px solid rgba(184, 154, 99, 0.35)';
                 c.style.boxShadow = 'none';
                 c.style.opacity = '0.85';
             });
@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     color: '#FFFFF0',
                                     fontFamily: 'Inter, sans-serif',
                                     fontSize: '15px',
-                                    '::placeholder': { color: '#8A8F7C' },
+                                    '::placeholder': { color: '#D8D0BE' },
                                     iconColor: '#B89A63'
                                 },
                                 invalid: { 
@@ -518,8 +518,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const badge = s.querySelector('.session-radio-badge');
                     if (badge) {
                         badge.style.backgroundColor = 'transparent';
-                        badge.style.border = '1px solid var(--meta-sage)';
-                        badge.style.color = 'var(--meta-sage)';
+                        badge.style.border = '1px solid rgba(184, 154, 99, 0.4)';
+                        badge.style.color = '#D8D0BE';
                         badge.innerHTML = 'Choisir ce créneau';
                     }
                 });
