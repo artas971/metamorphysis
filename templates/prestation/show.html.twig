@@ -205,8 +205,8 @@
                                                                 <i class="bi bi-calendar-check text-gold me-2"></i>{{ s.dateDebut|date('d/m/Y à H:i') }}
                                                                 {% if s.dateFin %} - {{ s.dateFin|date('H:i') }}{% endif %}
                                                             </div>
-                                                            <span class="badge {% if s.isComplet %}bg-danger{% elseif s.isQuorumAtteint %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                                                                {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}Quorum validé{% else %}En cours{% endif %}
+                                                            <span class="badge" style="{% if s.isComplet %}background-color: rgba(42, 26, 30, 0.9); border: 1px solid rgba(220, 53, 69, 0.6); color: #ff8b94;{% elseif s.isQuorumAtteint %}background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory);{% else %}background-color: var(--meta-plum); border: 1px solid var(--meta-gold); color: var(--meta-gold);{% endif %}">
+                                                                {% if s.isComplet %}Complet{% elseif s.isQuorumAtteint %}<i class="bi bi-check2-circle text-gold me-1"></i>Quorum validé{% else %}<i class="bi bi-hourglass-split me-1"></i>En cours{% endif %}
                                                             </span>
                                                         </div>
 
@@ -215,17 +215,17 @@
                                                             <span>Progression : <strong class="text-gold">{{ s.nombreInscrits }}</strong> / {{ s.seuilMinimum }} requis (max {{ s.capaciteMaximale }})</span>
                                                             <span class="text-gold fw-bold">
                                                                 {% if s.isQuorumAtteint %}
-                                                                    <i class="bi bi-check-circle-fill text-success me-1"></i>Session garantie
+                                                                    <i class="bi bi-check-circle-fill text-gold me-1"></i>Session garantie
                                                                 {% else %}
                                                                     Plus que {{ s.seuilMinimum - s.nombreInscrits }} place(s)
                                                                 {% endif %}
                                                             </span>
                                                         </div>
-                                                        <div class="progress" style="height: 8px; background-color: rgba(0,0,0,0.5); border-radius: 4px;">
+                                                        <div class="progress" style="height: 8px; background-color: rgba(10, 10, 9, 0.7); border: 1px solid rgba(184, 154, 99, 0.3); border-radius: 0;">
                                                             {% set pct = (s.nombreInscrits / s.seuilMinimum) * 100 %}
                                                             {% if pct > 100 %}{% set pct = 100 %}{% endif %}
                                                             <div class="progress-bar" role="progressbar" 
-                                                                 style="width: {{ pct }}%; background: linear-gradient(90deg, #B89A63, #E5C78D);" 
+                                                                 style="width: {{ pct }}%; background: linear-gradient(90deg, var(--meta-gold), #E5C78D); border-radius: 0;" 
                                                                  aria-valuenow="{{ s.nombreInscrits }}" aria-valuemin="0" aria-valuemax="{{ s.seuilMinimum }}">
                                                             </div>
                                                         </div>
@@ -236,17 +236,17 @@
 
                                         <button type="button" id="btn-open-group-modal" 
                                                 class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2" 
-                                                style="background-color: var(--meta-plum); color: var(--meta-gold); border: 2px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
-                                            <i class="bi bi-credit-card-2-front me-1"></i>
+                                                style="background: linear-gradient(135deg, var(--meta-plum) 0%, rgba(74, 79, 65, 0.9) 100%); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
+                                            <i class="bi bi-credit-card-2-front text-gold me-1"></i>
                                             <span style="color: var(--meta-ivory);">Pré-réserver ma place</span>
                                             <span class="badge text-gold ms-2 px-3 py-1" style="background-color: rgba(10, 10, 9, 0.85); border: 1px solid var(--meta-gold); font-size: 0.9rem;">0,00 € débité</span>
                                         </button>
 
                                         <div class="text-center mt-2 small text-ivory opacity-75">
-                                            <i class="bi bi-shield-check text-gold me-1"></i>Empreinte bancaire sécurisée (Option A). Vous ne serez débité de {{ prestation.prix|default(30) }} € que si 5 participants s'inscrivent.
+                                            <i class="bi bi-shield-check text-gold me-1"></i>Empreinte bancaire sécurisée. Aucun prélèvement de {{ prestation.prix|default(30) }} € tant que les 5 participants ne sont pas réunis.
                                         </div>
                                     {% else %}
-                                        <div class="alert alert-dark text-ivory text-center m-0" style="border: 1px solid rgba(184, 154, 99, 0.3);">
+                                        <div class="p-4 text-ivory text-center" style="background: rgba(74, 79, 65, 0.35); border: 1px solid rgba(184, 154, 99, 0.3);">
                                             <i class="bi bi-info-circle text-gold fs-4 d-block mb-2"></i>
                                             Les prochaines dates d'ateliers seront programmées très prochainement par Louisa Chouihi.
                                         </div>
@@ -276,23 +276,23 @@
 {% if prestation.estCollectif %}
 <div class="modal fade" id="modalPrereservationGroupe" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background-color: var(--meta-black); border: 2px solid var(--meta-gold); box-shadow: 0 0 25px rgba(184, 154, 99, 0.4);">
-            <div class="modal-header border-0 pb-0">
+        <div class="modal-content shadow-lg" style="background: radial-gradient(ellipse at 50% 15%, var(--meta-plum) 0%, var(--meta-plum-dark) 60%, var(--meta-black) 100%); border: 1px solid var(--meta-gold); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(184, 154, 99, 0.25) !important; border-radius: 0;">
+            <div class="modal-header border-0 pb-2">
                 <div>
-                    <h5 class="modal-title text-gold typo-titre fs-4 text-uppercase" style="letter-spacing: 1px;">
+                    <h5 class="modal-title text-gold typo-titre fs-4 text-uppercase" style="letter-spacing: 1.5px;">
                         <i class="bi bi-shield-lock me-2"></i>Pré-réservation
                     </h5>
-                    <div class="text-ivory small opacity-75">Atelier : {{ prestation.nom }}</div>
+                    <div class="text-ivory small opacity-75">Atelier Collectif &bull; {{ prestation.nom }}</div>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body p-4">
                 {# Résumé Créneau sélectionné #}
-                <div class="p-3 mb-3 border rounded" style="background: rgba(74, 79, 65, 0.35); border-color: rgba(184, 154, 99, 0.3) !important;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-ivory small"><i class="bi bi-calendar3 text-gold me-2"></i>Date : <strong id="modal-session-date">-</strong></span>
-                        <span class="badge bg-success">0,00 € débité aujourd'hui</span>
-                    </div>
+                <div class="p-3 mb-3 d-flex justify-content-between align-items-center" style="background: rgba(74, 79, 65, 0.35); border: 1px solid rgba(184, 154, 99, 0.35); border-radius: 0;">
+                    <span class="text-ivory small"><i class="bi bi-calendar3 text-gold me-2"></i>Date : <strong id="modal-session-date" class="text-gold">-</strong></span>
+                    <span class="badge px-2 py-1" style="background-color: var(--meta-olive); border: 1px solid var(--meta-gold); color: var(--meta-ivory); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.5px;">
+                        <i class="bi bi-shield-check text-gold me-1"></i>0,00 € débité
+                    </span>
                 </div>
 
                 <form id="form-prereservation-groupe">
@@ -305,16 +305,18 @@
                         <input type="hidden" id="group-email" value="{{ app.user.email }}">
                         <input type="hidden" id="group-telephone" value="{{ app.user.telephone }}">
 
-                        <div class="p-3 mb-3 border rounded d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.4); border-color: rgba(184, 154, 99, 0.3) !important;">
+                        <div class="p-3 mb-3 d-flex align-items-center justify-content-between" style="background: rgba(42, 26, 30, 0.6); border: 1px solid rgba(184, 154, 99, 0.35); border-radius: 0;">
                             <div>
                                 <div class="text-gold fw-bold small text-uppercase" style="letter-spacing: 1px;">
                                     <i class="bi bi-person-check-fill me-1"></i>Participant connecté
                                 </div>
                                 <div class="text-ivory small mt-1">
-                                    {{ app.user.prenom }} {{ app.user.nom }} &bull; {{ app.user.email }}
+                                    {{ app.user.prenom }} {{ app.user.nom }} &bull; <span class="opacity-75">{{ app.user.email }}</span>
                                 </div>
                             </div>
-                            <span class="text-sage small"><i class="bi bi-check2-circle me-1"></i>Identifié</span>
+                            <span class="badge" style="background-color: rgba(74, 79, 65, 0.7); border: 1px solid var(--meta-sage); color: var(--meta-ivory); font-size: 0.75rem;">
+                                <i class="bi bi-check2 text-gold me-1"></i>Identifié
+                            </span>
                         </div>
                     {% else %}
                         {# VISITEUR NON CONNECTÉ : Formulaire complet #}
@@ -322,61 +324,68 @@
                             <div class="col-6">
                                 <label class="form-label text-ivory small text-uppercase">Prénom *</label>
                                 <input type="text" id="group-prenom" class="form-control" required 
-                                       style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                                       style="background: rgba(10, 10, 9, 0.75); border: 1px solid rgba(184, 154, 99, 0.4); color: var(--meta-ivory); border-radius: 0;">
                             </div>
                             <div class="col-6">
                                 <label class="form-label text-ivory small text-uppercase">Nom *</label>
                                 <input type="text" id="group-nom" class="form-control" required
-                                       style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                                       style="background: rgba(10, 10, 9, 0.75); border: 1px solid rgba(184, 154, 99, 0.4); color: var(--meta-ivory); border-radius: 0;">
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-ivory small text-uppercase">Adresse Email *</label>
                             <input type="email" id="group-email" class="form-control" required
-                                   style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                                   style="background: rgba(10, 10, 9, 0.75); border: 1px solid rgba(184, 154, 99, 0.4); color: var(--meta-ivory); border-radius: 0;">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-ivory small text-uppercase">Téléphone (SMS de rappel) *</label>
                             <input type="tel" id="group-telephone" class="form-control" required
-                                   style="background: rgba(0,0,0,0.6); border: 1px solid rgba(184, 154, 99, 0.4); color: #fff;">
+                                   style="background: rgba(10, 10, 9, 0.75); border: 1px solid rgba(184, 154, 99, 0.4); color: var(--meta-ivory); border-radius: 0;">
                         </div>
                     {% endif %}
 
                     {# ZONE CARTE BANCAIRE STRIPE #}
                     <div class="mb-4">
-                        <label class="form-label text-ivory small text-uppercase d-flex justify-content-between">
-                            <span>Coordonnées bancaires (Numéro, Date, CVC) *</span>
-                            <span class="text-gold"><i class="bi bi-lock-fill me-1"></i>3D Secure</span>
+                        <label class="form-label text-ivory small text-uppercase d-flex justify-content-between align-items-center mb-2">
+                            <span><i class="bi bi-credit-card text-gold me-1"></i>Coordonnées bancaires (Numéro, Date, CVC) *</span>
+                            <span class="text-gold small"><i class="bi bi-lock-fill me-1"></i>3D Secure</span>
                         </label>
-                        <div id="stripe-card-element" class="p-3 border rounded" style="background: rgba(0,0,0,0.6); border-color: rgba(184, 154, 99, 0.4) !important;">
+                        <div id="stripe-card-element" class="p-3" style="background: rgba(10, 10, 9, 0.75); border: 1px solid var(--meta-gold); border-radius: 0;">
                             <!-- Stripe injectera l'input de carte ici -->
                         </div>
-                        <div id="stripe-card-errors" class="text-danger small mt-1" role="alert"></div>
+                        <div id="stripe-card-errors" class="text-danger small mt-2" role="alert"></div>
                     </div>
 
-                    <div class="alert alert-dark small text-ivory p-3 mb-4" style="border: 1px solid rgba(184, 154, 99, 0.3); line-height: 1.4;">
-                        <strong><i class="bi bi-info-circle text-gold me-1"></i>Engagement & Transparence :</strong><br>
-                        Votre carte ne sera <strong>prélevée de {{ prestation.prix|default(30) }} € que si l'atelier réunit au moins 5 participants</strong>. Si ce quorum n'est pas atteint, l'empreinte s'annulera sans aucun frais.
+                    {# ENCART ENGAGEMENT & TRANSPARENCE (Charte Pourpre & Olive & Or) #}
+                    <div class="p-3 mb-4 small" style="background: linear-gradient(135deg, rgba(74, 79, 65, 0.4) 0%, rgba(42, 26, 30, 0.5) 100%); border: 1px solid var(--meta-gold); border-radius: 0; line-height: 1.5;">
+                        <div class="text-gold fw-bold mb-1 d-flex align-items-center gap-1" style="letter-spacing: 0.5px;">
+                            <i class="bi bi-info-circle-fill text-gold"></i>
+                            <span>ENGAGEMENT &amp; TRANSPARENCE :</span>
+                        </div>
+                        <div class="text-ivory" style="opacity: 0.95;">
+                            Votre carte ne sera prélevée de <strong class="text-gold">{{ prestation.prix|default(30) }} €</strong> que si l'atelier réunit au moins <strong class="text-gold">5 participants</strong>. Si ce quorum n'est pas atteint, l'empreinte bancaire s'annule automatiquement sans aucun frais.
+                        </div>
                     </div>
 
-                    <button type="submit" id="btn-submit-prereservation" class="btn w-100 py-3 fw-bold text-uppercase d-flex align-items-center justify-content-center gap-2"
-                            style="background-color: var(--meta-gold); color: var(--meta-black); border: none; letter-spacing: 1.5px; border-radius: 0;">
-                        <span id="btn-submit-text">Confirmer ma pré-réservation (0 €)</span>
-                        <div id="btn-submit-spinner" class="spinner-border spinner-border-sm text-dark d-none" role="status"></div>
+                    <button type="submit" id="btn-submit-prereservation" class="btn w-100 py-3 fw-bold text-uppercase transition-hover d-flex align-items-center justify-content-center gap-2"
+                            style="background-color: var(--meta-plum); color: var(--meta-gold); border: 1px solid var(--meta-gold); letter-spacing: 2px; border-radius: 0;">
+                        <i class="bi bi-lock-fill text-gold"></i>
+                        <span id="btn-submit-text" style="color: var(--meta-ivory);">Confirmer ma pré-réservation (0 €)</span>
+                        <div id="btn-submit-spinner" class="spinner-border spinner-border-sm text-gold d-none" role="status"></div>
                     </button>
                 </form>
 
                 {# MESSAGE DE SUCCÈS #}
                 <div id="group-success-box" class="d-none text-center py-4">
-                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
-                    <h4 class="text-gold typo-titre mt-3">Pré-réservation validée !</h4>
+                    <i class="bi bi-check-circle-fill text-gold" style="font-size: 3.5rem;"></i>
+                    <h4 class="text-gold typo-titre mt-3 fs-3">Pré-réservation validée !</h4>
                     <p class="text-ivory mt-2" id="group-success-msg">Votre place est réservée. Aucun montant n'a été débité.</p>
-                    <div class="p-3 my-3 border rounded" style="background: rgba(74, 79, 65, 0.35); border-color: rgba(184, 154, 99, 0.3) !important;">
+                    <div class="p-3 my-3" style="background: rgba(74, 79, 65, 0.4); border: 1px solid var(--meta-gold); border-radius: 0;">
                         <div class="text-gold fw-bold" id="group-success-gauge">-</div>
                     </div>
-                    <button type="button" class="btn btn-outline-gold mt-2 px-4" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-outline-gold mt-2 px-4 py-2" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -483,12 +492,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             hidePostalCode: true,
                             style: {
                                 base: {
-                                    color: '#FFFFFF',
-                                    fontFamily: 'Segoe UI, sans-serif',
+                                    color: '#FFFFF0',
+                                    fontFamily: 'Inter, sans-serif',
                                     fontSize: '15px',
-                                    '::placeholder': { color: '#94A3B8' }
+                                    '::placeholder': { color: '#8A8F7C' },
+                                    iconColor: '#B89A63'
                                 },
-                                invalid: { color: '#FA755A' }
+                                invalid: { 
+                                    color: '#E5C78D',
+                                    iconColor: '#FA755A'
+                                }
                             }
                         });
                         cardElement.mount('#stripe-card-element');
@@ -563,12 +576,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (inscData.quorumAtteint) {
                         document.getElementById('group-success-msg').innerHTML = 
-                            '<strong class="text-success">🎉 Le quorum des ' + inscData.seuilMinimum + ' participants est atteint !</strong><br>Votre atelier est confirmé. Le prélèvement de 30 € a été validé et votre lien visio vous a été envoyé par email.';
+                            '<strong class="text-gold fs-5">🎉 Le quorum des ' + inscData.seuilMinimum + ' participants est atteint !</strong><br>Votre atelier est confirmé. Le prélèvement de 30 € a été validé et votre lien visio vous a été envoyé par email.';
                         document.getElementById('group-success-gauge').innerText = 
                             'Statut : Session Confirmée (' + inscData.totalInscrits + ' participants inscrits)';
                     } else {
                         document.getElementById('group-success-msg').innerHTML = 
-                            'Votre carte a été enregistrée avec succès. <strong>Montant débité : 0,00 €</strong>.<br>Vous serez automatiquement prélevé dès que le 5ᵉ participant s\'inscrira.';
+                            'Votre carte a été enregistrée avec succès. <strong class="text-gold">Montant débité : 0,00 €</strong>.<br>Vous serez automatiquement prélevé dès que le 5ᵉ participant s\'inscrira.';
                         document.getElementById('group-success-gauge').innerText = 
                             'Jauge actuelle : ' + inscData.totalInscrits + ' sur ' + inscData.seuilMinimum + ' requis';
                     }
