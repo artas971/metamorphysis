@@ -141,7 +141,7 @@ class PrestationCrudController extends AbstractCrudController
 
             BooleanField::new('estCollectif', 'Activer le mode Atelier Collectif / Groupe')
                 ->renderAsSwitch(true)
-                ->setHelp('Si activé, la fiche publique affichera une jauge de participants et le mode pré-réservation (Option A).'),
+                ->setHelp('Si activé, la fiche publique affichera une jauge de participants et le mode pré-réservation avec empreinte bancaire à 0 € sans débit immédiat.'),
 
             IntegerField::new('seuilMinimum', '👥 Seuil Minimum de Participants (Quorum)')
                 ->setRequired(false)

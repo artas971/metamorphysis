@@ -188,7 +188,11 @@
 
                                     {% if sessionsValides|length > 0 %}
                                         <div class="mb-3">
-                                            <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">Choisissez votre créneau :</label>
+                                            {% if sessionsValides|length > 1 %}
+                                                <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">Choisissez votre créneau :</label>
+                                            {% else %}
+                                                <label class="form-label text-ivory small text-uppercase fw-bold" style="letter-spacing: 1px;">Prochaine session programmée :</label>
+                                            {% endif %}
                                             <div class="d-flex flex-column gap-2" id="sessions-group-list">
                                                 {% for s in sessionsValides %}
                                                     <div class="session-item p-3 border transition-hover position-relative {% if loop.first %}selected-session{% endif %}"
@@ -228,6 +232,13 @@
                                                                  style="width: {{ pct }}%; background: linear-gradient(90deg, var(--meta-gold), #E5C78D); border-radius: 0;" 
                                                                  aria-valuenow="{{ s.nombreInscrits }}" aria-valuemin="0" aria-valuemax="{{ s.seuilMinimum }}">
                                                             </div>
+                                                        </div>
+
+                                                        <div class="mt-3 pt-2 d-flex justify-content-between align-items-center" style="border-top: 1px solid rgba(184, 154, 99, 0.2);">
+                                                            <span class="text-ivory small opacity-75"><i class="bi bi-shield-lock text-gold me-1"></i>0,00 € débité aujourd'hui</span>
+                                                            <span class="btn btn-sm text-uppercase" style="background-color: rgba(184, 154, 99, 0.2); border: 1px solid var(--meta-gold); color: var(--meta-gold); font-size: 0.72rem; letter-spacing: 1px;">
+                                                                Réserver ce créneau <i class="bi bi-arrow-right ms-1"></i>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 {% endfor %}
@@ -432,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 2. GESTION DU MODULE ATELIER DE GROUPE (OPTION A)
+    // 2. GESTION DU MODULE ATELIER DE GROUPE
     const sessionItems = document.querySelectorAll('.session-item');
     const btnOpenGroupModal = document.getElementById('btn-open-group-modal');
     const modalEl = document.getElementById('modalPrereservationGroupe');
@@ -446,33 +457,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let activeSessionId = sessionItems[0].getAttribute('data-session-id');
         let activeSessionDate = sessionItems[0].getAttribute('data-date');
 
-        sessionItems.forEach(item => {
-            item.addEventListener('click', function() {
-                sessionItems.forEach(s => {
-                    s.classList.remove('selected-session');
-                    s.style.borderColor = 'rgba(184, 154, 99, 0.3)';
-                    s.style.boxShadow = 'none';
-                    s.style.opacity = '0.85';
-                });
-
-                this.classList.add('selected-session');
-                this.style.borderColor = 'var(--meta-gold)';
-                this.style.boxShadow = '0 0 10px rgba(184, 154, 99, 0.4)';
-                this.style.opacity = '1';
-
-                activeSessionId = this.getAttribute('data-session-id');
-                activeSessionDate = this.getAttribute('data-date');
-            });
-        });
-
         // Initialisation Stripe Elements
         let stripe = null;
         let cardElement = null;
         let clientSecret = null;
 
-        btnOpenGroupModal.addEventListener('click', async function() {
-            document.getElementById('input-session-id').value = activeSessionId;
-            document.getElementById('modal-session-date').innerText = activeSessionDate;
+        async function openGroupModal(sessionId, sessionDate) {
+            document.getElementById('input-session-id').value = sessionId;
+            document.getElementById('modal-session-date').innerText = sessionDate;
             document.getElementById('form-prereservation-groupe').classList.remove('d-none');
             document.getElementById('group-success-box').classList.add('d-none');
 
@@ -510,6 +502,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Erreur chargement Stripe:', e);
                 }
             }
+        }
+
+        sessionItems.forEach(item => {
+            item.addEventListener('click', function() {
+                sessionItems.forEach(s => {
+                    s.classList.remove('selected-session');
+                    s.style.borderColor = 'rgba(184, 154, 99, 0.3)';
+                    s.style.boxShadow = 'none';
+                    s.style.opacity = '0.85';
+                });
+
+                this.classList.add('selected-session');
+                this.style.borderColor = 'var(--meta-gold)';
+                this.style.boxShadow = '0 0 10px rgba(184, 154, 99, 0.4)';
+                this.style.opacity = '1';
+
+                activeSessionId = this.getAttribute('data-session-id');
+                activeSessionDate = this.getAttribute('data-date');
+
+                // Ouvrir immédiatement la modale pour ce créneau
+                openGroupModal(activeSessionId, activeSessionDate);
+            });
+        });
+
+        btnOpenGroupModal.addEventListener('click', function() {
+            openGroupModal(activeSessionId, activeSessionDate);
         });
 
         // Soumission du formulaire de pré-réservation
